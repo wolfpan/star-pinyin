@@ -2,9 +2,12 @@
  * gen-readme-shots.mjs — README「界面预览」配图生成（只读，不写玩家进度/设置）。
  * 复用 3000 端口真实服务与真实档案（画面更丰满）：
  *  - 三套皮肤机库：fetch 拦截仅改 profile.skin（不落盘），820×1180 竖屏；
+ *  - 前台玩法三帧（组装 / 发射 / 认读卡片）：m_011 船 chuán，真实拖拽 + 声调点击；
+ *    fetch 拦截强制 skin=hud / launchFx=always，结算上报返回空结果（不写玩家进度）；
  *  - 家长后台四页签：真实数据 + 会话级家长校验预解锁（sessionStorage，与 debug-stat-bars 同），1000×1400；
  *    发音页隐藏 TTS 配置面板（公开配图不含 API 地址 / 模型 / 音色 / Key 信息）。
- * 产出（进仓库）：docs/screenshots/skin-{hud,daylight,nebula}.png / admin-{study,ui,voice,reset}.png
+ * 产出（进仓库）：docs/screenshots/skin-{hud,daylight,nebula}.png / game-{assembly,launch,card}.png /
+ *   admin-{study,ui,voice,reset}.png
  * 运行：node scripts/gen-readme-shots.mjs
  */
 import { spawn } from 'node:child_process';
@@ -61,6 +64,15 @@ const shotClip = async (name, width, height) => {
   else errors.push('shot failed: ' + name);
 };
 const waitFor = async (expr, ms = 8000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (await ev(expr)) return true; await sleep(150); } return false; };
+const mouse = (type, x, y) => send('Input.dispatchMouseEvent', { type, x, y, button: 'left', buttons: type === 'mouseReleased' ? 0 : 1, clickCount: 1 });
+async function tap(x, y) { await mouse('mousePressed', x, y); await sleep(25); await mouse('mouseReleased', x, y); }
+async function drag(fx, fy, tx, ty) {
+  await mouse('mousePressed', fx, fy); await sleep(80);
+  for (let i = 1; i <= 6; i++) { await mouse('mouseMoved', fx + (tx - fx) * i / 6, fy + (ty - fy) * i / 6); await sleep(25); }
+  await mouse('mouseReleased', tx, ty); await sleep(380);
+}
+const rect = (sel) => ev(`(() => { const e = document.querySelector('${sel}'); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width/2, y: r.top + r.height/2 }; })()`);
+const modCenter = (g, v) => ev(`(() => { const e = [...document.querySelectorAll('.module')].find(m => m.dataset.group === '${g}' && m.dataset.value === '${v}'); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width/2, y: r.top + r.height/2 }; })()`);
 
 await send('Runtime.enable'); await send('Page.enable');
 // 家长后台受保护页签：会话级预解锁（仅 sessionStorage，不答校验也不落盘）
@@ -85,6 +97,55 @@ for (const skin of ['hud', 'daylight', 'nebula']) {
   await sleep(500); // 等自适应缩放与横滑渐隐落定
   await shot('skin-' + skin);
 }
+
+/* ---- 前台玩法：火箭组装 / 点火发射 / 卡片认读（只读 + fetch 拦截，不写玩家进度） ---- */
+console.log('\n[game] m_011 船 chuán');
+await send('Page.navigate', { url: 'http://127.0.0.1:3000/' }); await sleep(900);
+await ev(`window.__audio && Object.assign(window.__audio, { speakText(){}, slowSplit(){}, speakPinyin(){} })`);
+// 拦截：强制 HUD 皮肤与完整发射动画；结算上报返回空结果（不落盘，不改真实档案）
+await ev(`(() => { const orig = window.fetch.bind(window);
+  const json = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  window.fetch = async (url, opts) => {
+    const u = String(url);
+    if (u.startsWith('/api/progress/record')) return json({ ok: true, perfect: true, newlyUnlockedBadges: [] });
+    if (u.startsWith('/api/profile')) {
+      const p = await (await orig(url, opts)).json();
+      p.skin = 'hud'; p.launchFx = 'always';
+      return json(p);
+    }
+    return orig(url, opts);
+  }; })()`);
+await ev(`document.getElementById('enterBtn').click()`);
+await waitFor(`document.querySelectorAll('#rocketPicker .rocket-chip').length > 0`);
+await ev(`window.__debugStart('m_011')`); await sleep(400);
+await ev(`document.querySelector('#game .briefing .phys-btn.primary')?.click()`); await sleep(400);
+const gm = await ev(`window.__currentMission`);
+if (!gm || gm.id !== 'm_011') errors.push('game: mission not started');
+// 先装声母一段，截「组装进行中」
+{
+  const mc = await modCenter('initial', gm.parts.initial);
+  const sc = await rect('.slot[data-slot="initial"] .slot-hit');
+  if (mc && sc) await drag(mc.x, mc.y, sc.x, sc.y); else errors.push('game: initial module/slot missing');
+}
+await sleep(300);
+await shot('game-assembly');
+// 装完剩余两段 → 声调校准 → 点火
+for (const g of ['medial', 'final']) {
+  const mc = await modCenter(g, gm.parts[g]);
+  const sc = await rect(`.slot[data-slot="${g}"] .slot-hit`);
+  if (mc && sc) await drag(mc.x, mc.y, sc.x, sc.y); else errors.push(`game: ${g} module/slot missing`);
+}
+if (!await waitFor(`!!document.querySelector('.tone')`, 5000)) errors.push('game: tone screen missing');
+const tb = await rect(`.curve-btn[data-tone="${gm.tone}"]`);
+if (!tb) errors.push('game: tone button missing'); else await tap(tb.x, tb.y);
+// 发射：canvas 出现后约 4 秒（点火后上升段）截帧
+if (!await waitFor(`!!document.querySelector('.launch-canvas')`, 6000)) errors.push('game: launch canvas missing');
+await sleep(3900);
+await shot('game-launch');
+// 抵达结算：汉字+拼音认读卡片
+if (!await waitFor(`!!document.querySelector('.reward')`, 16000)) errors.push('game: completion missing');
+await sleep(400);
+await shot('game-card');
 
 /* ---- 家长后台四页签（桌面视口） ---- */
 await send('Emulation.setDeviceMetricsOverride', { width: 1000, height: 1400, deviceScaleFactor: 1, mobile: false, screenWidth: 1000, screenHeight: 1400 });
