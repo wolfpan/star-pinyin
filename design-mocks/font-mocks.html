@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>「火箭号指挥官」字体设计方案对比 · 星际发射指挥官</title>
+<style>
+/* 字体设计方案对比页（独立样板，不依赖应用 CSS）
+ * 三款字体均为 SIL OFL 1.1 开源字体，子集化 woff2 已存 public/fonts/。 */
+@font-face { font-family:'ZCOOL QingKe HuangYou'; src:url('../public/fonts/zcool-qingke-huangyou-400.woff2') format('woff2'); font-weight:400; font-display:block; }
+@font-face { font-family:'ZCOOL KuaiLe';          src:url('../public/fonts/zcool-kuaile-400.woff2') format('woff2');          font-weight:400; font-display:block; }
+@font-face { font-family:'Ma Shan Zheng';         src:url('../public/fonts/ma-shan-zheng-400.woff2') format('woff2');         font-weight:400; font-display:block; }
+
+:root {
+  --sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+  --nebula-bg: radial-gradient(700px 420px at 85% 8%, rgba(255,122,138,.2), transparent 65%),
+               radial-gradient(800px 520px at 8% 92%, rgba(79,227,193,.14), transparent 60%),
+               radial-gradient(1000px 700px at 50% 45%, rgba(111,99,255,.25), transparent 70%),
+               linear-gradient(160deg,#241850,#1a1140 45%,#120c28);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { width:1024px; margin:0 auto; background:#0d0a1e; font-family:var(--sys); color:#fff7ff; padding:28px 0 40px; }
+.page-head { width:976px; margin:0 auto 20px; }
+.page-head h1 { font-size:22px; letter-spacing:.06em; }
+.page-head p { margin-top:6px; font-size:13px; color:#8f87b8; letter-spacing:.04em; }
+
+.plan { width:976px; margin:0 auto 26px; border:1px solid rgba(255,255,255,.14); border-radius:18px; overflow:hidden; background:#17103a; }
+.plan-head { display:flex; align-items:center; gap:14px; padding:16px 22px; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.1); }
+.plan-key { flex:none; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-size:20px; font-weight:800; color:#4a3208; background:linear-gradient(135deg,#ffd166,#ff9d6b); box-shadow:0 3px 0 rgba(0,0,0,.25); }
+.plan-head h2 { font-size:17px; letter-spacing:.04em; }
+.plan-head .desc { margin-top:3px; font-size:12.5px; color:#c9bfe8; }
+.plan-tags { margin-left:auto; flex:none; font-size:11.5px; color:#ffd166; border:1px solid rgba(255,209,102,.45); border-radius:999px; padding:5px 12px; letter-spacing:.08em; }
+
+/* 大字展示区（星云乐园底） */
+.stage { background:var(--nebula-bg); padding:26px 28px 22px; display:flex; align-items:baseline; gap:22px; }
+.stage .showcase { font-size:52px; line-height:1.15; }
+.stage .cap { font-size:11.5px; color:#8f87b8; letter-spacing:.14em; }
+
+/* 首页主标题预览（SpaceX 深空底，不受皮肤影响） */
+.bootline { background:
+    radial-gradient(1.5px 1.5px at 22% 28%, rgba(255,255,255,.9) 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 62%, rgba(255,255,255,.7) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 84% 24%, rgba(255,255,255,.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 78%, rgba(255,255,255,.6) 50%, transparent 51%),
+    #02040a;
+  background-size:560px 560px,560px 560px,560px 560px,560px 560px,auto;
+  padding:20px 28px; display:flex; align-items:baseline; gap:22px; border-top:1px solid rgba(255,255,255,.08); }
+.bootline .bt { font-size:38px; line-height:1.2; letter-spacing:.12em; color:#fff; }
+.bootline .cap { font-size:11.5px; color:rgba(230,236,248,.45); letter-spacing:.14em; }
+
+/* 三皮肤实际尺寸顶栏（callsign 实际 17px 档） */
+.strips { display:flex; flex-direction:column; }
+.strip { display:flex; align-items:center; gap:9px; padding:13px 22px; border-top:1px solid rgba(255,255,255,.08); }
+.strip .astro { font-size:22px; line-height:1; }
+.strip .cs { font-size:17px; font-weight:400; }
+.strip .right { margin-left:auto; display:flex; gap:8px; font-size:12px; }
+.strip .chip { border:1px solid rgba(255,255,255,.22); border-radius:8px; padding:5px 10px; color:inherit; opacity:.85; }
+.strip .skin-name { flex:none; width:112px; font-size:11px; letter-spacing:.1em; opacity:.55; }
+.strip.nebula { background:linear-gradient(160deg,#241850,#1a1140 45%,#120c28); color:#fff7ff; }
+.strip.hud { background:linear-gradient(180deg,#061019,#030812); color:#e8f6ff; }
+.strip.hud .chip { border-color:rgba(83,215,255,.32); }
+.strip.daylight { background:linear-gradient(180deg,#f7fafd,#eef2f7); color:#17263e; border-top:1px solid #dde5ef; }
+.strip.daylight .chip { border-color:#c9d4e2; }
+
+/* ---------- 字体族 ---------- */
+.font-a { font-family:'ZCOOL QingKe HuangYou', var(--sys); letter-spacing:.06em; }
+.font-b { font-family:'ZCOOL KuaiLe', var(--sys); letter-spacing:.05em; }
+.font-c { font-family:'Ma Shan Zheng', var(--sys); letter-spacing:.1em; }
+.font-sys { font-family:var(--sys); font-weight:800; letter-spacing:.04em; }
+
+/* ---------- 方案 A · 黄油机甲：奶油渐变 + 玩具压底 ---------- */
+#plan-a .showcase { background:linear-gradient(180deg,#fff 30%,#ffd166); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 3px 0 rgba(0,0,0,.28)); }
+#plan-a .bt { background:linear-gradient(180deg,#fff 35%,#9cc8ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+#plan-a .strip.nebula .cs { color:#ffd166; text-shadow:0 2px 0 rgba(0,0,0,.28); }
+#plan-a .strip.hud .cs { color:#53d7ff; text-shadow:0 0 14px rgba(83,215,255,.4); }
+#plan-a .strip.daylight .cs { color:#f4581c; }
+
+/* ---------- 方案 B · 快乐卡通：白字 + 珊瑚糖压底 ---------- */
+#plan-b .showcase { color:#fff; filter:drop-shadow(0 4px 0 #b04a5c); }
+#plan-b .bt { color:#fff; text-shadow:0 3px 0 rgba(255,122,138,.5), 0 2px 24px rgba(0,0,0,.55); }
+#plan-b .strip.nebula .cs { color:#fff; text-shadow:0 2px 0 #b04a5c; }
+#plan-b .strip.hud .cs { color:#e8f6ff; text-shadow:0 0 14px rgba(83,215,255,.45); }
+#plan-b .strip.daylight .cs { color:#f4581c; }
+
+/* ---------- 方案 C · 星际书法：笔锋 + 冷辉光，字号放大 ---------- */
+#plan-c .showcase { font-size:58px; color:#fff; filter:drop-shadow(0 0 18px rgba(111,195,255,.55)); }
+#plan-c .bt { font-size:44px; color:#fff; text-shadow:0 0 26px rgba(150,190,255,.4), 0 2px 24px rgba(0,0,0,.55); }
+#plan-c .strip .cs { font-size:19px; }
+#plan-c .strip.nebula .cs { color:#fff; text-shadow:0 0 12px rgba(111,195,255,.5); }
+#plan-c .strip.hud .cs { color:#fff; text-shadow:0 0 14px rgba(83,215,255,.5); }
+#plan-c .strip.daylight .cs { color:#17263e; }
+
+/* ---------- 现状基线 ---------- */
+#baseline .plan-key { background:linear-gradient(135deg,#8f87b8,#5b5470); color:#fff; }
+#baseline .showcase { font-size:44px; color:#ffd166; }
+</style>
+</head>
+<body>
+<header class="page-head">
+  <h1>「火箭号指挥官」字体设计方案 · 三选一</h1>
+  <p>每套方案含：呼号大字展示 / 首页主标题预览 / 三套皮肤顶栏实际尺寸。字体均为开源 OFL 许可，子集化后单文件 ≤ 6KB。</p>
+</header>
+
+<!-- 现状基线 -->
+<section class="plan" id="baseline">
+  <div class="plan-head">
+    <span class="plan-key">现</span>
+    <div><h2>现状 · 系统黑体加粗</h2><p class="desc">PingFang / 微软雅黑 800 字重，无个性，笔画偏细碎</p></div>
+    <span class="plan-tags">对照基线</span>
+  </div>
+  <div class="stage"><span class="showcase font-sys">火箭号指挥官</span><span class="cap">呼号 · 放大</span></div>
+  <div class="strip nebula"><span class="skin-name">星云乐园</span><span class="astro">👨‍🚀</span><span class="cs font-sys">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+</section>
+
+<!-- 方案 A -->
+<section class="plan" id="plan-a">
+  <div class="plan-head">
+    <span class="plan-key">A</span>
+    <div><h2>黄油机甲 · 站酷庆科黄油体</h2><p class="desc">圆角方块笔画，厚实饱满像机甲零件；奶油渐变 + 玩具压底，科技又可爱</p></div>
+    <span class="plan-tags">科技 / 饱满 / 耐看</span>
+  </div>
+  <div class="stage"><span class="showcase font-a">火箭号指挥官</span><span class="cap">呼号 · 放大</span></div>
+  <div class="bootline"><span class="bt font-a">星际发射指挥官</span><span class="cap">首页主标题预览</span></div>
+  <div class="strips">
+    <div class="strip nebula"><span class="skin-name">星云乐园</span><span class="astro">👨‍🚀</span><span class="cs font-a">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip hud"><span class="skin-name">深空座舱</span><span class="astro">👨‍🚀</span><span class="cs font-a">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip daylight"><span class="skin-name">天空积木</span><span class="astro">👨‍🚀</span><span class="cs font-a">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+  </div>
+</section>
+
+<!-- 方案 B -->
+<section class="plan" id="plan-b">
+  <div class="plan-head">
+    <span class="plan-key">B</span>
+    <div><h2>快乐卡通 · 站酷快乐体</h2><p class="desc">笔画跳跃活泼、自带童趣；白字 + 珊瑚糖压底，与「发射」按钮同语言，最贴近低年级</p></div>
+    <span class="plan-tags">童趣 / 活泼 / 糖果</span>
+  </div>
+  <div class="stage"><span class="showcase font-b">火箭号指挥官</span><span class="cap">呼号 · 放大</span></div>
+  <div class="bootline"><span class="bt font-b">星际发射指挥官</span><span class="cap">首页主标题预览</span></div>
+  <div class="strips">
+    <div class="strip nebula"><span class="skin-name">星云乐园</span><span class="astro">👨‍🚀</span><span class="cs font-b">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip hud"><span class="skin-name">深空座舱</span><span class="astro">👨‍🚀</span><span class="cs font-b">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip daylight"><span class="skin-name">天空积木</span><span class="astro">👨‍🚀</span><span class="cs font-b">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+  </div>
+</section>
+
+<!-- 方案 C -->
+<section class="plan" id="plan-c">
+  <div class="plan-head">
+    <span class="plan-key">C</span>
+    <div><h2>星际书法 · 马善政楷书</h2><p class="desc">毛笔楷书笔锋，苍劲洒脱；冷辉光衬托，呼应「长征 / 神舟」的中国航天浪漫，指挥官气场最强</p></div>
+    <span class="plan-tags">国风 / 笔锋 / 气场</span>
+  </div>
+  <div class="stage"><span class="showcase font-c">火箭号指挥官</span><span class="cap">呼号 · 放大</span></div>
+  <div class="bootline"><span class="bt font-c">星际发射指挥官</span><span class="cap">首页主标题预览</span></div>
+  <div class="strips">
+    <div class="strip nebula"><span class="skin-name">星云乐园</span><span class="astro">👨‍🚀</span><span class="cs font-c">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip hud"><span class="skin-name">深空座舱</span><span class="astro">👨‍🚀</span><span class="cs font-c">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+    <div class="strip daylight"><span class="skin-name">天空积木</span><span class="astro">👨‍🚀</span><span class="cs font-c">火箭号指挥官</span><span class="right"><span class="chip">🚀 发射 83 次</span><span class="chip">🏛️ 博物馆</span></span></div>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,647 @@
+/* theme.css — 深空航天指挥中心暗色主题 · SpaceX 星舰风（近黑表面 / 白色细边框 / 直角锐利）
+ * 主视觉与排版语言见 boot.css / space.css；此处为全局变量与基础组件。 */
+
+:root {
+  --space-0: #04060c;      /* 页面背景（近黑深空） */
+  --space-1: #0a0e16;      /* 凹陷表面：输入框 / 画板 / 铭牌底 */
+  --space-2: #121722;      /* 卡片 / 零件 / 次级按钮 */
+  --panel: #0a0d15;        /* 面板纯色底 */
+  --panel-edge: #262c38;   /* 细边框 */
+  --text: #f2f5fa;
+  --text-dim: #a9b4c7;
+  --accent: #f2f5fa;       /* 强调 = 白色实底（SpaceX 式反白按钮 / 选中态） */
+  --accent-ink: #06080f;   /* 强调色实底上的文字 */
+  --accent-2: #9cc8ff;
+  --ice: #9cc8ff;          /* 冰蓝：拼音 / 英文标签等小面积高亮 */
+  --ok: #3ddc84;
+  --warn: #ffb703;
+  --danger: #ff5d5d;
+  --radius: 4px;
+  --radius-sm: 3px;
+  /* ---- 皮肤变量层（skins.css 按 html[data-skin] 覆盖；此处为深空经典默认值） ---- */
+  --sf-1: rgba(255, 255, 255, 0.03);   /* 表面浅 tint */
+  --sf-2: rgba(255, 255, 255, 0.08);
+  --sf-3: rgba(255, 255, 255, 0.12);
+  --ed-1: rgba(255, 255, 255, 0.16);   /* 描边阶梯 */
+  --ed-2: rgba(255, 255, 255, 0.25);
+  --ed-3: rgba(255, 255, 255, 0.35);
+  --ed-4: rgba(255, 255, 255, 0.5);
+  --hi: rgba(255, 255, 255, 0.18);     /* 内顶高光 */
+  --sel-tint: rgba(255, 255, 255, 0.1);/* 选中态底 */
+  --scrim: rgba(4, 6, 12, 0.85);       /* 遮罩 */
+  --scrim-solid: rgba(4, 6, 12, 0.97);
+  --panel-glass: rgba(8, 11, 18, 0.82);
+  --text-mute: #5b6c8f;
+  --bezel-off: #33415e;
+  --btn-primary-bg: #fff;
+  --btn-primary-bg-hover: #e6ebf2;
+  --btn-primary-edge: #fff;
+  --btn-primary-glow: none;
+  --card-shadow: none;
+  --mod-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --hint-glow: rgba(156, 200, 255, 0.55); /* 正确零件高亮呼吸辉光（skins.css 按皮肤覆盖） */
+  --cat-initial: var(--accent);
+  --cat-medial: var(--text-dim);
+  --cat-final: var(--accent);
+  --mod-1: #2a3441; --mod-2: #1a212b; --mod-3: #12171f;
+  --mod-d1: #334050; --mod-d2: #1e2632; --mod-d3: #151b24;
+  /* 火箭 SVG 调色板 */
+  --rk-st1: #59636f; --rk-st2: #cfd6df; --rk-st3: #f2f5f8; --rk-st4: #b9c2cc; --rk-st5: #47505b;
+  --rk-sd1: #39424d; --rk-sd2: #8b95a1; --rk-sd3: #b9c2cc; --rk-sd4: #77818d; --rk-sd5: #2b333d;
+  --rk-nz1: #2b333d; --rk-nz2: #0a0d12;
+  --rk-tile-a: #0b0e13; --rk-tile-b: #151a22;
+  --rk-plate1: #2a3441; --rk-plate2: #1a212b; --rk-plate3: #12171f;
+  --rk-tower: #161d29; --rk-tower-edge: rgba(255, 255, 255, 0.08);
+  --rk-tower-arm: #1a2230; --rk-tower-brace: #232c38;
+  --rk-pad: #202a3a; --rk-flange: #39424e; --rk-hull-edge: #0a0d12; --rk-bezel: #2a323d;
+  --rk-glow: rgba(190, 215, 255, 0.32);
+  --rk-slot-bg: #0b0f16; --rk-slot-edge: rgba(255, 255, 255, 0.28);
+  --rk-slot-label: #39424e;
+  /* Canvas 发射场调色板（太空段保持深空实景） */
+  --fx-sky-top: 6, 10, 26; --fx-sky-bot: 16, 26, 52;
+  --fx-ground: #0d1424; --fx-ground-line: rgba(76, 201, 240, 0.07);
+  --fx-trench: #05070f; --fx-trench-edge: #161d2e;
+  --fx-pad: #2a3854; --fx-pad-top: #3a4a6b; --fx-clamp: #1a2438;
+  --fx-tower: #b9c4d6; --fx-tower-line: #8fa3c8; --fx-mast: #dfe6f0;
+  --fx-lamp: #3a4a6b; --fx-lamp-glow: rgba(220, 240, 255, 0.85);
+  --fx-count: #ffd166; --fx-pad-text: #d7e3ff; --fx-ignite: #ff7b30;
+  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Segoe UI", sans-serif;
+  --font-display: 'D-DIN', 'DIN Alternate', 'Bahnschrift', 'Arial Narrow', sans-serif;
+  --font-brand: 'ZCOOL QingKe HuangYou', var(--font);
+}
+
+/* 品牌标题字体：站酷庆科黄油体（SIL OFL 1.1，见 /fonts/zcool-qingke-huangyou-400-OFL.txt）。
+ * 子集仅含「火箭号指挥官星际发射」10 字（≤6KB），用于机库呼号与首页主标题；
+ * 其余字符自动回退系统字体。下载脚本：scripts/fetch-title-fonts.mjs。 */
+@font-face {
+  font-family: 'ZCOOL QingKe HuangYou';
+  src: url('/fonts/zcool-qingke-huangyou-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* iPad Safari 强制兼容性：防误触 / 防回弹 / 禁选中 */
+* {
+  box-sizing: border-box;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* hidden 属性必须生效：避免 .screen 的 display:flex 覆盖 UA 的 [hidden]{display:none} */
+[hidden] { display: none !important; }
+
+/* AI 生成图标基类（替代 emoji；透明 PNG，素材见 scripts/gen-ui-icons.mjs）。
+ * 放在组件规则之前：各组件类（.hangar-id-icon 等）可按需覆盖尺寸。 */
+.ui-icon {
+  display: inline-block; width: 1.15em; height: 1.15em; object-fit: contain;
+  vertical-align: -0.22em; flex-shrink: 0; pointer-events: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overscroll-behavior: none;
+  background: var(--space-0);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+/* 键盘可达性焦点环 */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 扁平按钮（沿用 .phys-btn 类名）：纯色 + 细边框，按压仅轻微缩放/变暗 */
+.phys-btn {
+  appearance: none;
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius-sm);
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  color: var(--text);
+  background: var(--space-2);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.phys-btn:active {
+  transform: scale(0.97);
+  background: #1a2130;
+}
+.phys-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.phys-btn.primary:active { background: #dfe6ee; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.panel-title {
+  margin: 0 0 12px;
+  font-size: 1.14rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.panel-desc {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.selftest-result { margin-top: 16px; font-size: 0.95rem; line-height: 1.7; }
+.selftest-result .ok { color: var(--ok); font-weight: 700; }
+.selftest-result .bad { color: var(--danger); font-weight: 700; }
+.selftest-result table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.selftest-result td, .selftest-result th {
+  border-bottom: 1px solid var(--panel-edge);
+  padding: 4px 8px;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------- 任务简报 ----------------------------- */
+.phys-btn.small { padding: 11px 18px; font-size: 0.95rem; min-height: 44px; }
+.briefing { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding-top: 12px; }
+.brief-tag { color: var(--accent); letter-spacing: 0.2em; font-size: 0.8rem; }
+.brief-hanzi { font-size: 5.5rem; font-weight: 800; line-height: 1.15; }
+.brief-word { font-size: 1.9rem; color: var(--text); letter-spacing: 0.08em; line-height: 1.4; }
+.brief-hint { color: var(--text-dim); max-width: 30ch; line-height: 1.65; }
+.brief-replay { display: flex; gap: 12px; margin: 8px 0 16px; }
+
+/* ----------------------------- 组装台 SVG ----------------------------- */
+.rocket-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.slot-group { fill: var(--text-dim); font-size: 13px; letter-spacing: 0.05em; }
+.slot-value { fill: var(--text); font-size: 30px; font-weight: 800; }
+.slot-value.placeholder { fill: var(--text-mute); font-size: 18px; font-weight: 600; }
+.slot-value.locked-note { fill: var(--text-mute); font-size: 14px; font-weight: 600; }
+.slot-light { fill: var(--bezel-off); transition: fill 0.2s ease; }
+.slot-light.on { fill: var(--ok); }
+.slot-body { transition: stroke 0.15s ease; }
+.slot.magnet .slot-body { stroke: var(--accent); stroke-width: 3; }
+.slot.is-filled .slot-body { stroke: var(--ok); stroke-width: 2.5; }
+.slot.is-error .slot-body { stroke: var(--warn); stroke-width: 3; }
+.slot.is-locked .slot-body { opacity: 0.7; }
+/* 正确零件高亮：待装舱段冰蓝描边呼吸闪烁（flashHint 加 .hint；sticky 持续直到装对） */
+.slot.hint .slot-body { stroke: var(--ice); stroke-width: 3; animation: slotHint 0.8s ease-in-out 3; }
+@keyframes slotHint { 0%, 100% { stroke-opacity: 1; } 50% { stroke-opacity: 0.3; } }
+.slot.hint.sticky .slot-body { animation-duration: 1.6s; animation-iteration-count: infinite; }
+
+.assembly-banner {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  display: flex; align-items: baseline; gap: 12px;
+  background: var(--space-1); border: 1px solid var(--ok);
+  border-radius: var(--radius-sm); padding: 8px 18px;
+}
+.banner-pinyin { font-size: 1.8rem; font-weight: 800; color: var(--ok); }
+.banner-text { color: var(--text-dim); font-size: 0.85rem; }
+
+/* ----------------------------- 零件托盘 ----------------------------- */
+.tray-title { color: var(--text-dim); font-size: 0.82rem; letter-spacing: 0.06em; margin-bottom: 10px; }
+/* 托盘工具条：复读（紧凑规格，与标题同行；孩子端随时可点） */
+.tray-tools { display: flex; gap: 8px; }
+.tray-tools .phys-btn.small { padding: 8px 14px; font-size: 0.88rem; min-height: 40px; }
+.tray-row { margin-bottom: 12px; }
+.tray-row-label { color: var(--accent); font-size: 0.78rem; margin-bottom: 6px; letter-spacing: 0.05em; }
+.tray-cells { display: flex; flex-wrap: wrap; gap: 10px; }
+.module {
+  position: relative;
+  min-width: 62px; padding: 12px 16px; text-align: center;
+  font-size: 1.35rem; font-weight: 700; color: var(--text);
+  background: var(--space-2);
+  border: 1px solid var(--ed-2); border-radius: var(--radius-sm);
+  cursor: grab; will-change: transform;
+}
+.module.umlaut { color: var(--ice); border-color: rgba(156, 200, 255, 0.55); }
+.module.dragging {
+  z-index: 1000; cursor: grabbing;
+  border-color: var(--accent); background: #1c2537;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35); /* 仅拖起时给一点抬升感 */
+}
+.module.locked { pointer-events: none; }
+/* 正确零件高亮（两次填错后的自动帮扶）：描边点亮 + 呼吸辉光
+   （只动描边/阴影，不动 transform，与拖拽位移互不干扰） */
+.module.hint { border-color: var(--ice); animation: moduleHint 0.8s ease-in-out 3; }
+@keyframes moduleHint {
+  0%, 100% { box-shadow: inset 0 1px 0 var(--hi), var(--mod-shadow); }
+  50% { box-shadow: inset 0 1px 0 var(--hi), 0 0 18px 4px var(--hint-glow); }
+}
+/* sticky = 持续帮扶：慢呼吸直到装对（setSlotFilled 清除） */
+.module.hint.sticky { animation-duration: 1.6s; animation-iteration-count: infinite; }
+
+/* ----------------------------- 摘墨镜交互 ----------------------------- */
+.dot-overlay {
+  position: absolute; inset: 0; z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--scrim);
+}
+.dot-card {
+  width: min(86%, 420px); text-align: center;
+  background: var(--panel); border: 1px solid var(--warn); border-radius: var(--radius);
+  padding: 26px 22px;
+}
+.dot-spark { width: 1.9rem; height: 1.9rem; object-fit: contain; }
+.dot-msg { color: var(--text); line-height: 1.7; margin: 12px 0 20px; }
+.dot-glyph { position: relative; display: inline-block; font-size: 5rem; line-height: 1; font-weight: 800; }
+.dot-base { color: var(--ice); }
+.dot-glyph.done .dot-base { color: var(--ok); }
+/* 首个字母（u）作为定位基准：两点始终悬在它正上方 */
+.dot-head { position: relative; display: inline-block; }
+.dot-wrap { position: absolute; top: 0.02em; left: 50%; transform: translateX(-50%); display: flex; gap: 0.1em; }
+.dot-btn {
+  /* 关键：button 不继承字号，浏览器会给 13.33px，0.3em 就只有 4px；这里显式继承 5rem 字形字号后再算尺寸 */
+  font-size: inherit;
+  display: block; margin: 0; padding: 0;
+  width: 0.26em; height: 0.26em;   /* 5rem 字形下 ≈ 21px（原来 ≈ 4px） */
+  border-radius: 50%; border: none;
+  background: var(--accent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* 可点按热区 ≈ 29×43px（视觉 21px）：小手好点，且相邻两点热区不会互相抢 */
+.dot-btn::after { content: ''; position: absolute; inset: -0.14em -0.05em; border-radius: 50%; }
+.dot-btn.gone { animation: dotFly 0.45s ease forwards; }
+.dot-btn.gone::after { display: none; }
+.dot-tip { color: var(--text-dim); font-size: 0.85rem; margin-top: 18px; }
+@keyframes dotFly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(0, -70px) scale(0.2); opacity: 0; }
+}
+
+/* ----------------------------- 机库顶栏 / 步骤引导 / 发射 ----------------------------- */
+/* 左上角 LOGO 放大至 44px，与右侧 48px 信息块同量级，顶栏高度不变 */
+.hangar-id-icon { width: 2.75rem; height: 2.75rem; object-fit: contain; flex-shrink: 0; }
+/* 右上角三枚信息块（发射次数 / 博物馆 / 最新目的地）统一规格：
+   同高 48px、同最小宽、同内边距 / 描边 / 底色；圆角跟随各皮肤 --radius-sm
+   （hud 4px · daylight 10px · nebula 14px），同一屏内三块几何完全一致。 */
+.launch-count {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap;
+  height: 48px; min-height: 48px; min-width: 152px; padding: 0 16px;
+  background: var(--sf-1); border: 1px solid var(--ed-2); border-radius: var(--radius-sm);
+  color: var(--text-dim); font-size: 0.95rem; line-height: 1.2; letter-spacing: 0.08em;
+}
+.hangar-actions .phys-btn.small {
+  display: inline-flex; align-items: center; justify-content: center; white-space: nowrap;
+  height: 48px; min-height: 48px; min-width: 152px; padding: 0 16px;
+  background: var(--sf-1); border: 1px solid var(--ed-2); border-radius: var(--radius-sm);
+  font-size: 0.95rem; line-height: 1.2; letter-spacing: 0.08em;
+}
+.hangar-actions .phys-btn.small:hover { border-color: var(--ed-4); background: var(--sf-2); }
+.launch-count-icon { width: 1.2rem; height: 1.2rem; object-fit: contain; }
+.launch-count b { color: var(--text); font-size: 1.15rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.step-title { display: flex; align-items: center; gap: 9px; }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-ink); font-size: 0.9rem; font-weight: 800;
+}
+/* 主行动按钮：整行放大，贴机库底部（机库无滚动，整体自适应缩放） */
+.launch-btn {
+  width: 100%; padding: 18px 24px; font-size: 1.3rem; letter-spacing: 0.14em;
+  margin-top: auto;
+}
+.launch-btn .ui-icon { width: 1.4em; height: 1.4em; vertical-align: -0.32em; }
+
+/* ----------------------------- 课文同步（年级 / 学期 / 课文进度） ----------------------------- */
+.tb-grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+.tb-chip {
+  appearance: none; cursor: pointer; padding: 11px 8px; font-size: 0.98rem; font-weight: 700;
+  min-height: 44px;
+  color: var(--text-dim); background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: 10px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.tb-chip.active { color: var(--accent-ink); border-color: var(--accent); background: var(--accent); }
+.tb-terms { display: flex; gap: 8px; margin-bottom: 10px; }
+.tb-terms .tb-chip { flex: 1; }
+.tb-lessons {
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; margin-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.tb-lesson {
+  appearance: none; cursor: pointer; flex: 0 0 auto; width: 108px; min-height: 72px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 9px 8px; background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: 10px;
+  color: var(--text-dim); font-size: 0.82rem; line-height: 1.35;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.tb-lesson-no { font-weight: 800; font-size: 0.9rem; color: var(--text); font-variant-numeric: tabular-nums; }
+.tb-lesson-title { text-align: center; text-wrap: balance; font-weight: 600; }
+.tb-lesson.active { border-color: var(--accent); background: var(--sel-tint); }
+.tb-lesson.active .tb-lesson-no, .tb-lesson.active .tb-lesson-title { color: var(--accent); }
+.tb-lesson:active { transform: scale(0.97); }
+/* 全册垫在课文最后：虚线边框 + 左侧留白，表示「整册复习」而非某一课 */
+.tb-lesson-all { margin-left: 6px; border-style: dashed; }
+.tb-lesson-all.active { border-style: solid; }
+.tb-status { color: var(--text-dim); font-size: 0.86rem; letter-spacing: 0.04em; line-height: 1.5; }
+.panel-title-row .tb-status { margin-left: auto; }
+.tb-status b { color: var(--text); }
+
+/* ----------------------------- 课文同步 / 当前座驾 ----------------------------- */
+/* 待命座驾 / 机库自选 */
+.panel-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 10px; margin-bottom: 12px; }
+.panel-title-row .panel-title { margin: 0; }
+.rocket-auto-tag {
+  appearance: none; cursor: pointer; padding: 9px 14px; min-height: 40px;
+  display: inline-flex; align-items: center;
+  font-size: 0.82rem; font-weight: 700;
+  letter-spacing: 0.04em; color: var(--text-dim); background: var(--space-1);
+  border: 1px solid var(--panel-edge); border-radius: 999px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.rocket-auto-tag.is-auto { cursor: default; }
+.rocket-auto-tag:not(.is-auto) { color: var(--accent); border-color: var(--accent); }
+.current-rocket {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--space-1); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+  padding: 12px 16px; margin-bottom: 12px; color: var(--text-dim); font-size: 0.95rem;
+}
+.current-rocket b { display: block; color: var(--accent); font-size: 1.35rem; line-height: 1.35; }
+.current-rocket-img { width: 64px; height: 84px; object-fit: contain; flex-shrink: 0; }
+.current-rocket-img.fallback { padding: 10px; opacity: 0.85; }
+.current-rocket-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.current-rocket-sub { color: var(--text-dim); font-size: 0.88rem; }
+.rocket-hint { margin: 0 0 10px; color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; }
+/* 下一枚火箭解锁进度卡 */
+.next-rocket {
+  margin-top: 4px; padding: 13px 15px;
+  background: var(--space-1); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+}
+.next-rocket-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.next-rocket-label { color: var(--text-dim); font-size: 0.86rem; letter-spacing: 0.05em; }
+.next-rocket-name { color: var(--text); font-size: 1.02rem; }
+.next-rocket-need { margin-left: auto; color: var(--warn); font-size: 0.9rem; font-weight: 700; white-space: nowrap; }
+.next-rocket-bar {
+  height: 10px; margin: 9px 0 6px; overflow: hidden;
+  background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: 999px;
+}
+.next-rocket-bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+.next-rocket-done { padding: 4px 0; text-align: center; color: var(--ok); font-size: 0.95rem; font-weight: 700; }
+/* 火箭选择：单行横向滑动（左对齐首屏可见 6–7 枚，右侧渐隐提示还有更多）。
+   不使用换行网格：17 枚火箭的网格要占 3 行，会把整块内容挤出 iPad 视口，
+   触发 fitHangar 整体缩小，字反而变小。 */
+.rocket-picker {
+  display: flex; flex-wrap: nowrap; align-items: stretch; gap: 8px;
+  overflow-x: auto; overflow-y: hidden; padding: 4px 2px 8px; margin-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+/* 横向列表的可滑动提示：右侧还有内容 → 右缘渐隐；已滑开 → 左缘也渐隐 */
+.rocket-picker.has-more,
+.tb-lessons.has-more {
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 26px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 26px), transparent 100%);
+}
+.rocket-picker.has-left,
+.tb-lessons.has-left {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 100%);
+}
+.rocket-picker.has-left.has-more,
+.tb-lessons.has-left.has-more {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+}
+/* 横向列表保留「自动隐藏」细滚动条（不能排除 PC 访问）：
+   触屏 / macOS 走原生 overlay，滚动时浮现、停下自动隐去；
+   PC（Windows）上默认极淡、悬停 / 拖动时变亮——提示可滚动又不常驻占位。 */
+.tb-lessons,
+.rocket-picker {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+.tb-lessons::-webkit-scrollbar,
+.rocket-picker::-webkit-scrollbar { height: 6px; }
+.tb-lessons::-webkit-scrollbar-track,
+.rocket-picker::-webkit-scrollbar-track { background: transparent; }
+.tb-lessons::-webkit-scrollbar-thumb,
+.rocket-picker::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+}
+.tb-lessons:hover::-webkit-scrollbar-thumb,
+.rocket-picker:hover::-webkit-scrollbar-thumb,
+.tb-lessons:active::-webkit-scrollbar-thumb,
+.rocket-picker:active::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+}
+.rocket-chip {
+  appearance: none; cursor: pointer; flex: 0 0 auto; width: 96px; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px;
+  padding: 9px 6px; background: var(--space-2); border: 1px solid var(--panel-edge);
+  border-radius: 12px; color: var(--text-dim); font-size: 0.82rem; line-height: 1.35;
+  scroll-snap-align: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.rocket-chip-img { width: 50px; height: 64px; object-fit: contain; }
+.rocket-chip-img.fallback { padding: 8px; opacity: 0.85; }
+.rocket-chip-name { font-weight: 700; color: var(--text); text-align: center; text-wrap: balance; }
+.rocket-chip.active { border-color: var(--accent); background: var(--sel-tint); }
+.rocket-chip.active .rocket-chip-name { color: var(--accent); }
+.rocket-chip:active { transform: scale(0.97); }
+.current-rocket-emoji { font-size: 1.8rem; }
+
+/* ----------------------------- 结算 ----------------------------- */
+
+.completion { display: flex; flex-direction: column; align-items: center; justify-content: safe center; text-align: center; gap: 16px; padding: 24px 0; }
+.completion-tag { color: var(--ok); letter-spacing: 0.2em; font-size: 0.85rem; }
+.completion-hanzi { font-size: clamp(6rem, 28vmin, 17.5rem); font-weight: 800; line-height: 1.1; }
+.completion-pinyin { font-size: clamp(2.4rem, 10vmin, 6rem); font-weight: 800; color: var(--accent); line-height: 1.25; }
+/* 汉字+拼音卡片：结算中间的唯一主体，占画面 30%+；目的地只留在顶部 tag */
+.completion-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  width: min(92%, 660px); min-height: 34vh;
+  padding: clamp(28px, 8vmin, 72px);
+  background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.completion-card:active { transform: scale(0.985); border-color: var(--accent); }
+.completion-note { color: var(--text-dim); font-size: 0.85rem; letter-spacing: 0.08em; }
+.completion-actions { display: flex; gap: 12px; margin-top: 20px; }
+
+/* ----------------------------- 声调校准（M3） ----------------------------- */
+.tone-tag { color: var(--accent); letter-spacing: 0.2em; font-size: 0.8rem; text-align: center; }
+.tone-target { display: flex; align-items: baseline; justify-content: center; gap: 16px; }
+.tone-hanzi { font-size: clamp(4.6rem, 14vmin, 6.5rem); font-weight: 800; line-height: 1.2; }
+.tone-base { font-size: clamp(2.4rem, 7vmin, 3.2rem); color: var(--text-dim); letter-spacing: 0.1em; }
+.tone-pad-wrap { position: relative; }
+.tone-pad {
+  width: 100%; height: 170px; display: block; touch-action: none;
+  background: var(--space-1);
+  border: 1px solid var(--panel-edge); border-radius: 14px;
+}
+.pad-guide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--text-mute); pointer-events: none; transition: opacity 0.2s; }
+.tone-curves { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.curve-btn {
+  appearance: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 6px; color: var(--accent);
+  background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.curve-btn:active { background: var(--sf-3); border-color: var(--accent); }
+.curve-svg { width: 100%; height: 46px; }
+.curve-mark { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1.3; }
+.curve-label { font-size: 0.75rem; color: var(--text-dim); }
+.tone-feedback { text-align: center; min-height: 1.6em; font-size: 0.95rem; }
+.tone-ok .tone-pad { border-color: var(--ok); }
+.tone-bad .tone-pad { animation: shakeX 0.4s ease; border-color: var(--danger); }
+@keyframes shakeX { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+/* ----------------------------- 发射粒子（M3） ----------------------------- */
+.launch-canvas { position: fixed; inset: 0; z-index: 3000; display: block; }
+
+/* ----------------------------- 入轨结算（M3） ----------------------------- */
+.reward-stats { color: var(--text-dim); font-size: 0.85rem; }
+.reward-next { color: var(--text-dim); max-width: 40ch; line-height: 1.65; }
+.reward-hint { color: var(--text-dim); font-size: 0.82rem; margin: 2px 0 0; }
+.reward-badge {
+  display: flex; gap: 14px; align-items: center; text-align: left;
+  background: rgba(255, 183, 3, 0.08); border: 1px solid rgba(255, 183, 3, 0.5);
+  border-radius: var(--radius-sm); padding: 14px 16px; max-width: 460px;
+}
+.badge-icon { width: 2.6rem; height: 2.6rem; object-fit: contain; flex-shrink: 0; }
+.reward-badge-img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; flex-shrink: 0; background: var(--space-1); }
+.badge-sum { color: var(--text-dim); font-size: 0.82rem; line-height: 1.55; margin-top: 4px; }
+
+/* ----------------------------- 紧急载荷呼吸灯（M5） ----------------------------- */
+.emergency-light {
+  appearance: none; cursor: pointer; display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 13px 18px; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em;
+  color: #ffd9a0; background: rgba(255, 183, 3, 0.1); border: 1px solid rgba(255, 183, 3, 0.55); border-radius: var(--radius-sm);
+  animation: emergencyBreath 1.6s ease-in-out infinite;
+}
+.emergency-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--warn); flex-shrink: 0; }
+@keyframes emergencyBreath {
+  0%, 100% { background: rgba(255, 183, 3, 0.07); }
+  50% { background: rgba(255, 183, 3, 0.18); }
+}
+
+/* ----------------------------- 太空博物馆 ----------------------------- */
+.museum-overlay {
+  position: fixed; inset: 0; z-index: 2500; display: flex; align-items: flex-start; justify-content: center;
+  background: var(--space-0); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 14px 32px;
+}
+/* 博物馆内允许滚动与文本选择（覆盖全局触控锁定） */
+.museum-overlay, .museum-overlay * { touch-action: pan-y; user-select: text; -webkit-user-select: text; -webkit-touch-callout: default; }
+.museum-panel {
+  width: min(96%, 920px); background: var(--panel); border: 1px solid var(--panel-edge);
+  border-radius: 16px; padding: 22px 22px 28px;
+}
+.museum-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 16px; position: sticky; top: -20px; z-index: 2;
+  background: var(--panel); padding: 8px 0 10px;
+  border-bottom: 1px solid var(--ed-1);
+}
+.museum-title { margin: 0; font-size: 1.4rem; line-height: 1.25; color: var(--accent); letter-spacing: 0.06em; }
+.museum-subtitle {
+  color: var(--text); font-size: 1.1rem; line-height: 1.4;
+  margin: 22px 0 14px; padding-top: 16px;
+  border-top: 1px solid var(--ed-1);
+}
+.museum-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.badge-card { background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm); padding: 14px; display: flex; flex-direction: column; }
+.badge-card.unlocked { border-color: var(--accent); }
+.badge-card.locked { opacity: 0.62; }
+.badge-card-icon {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: contain; padding: 24%;
+  background: var(--space-1); border-radius: 10px; display: block;
+}
+.badge-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 10px; background: var(--space-1); display: block; }
+.badge-card-img.fallback { padding: 24px; opacity: 0.85; }
+.badge-card-year { display: inline-block; align-self: flex-start; margin-top: 9px; padding: 3px 9px; font-size: 0.8rem; font-weight: 700; color: var(--warn); background: rgba(255, 183, 3, 0.14); border-radius: 999px; }
+.badge-card-year.concept { color: var(--ice); background: rgba(156, 200, 255, 0.14); }
+.badge-card-name { font-weight: 700; margin-top: 8px; line-height: 1.45; font-size: 1.05rem; }
+.badge-card-en { color: var(--text-dim); font-size: 0.82rem; margin: 3px 0 7px; }
+.badge-card-sum { color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; }
+.badge-card-facts { margin: 8px 0 0; padding-left: 18px; color: var(--text-dim); font-size: 0.85rem; line-height: 1.65; }
+.badge-card.is-current { border-color: var(--accent); }
+.badge-card-spacer { flex: 1 1 auto; min-height: 10px; }
+.badge-card-action {
+  appearance: none; cursor: pointer; width: 100%; padding: 11px 12px; min-height: 44px;
+  font-size: 0.9rem; font-weight: 700; color: var(--text);
+  background: var(--space-1); border: 1px solid var(--panel-edge); border-radius: 10px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.badge-card-action:active { background: var(--sf-3); }
+.badge-card-action.active { cursor: default; color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+
+/* ---------------- 机库右上角：最新目的地（难度面板已取消，目的地由课时奖励决定） ---------------- */
+.dest-corner {
+  appearance: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  height: 48px; min-height: 48px; min-width: 152px; padding: 0 16px;
+  line-height: 1.15; text-align: center; white-space: nowrap;
+  color: var(--text); background: var(--sf-1);
+  border: 1px solid var(--ed-2); border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.dest-corner:empty { display: none; }
+.dest-corner-label { color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.08em; }
+.dest-corner-main { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.dest-corner-icon { width: 1.3rem; height: 1.3rem; object-fit: contain; }
+.dest-corner-main b { font-size: 0.95rem; letter-spacing: 0.06em; white-space: nowrap; }
+.dest-corner:active { transform: scale(0.97); }
+
+/* ---------------- 博物馆 · 星球图鉴（课时奖励进度 + 目的地图鉴已合并） ---------------- */
+.reward-progress {
+  background: var(--space-1); border: 1px solid var(--panel-edge);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
+}
+.reward-progress-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.reward-progress-label { color: var(--text-dim); font-size: 0.9rem; letter-spacing: 0.04em; }
+.reward-progress-value { font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.reward-progress-next { margin-left: auto; color: var(--warn); font-size: 0.92rem; font-weight: 700; }
+.reward-bar {
+  position: relative;
+  height: 10px; margin: 11px 0 9px; overflow: hidden;
+  background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: 999px;
+}
+.reward-bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+/* 14 档刻度：进度条按累计课时（0 → 26）填充，每 2 课时一格，与下方 14 张星球卡一一对应 */
+.reward-bar::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+    transparent 0, transparent calc(100% / 14 - 1px),
+    var(--panel-edge) calc(100% / 14 - 1px), var(--panel-edge) calc(100% / 14));
+}
+.reward-lesson { margin: 8px 0 0; color: var(--text); font-size: 0.9rem; font-weight: 700; }
+.reward-lesson-progress { margin: 6px 0 0; color: var(--text-dim); font-size: 0.82rem; }
+.reward-lesson-progress b { color: var(--accent); }
+
+.brief-source {
+  margin: 0; padding: 4px 12px; border-radius: 999px;
+  background: var(--sf-1); border: 1px solid var(--ed-2);
+  color: var(--text-dim); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+}
+.reward-dest { margin: 10px 0 2px; color: var(--accent); font-size: 1.15rem; font-weight: 800; }
+.reward-dest .ui-icon { width: 1.35em; height: 1.35em; vertical-align: -0.32em; }
+.badge-card-name .ui-icon { width: 1.2em; height: 1.2em; vertical-align: -0.26em; margin-right: 2px; }
+.reward-fact { margin: 4px auto 0; max-width: 30em; color: var(--text-dim); font-size: 0.82rem; line-height: 1.6; }
+.reward-next-dest { margin: 8px 0 0; color: #ffd166; font-size: 0.9rem; font-weight: 700; }
+.planet-thumb { display: block; margin: 0 auto 6px; border-radius: 12px; }
+.planet-grid .badge-card { align-items: center; text-align: center; }
+.planet-grid .badge-card-sum { text-align: center; }
+/* 档位状态徽章（原奖励阶梯并入星球图鉴卡片） */
+.planet-card-state {
+  align-self: center; margin: 0 0 7px; padding: 3px 10px;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--text-dim); background: var(--space-1);
+  border: 1px solid var(--panel-edge); border-radius: 999px;
+}
+.planet-card-state.current { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.planet-card-state.next { color: var(--warn); background: rgba(255, 183, 3, 0.14); border-color: var(--warn); }
+.planet-card.current { border-color: var(--accent); background: var(--sf-2); }
+.planet-card.next { border-color: var(--warn); border-style: dashed; opacity: 0.85; }

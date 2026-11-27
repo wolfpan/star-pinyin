@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>方案 C · 星云乐园 · 星际发射指挥官 风格样板</title>
+<link rel="stylesheet" href="mock-base.css" />
+<link rel="stylesheet" href="theme-c.css" />
+</head>
+<body>
+<header class="mock-head">
+  <div class="mock-name">方案 C · 星云乐园<em>NEBULA PLAYGROUND</em></div>
+  <div class="mock-desc">卡通糖果风：紫星云渐变 + 糖果色分类，大圆角、玩具按压按钮，低龄友好、游戏感强。</div>
+</header>
+<div class="frame-cap">▍指挥官界面（机库待命）· iPad 横屏 1024×768</div>
+<!-- 共享样板内容：指挥官界面（机库）+ 组装界面，1024×768 iPad 横屏 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c3.5 1.6 5.5 5 5.5 9l2.5 3.5-3 .5c-.4 1.2-1 2.3-1.8 3.2L12 22l-3.2-3.8A10.6 10.6 0 0 1 7 15l-3-.5L6.5 11C6.5 7 8.5 3.6 12 2Zm0 5.2a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4Z"/></symbol>
+    <symbol id="i-museum" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 2 8v2h20V8L12 2ZM4 12v7H2v3h20v-3h-2v-7h-3v7h-3v-7h-4v7H7v-7H4Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M5 3h13a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h13V5H5Zm2 3h9v2H7V8Zm0 4h9v2H7v-2Zm0 4h6v2H7v-2Z"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm7.9 9h-3.4a15.6 15.6 0 0 0-1.2-5.6A8 8 0 0 1 19.9 11ZM12 4c.9 1.2 1.9 3.4 2.4 7H9.6C10.1 7.4 11.1 5.2 12 4ZM8.7 5.4A15.6 15.6 0 0 0 7.5 11H4.1a8 8 0 0 1 4.6-5.6ZM4.1 13h3.4c.1 2.1.5 4 1.2 5.6A8 8 0 0 1 4.1 13ZM12 20c-.9-1.2-1.9-3.4-2.4-7h4.8c-.5 3.6-1.5 5.8-2.4 7Zm3.3-1.4c.7-1.6 1.1-3.5 1.2-5.6h3.4a8 8 0 0 1-4.6 5.6Z"/></symbol>
+    <symbol id="i-astro" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a8 8 0 0 1 8 8v6a3 3 0 0 1-3 3h-1l-1 3h-6l-1-3H7a3 3 0 0 1-3-3v-6a8 8 0 0 1 8-8Zm0 4a5.5 5.5 0 0 0-5.5 5.5V13h11v-1.5A5.5 5.5 0 0 0 12 6Z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4L12 2Z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path fill="currentColor" d="M5 2h2v20H5V2Zm4 2h11l-2.5 4L20 12H9V4Z"/></symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a8 8 0 0 1 7.7 6h-2.1A6 6 0 0 0 6 12H3l3.5-4.5L10 12H8a4 4 0 0 1 7.6-2h2.1A8 8 0 0 1 12 20a8 8 0 0 1-7.7-6h2.1A6 6 0 0 0 18 12h3l-3.5 4.5L14 12h2a4 4 0 0 1-7.6 2H6.3A8 8 0 0 1 12 4Z"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= 指挥官界面（机库待命） ================= -->
+<section class="frame hangar">
+  <span class="frame-tag">指挥官界面 · 1024×768</span>
+  <div class="h-head">
+    <div class="h-id">
+      <span class="avatar"><svg class="ic"><use href="#i-astro"/></svg></span>
+      <span class="callsign">火箭号指挥官</span>
+    </div>
+    <div class="h-actions">
+      <span class="stat-chip"><svg class="ic"><use href="#i-rocket"/></svg>发射 <b>74</b> 次</span>
+      <button class="btn ghost" type="button"><svg class="ic"><use href="#i-museum"/></svg>博物馆</button>
+      <button class="btn dest" type="button">
+        <span class="dest-k">最新目的地</span>
+        <span class="dest-v"><svg class="ic"><use href="#i-globe"/></svg>低空轨道</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="h-cols">
+    <div class="panel p1">
+      <div class="p-title-row">
+        <h2 class="p-title"><span class="step-num">1</span>课文同步</h2>
+        <span class="p-en">TEXTBOOK SYNC</span>
+      </div>
+      <p class="tb-status"><svg class="ic"><use href="#i-book"/></svg>一年级上册 · 学到语文园地一 · 已学生字 <b>33</b> 个</p>
+      <div class="grades">
+        <button class="btn grade" type="button">自由巡航</button>
+        <button class="btn grade sel" type="button">一年级</button>
+        <button class="btn grade" type="button">二年级</button>
+        <button class="btn grade" type="button">三年级</button>
+      </div>
+      <div class="terms">
+        <button class="btn term sel" type="button">上册</button>
+        <button class="btn term" type="button">下册</button>
+      </div>
+      <div class="lessons">
+        <button class="btn lesson" type="button"><b>识字2</b><span>金木水火土</span></button>
+        <button class="btn lesson" type="button"><b>识字3</b><span>口耳目手足</span></button>
+        <button class="btn lesson" type="button"><b>识字4</b><span>日月山川</span></button>
+        <button class="btn lesson sel" type="button"><b>园地</b><span>语文园地一</span></button>
+      </div>
+    </div>
+
+    <div class="panel p2">
+      <div class="p-title-row">
+        <h2 class="p-title"><span class="step-num">2</span>出战座驾</h2>
+        <button class="btn auto-tag" type="button"><svg class="ic"><use href="#i-auto"/></svg>自动 · 最新火箭</button>
+      </div>
+      <div class="current-rocket">
+        <img src="../public/images/rockets/starship_9.png" alt="" />
+        <div class="cr-meta"><b>星舰9号</b><span>未来概念 · 超重型火箭</span></div>
+        <span class="cr-flag"><svg class="ic"><use href="#i-flag"/></svg>出战中</span>
+      </div>
+      <p class="hint">左右滑动挑火箭，点一枚就换它出战。</p>
+      <div class="picker">
+        <button class="btn pick" type="button"><img src="../public/images/rockets/new_glenn.png" alt="" /><span>新格伦</span></button>
+        <button class="btn pick" type="button"><img src="../public/images/rockets/zhuque_3.png" alt="" /><span>朱雀三号</span></button>
+        <button class="btn pick" type="button"><img src="../public/images/rockets/falcon_21.png" alt="" /><span>猎鹰21号</span></button>
+        <button class="btn pick sel" type="button"><img src="../public/images/rockets/starship_9.png" alt="" /><span>星舰9号</span></button>
+      </div>
+      <div class="unlock-badge"><svg class="ic"><use href="#i-spark"/></svg>火箭已全部解锁</div>
+    </div>
+  </div>
+
+  <button class="btn launch" type="button"><svg class="ic"><use href="#i-rocket"/></svg><span class="zh">发 射</span><span class="en">IGNITION · GO FOR LAUNCH</span></button>
+</section>
+
+
+<div class="frame-cap">▍组装界面（火箭塔架 + 零件托盘）· iPad 横屏 1024×768</div>
+<!-- ================= 组装界面 ================= -->
+<section class="frame assembly">
+  <span class="frame-tag">组装界面 · 1024×768</span>
+  <div class="tray">
+    <div class="tray-head"><b>零件托盘</b><span>PARTS TRAY</span></div>
+    <div class="tray-group g-initial">
+      <span class="tg-label"><i class="tg-dot"></i>声母</span>
+      <div class="parts">
+        <button class="part" type="button">k</button>
+        <button class="part" type="button">g</button>
+        <button class="part" type="button">f</button>
+        <button class="part" type="button">h</button>
+      </div>
+    </div>
+    <div class="tray-group g-final">
+      <span class="tg-label"><i class="tg-dot"></i>韵母</span>
+      <div class="parts">
+        <button class="part" type="button">er</button>
+        <button class="part" type="button">ei</button>
+        <button class="part" type="button">e</button>
+        <button class="part" type="button">en</button>
+      </div>
+    </div>
+    <p class="tray-hint">把零件拖到火箭对应的舱段</p>
+  </div>
+
+  <div class="stage">
+    <svg class="rocket-svg" viewBox="0 0 360 560" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style="stop-color:var(--st1)"/><stop offset=".3" style="stop-color:var(--st2)"/>
+          <stop offset=".48" style="stop-color:var(--st3)"/><stop offset=".62" style="stop-color:var(--st4)"/>
+          <stop offset="1" style="stop-color:var(--st5)"/>
+        </linearGradient>
+        <linearGradient id="steelDim" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style="stop-color:var(--sd1)"/><stop offset=".35" style="stop-color:var(--sd2)"/>
+          <stop offset=".5" style="stop-color:var(--sd3)"/><stop offset=".65" style="stop-color:var(--sd4)"/>
+          <stop offset="1" style="stop-color:var(--sd5)"/>
+        </linearGradient>
+        <linearGradient id="nozzle" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:var(--nz1)"/><stop offset="1" style="stop-color:var(--nz2)"/>
+        </linearGradient>
+        <pattern id="tiles" width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" style="fill:var(--tile-a)"/>
+          <rect x=".4" y=".4" width="5.2" height="5.2" rx="1" style="fill:var(--tile-b)"/>
+        </pattern>
+        <radialGradient id="padGlow">
+          <stop offset="0" style="stop-color:var(--glow)"/><stop offset="1" stop-color="rgba(0,0,0,0)"/>
+        </radialGradient>
+      </defs>
+
+      <ellipse cx="200" cy="514" rx="96" ry="16" fill="url(#padGlow)"/>
+      <g class="tower">
+        <rect x="58" y="36" width="14" height="476" style="fill:var(--tower);stroke:var(--tower-edge)" stroke-width="1"/>
+        <rect x="50" y="512" width="30" height="10" style="fill:var(--tower)"/>
+        <polygon points="72,148 140,156 140,164 72,160" style="fill:var(--tower-arm);stroke:var(--tower-edge)" stroke-width="1"/>
+        <polygon points="72,298 140,306 140,314 72,310" style="fill:var(--tower-arm);stroke:var(--tower-edge)" stroke-width="1"/>
+        <path d="M58 60 L72 92 M72 92 L58 124 M58 124 L72 156 M72 156 L58 188 M58 188 L72 220 M72 220 L58 252 M58 252 L72 284 M72 284 L58 316 M58 316 L72 348 M72 348 L58 380 M58 380 L72 412 M72 412 L58 444" style="stroke:var(--tower-brace)" stroke-width="1.5" fill="none"/>
+        <circle class="beacon" cx="65" cy="30" r="3" style="fill:var(--beacon)"/>
+      </g>
+      <g class="pad">
+        <rect x="118" y="512" width="164" height="10" rx="2" style="fill:var(--pad)"/>
+        <rect x="130" y="522" width="14" height="16" style="fill:var(--tower)"/>
+        <rect x="256" y="522" width="14" height="16" style="fill:var(--tower)"/>
+      </g>
+      <path d="M150 450 L250 450 L262 486 L138 486 Z" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="148,486 172,486 178,506 142,506" fill="url(#nozzle)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="228,486 252,486 258,506 222,506" fill="url(#nozzle)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="182,486 218,486 228,512 172,512" fill="url(#nozzle)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <ellipse cx="200" cy="510" rx="24" ry="4.5" style="fill:var(--nz2)"/>
+      <polygon points="140,430 108,446 108,458 140,452" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="260,430 292,446 292,458 260,452" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+
+      <!-- 声母段 -->
+      <g class="slot">
+        <rect x="140" y="70" width="120" height="130" rx="4" fill="url(#steel)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+        <rect x="143" y="73" width="24" height="124" fill="url(#tiles)" opacity=".85"/>
+        <rect class="slot-body" x="160" y="102" width="80" height="82" rx="3"/>
+        <text class="slot-group" x="200" y="91" text-anchor="middle">声母</text>
+        <text class="slot-value" x="200" y="152" text-anchor="middle">?</text>
+        <circle cx="246" cy="88" r="6" style="fill:var(--bezel)"/>
+        <circle class="slot-light" cx="246" cy="88" r="3.5"/>
+      </g>
+      <!-- 介母段（锁定） -->
+      <g class="slot is-locked">
+        <rect x="140" y="200" width="120" height="120" rx="4" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+        <rect x="143" y="203" width="24" height="114" fill="url(#tiles)" opacity=".85"/>
+        <rect class="slot-body dashed" x="160" y="232" width="80" height="72" rx="3"/>
+        <text class="slot-group" x="200" y="221" text-anchor="middle">介母</text>
+        <text class="slot-value locked-note" x="200" y="273" text-anchor="middle">无需介母</text>
+        <circle cx="246" cy="218" r="6" style="fill:var(--bezel)"/>
+        <circle class="slot-light" cx="246" cy="218" r="3.5"/>
+      </g>
+      <!-- 韵母段 -->
+      <g class="slot">
+        <rect x="140" y="320" width="120" height="130" rx="4" fill="url(#steel)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+        <rect x="143" y="323" width="24" height="124" fill="url(#tiles)" opacity=".85"/>
+        <rect class="slot-body" x="160" y="352" width="80" height="82" rx="3"/>
+        <text class="slot-group" x="200" y="341" text-anchor="middle">韵母</text>
+        <text class="slot-value" x="200" y="402" text-anchor="middle">?</text>
+        <circle cx="246" cy="338" r="6" style="fill:var(--bezel)"/>
+        <circle class="slot-light" cx="246" cy="338" r="3.5"/>
+      </g>
+
+      <g class="flanges">
+        <rect x="136" y="67" width="128" height="6" rx="2" style="fill:var(--flange);stroke:var(--hull-edge)" stroke-width=".5"/>
+        <rect x="136" y="197" width="128" height="6" rx="2" style="fill:var(--flange);stroke:var(--hull-edge)" stroke-width=".5"/>
+        <rect x="136" y="317" width="128" height="6" rx="2" style="fill:var(--flange);stroke:var(--hull-edge)" stroke-width=".5"/>
+        <rect x="136" y="447" width="128" height="6" rx="2" style="fill:var(--flange);stroke:var(--hull-edge)" stroke-width=".5"/>
+      </g>
+      <path d="M140 72 C146 42 172 20 200 14 C228 20 254 42 260 72 Z" fill="url(#steel)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="140,84 108,96 108,108 140,102" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+      <polygon points="260,84 292,96 292,108 260,102" fill="url(#steelDim)" style="stroke:var(--hull-edge)" stroke-width="1"/>
+    </svg>
+  </div>
+</section>
+</body>
+</html>

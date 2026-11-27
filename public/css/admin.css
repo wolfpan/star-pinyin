@@ -1,0 +1,286 @@
+/* admin.css — 家长控制面板（手机/电脑，允许滚动与文本输入，覆盖游戏全局触控锁定） */
+
+.admin-body { height: auto; min-height: 100vh; overflow-y: auto; overscroll-behavior: auto; }
+.admin-body * { touch-action: auto; user-select: text; -webkit-user-select: text; -webkit-touch-callout: default; }
+
+.admin-wrap { max-width: 980px; margin: 0 auto; padding: 24px 18px 60px; display: flex; flex-direction: column; gap: 18px; }
+.admin-head h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.06em; }
+.admin-sub { color: var(--text-dim); margin: 6px 0 0; font-size: 0.9rem; }
+
+/* ----------------------------- 面板分页页签（学习管理 / 界面 / 发音 / 系统） ----------------------------- */
+/* 吸顶页签栏：长表格页滚动时仍可随时切页。皮肤渐变画在 body::before 上，
+   这里必须用与 .panel 一致的半透明玻璃底（不能铺不透明色块，否则像多出一个格式框）。 */
+.admin-tabs {
+  position: sticky; top: 8px; z-index: 20;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 10px;
+  background: var(--panel-glass);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.admin-tab {
+  appearance: none; cursor: pointer;
+  padding: 9px 18px; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.06em;
+  font-family: var(--font); line-height: 1.4;
+  color: var(--text-dim); background: var(--space-2);
+  border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.admin-tab:hover { color: var(--text); }
+.admin-tab[aria-selected="true"] {
+  color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700;
+}
+/* 键盘焦点只改边框色：全局 :focus-visible 的外扩描边会在页签外再套一圈「格式框」 */
+.admin-tab:focus-visible { outline: none; border-color: var(--accent); }
+.admin-page { display: flex; flex-direction: column; gap: 18px; }
+.admin-page[hidden] { display: none; }
+.page-body { display: flex; flex-direction: column; gap: 18px; }
+.page-body[hidden] { display: none; }
+
+/* ----------------------------- 家长校验（繁体数字，防孩子错触） ----------------------------- */
+.page-gate { border-style: dashed; }
+.gate-challenge { margin: 0 0 14px; color: var(--text); font-size: 1.05rem; }
+.gate-challenge b { color: var(--accent); font-size: 1.9rem; font-weight: 800; padding: 0 4px; }
+.gate-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.gate-row input { flex: 0 1 160px; width: auto; font-size: 1.2rem; text-align: center; }
+.gate-row .phys-btn { padding: 10px 18px; font-size: 0.95rem; }
+
+input, select {
+  appearance: none; width: 100%; padding: 10px 12px; font-size: 1rem; color: var(--text);
+  background: var(--space-1); border: 1px solid var(--panel-edge); border-radius: 3px; font-family: var(--font);
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+label { display: flex; flex-direction: column; gap: 5px; color: var(--text-dim); font-size: 0.85rem; }
+code { color: var(--accent); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.split-fields { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.split-fields label { min-width: 110px; flex: 1; }
+.split-preview { color: var(--text-dim); margin-bottom: 12px; }
+.preview-pinyin { color: var(--accent); font-size: 1.4rem; font-weight: 800; }
+.preview-rule { color: var(--warn); font-size: 0.85rem; margin-left: 8px; }
+.form-actions { display: flex; gap: 12px; }
+.inject-msg { margin-top: 12px; min-height: 1.4em; font-size: 0.92rem; }
+.inject-msg.ok { color: var(--ok); }
+.inject-msg.bad { color: var(--danger); }
+/* 试播被 autoplay 拦截时的兜底按钮（挂在提示行内） */
+.inject-msg .row-btn { margin-left: 8px; vertical-align: middle; }
+
+.stats { display: flex; flex-direction: column; gap: 10px; }
+.stat-row { display: grid; grid-template-columns: 130px 1fr 64px; align-items: center; gap: 10px; }
+.stat-tag { color: var(--text); font-size: 0.9rem; }
+.stat-bar { height: 12px; background: var(--space-1); border-radius: 6px; overflow: hidden; }
+.stat-fill { display: block; height: 100%; background: var(--warn); }
+.stat-rate { color: var(--text-dim); font-size: 0.85rem; text-align: right; font-variant-numeric: tabular-nums; }
+.stats-empty { color: var(--text-dim); }
+
+/* ----------------------------- 词库表格 ----------------------------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--panel-edge); border-radius: var(--radius-sm); }
+.mission-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.mission-table th, .mission-table td { padding: 8px; border-bottom: 1px solid var(--panel-edge); text-align: left; white-space: nowrap; vertical-align: middle; }
+.mission-table thead th {
+  color: var(--text-dim); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.05em;
+  background: var(--sf-1); border-bottom: 1px solid var(--ed-2);
+}
+.mission-table tbody tr:last-child td { border-bottom: none; }
+.mission-table tbody tr:nth-child(even) { background: var(--sf-1); }
+.mission-table tbody tr:hover { background: var(--sel-tint); }
+.mission-table .py { color: var(--accent); font-weight: 700; }
+.mission-table .ctr { text-align: center; }
+.mission-table .num { text-align: center; font-variant-numeric: tabular-nums; color: var(--text-dim); }
+.mission-table .empty-row td { text-align: center; color: var(--text-dim); padding: 26px 10px; }
+.tag-injected { color: var(--warn); }
+/* 行内小按钮：统一尺寸 / 间距（flex gap，不再用 margin 拼凑） */
+.row-btn {
+  appearance: none; cursor: pointer; padding: 5px 10px; font-size: 0.8rem; line-height: 1.4;
+  color: var(--text); background: var(--space-2); border: 1px solid var(--panel-edge);
+  border-radius: var(--radius-sm); letter-spacing: 0.06em; white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.row-btn:hover { border-color: var(--ed-3); background: var(--sf-2); }
+.row-btn.danger { border-color: var(--danger); color: var(--danger); }
+.row-btn.danger:hover { background: var(--sf-2); }
+.row-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.cell-actions { display: flex; align-items: center; gap: 6px; }
+/* 一键清除学习记录（危险操作按钮，三套皮肤共用 --danger 变量） */
+.phys-btn.danger { border-color: var(--danger); color: var(--danger); }
+.phys-btn.danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 词库筛选栏：4 个下拉等宽一排，搜索 + 清除 + 计数第二排对齐 */
+.mission-filters {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 12px; align-items: end; margin: 0 0 12px;
+}
+.mission-filters label { min-width: 0; }
+.mission-filters select, .mission-filters input { padding: 7px 10px; font-size: 0.88rem; }
+.mission-filters .flt-search { grid-column: span 2; }
+.mission-filters .row-btn { grid-column: 3; padding: 8px 12px; }
+.flt-count { grid-column: 4; justify-self: end; align-self: center; color: var(--text-dim); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+/* 读音来源图例（表格上方，小字不抢视觉） */
+.voice-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin: 0 0 8px; color: var(--text-dim); font-size: 0.78rem; }
+.voice-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; margin-top: 14px; }
+.pager .row-btn { min-height: 30px; }
+.pager-info { color: var(--text-dim); font-size: 0.85rem; font-variant-numeric: tabular-nums; padding: 0 4px; }
+.pager-jump { display: inline-flex; align-items: center; gap: 6px; }
+.pager-jump input { width: 64px; min-height: 30px; padding: 5px 8px; font-size: 0.8rem; text-align: center; }
+.pager select { width: auto; min-height: 30px; padding: 5px 8px; font-size: 0.8rem; }
+
+/* ----------------------------- 发音页四面板：读音来源 / TTS合成API设置 / 发音自检 / 词库 ----------------------------- */
+/* 读音来源与 TTS合成API设置 是独立面板（不再嵌在发音自检里）；自检面板用 .voice-admin
+   作 .panel 的修饰类：内部 flex 纵向等距分区（标题 / 说明 / 操作 / 状态 / 进度）。 */
+.voice-admin { display: flex; flex-direction: column; gap: 12px; }
+.voice-admin .panel-title { margin: 0; }
+.voice-admin .panel-desc { margin: 0; font-size: 0.9rem; line-height: 1.65; }
+.panel-desc a { color: var(--accent); }
+
+/* 读音来源：分段切换（两钮共边成一体，选中实底）+ 音节全面自检链接；
+   无说明文字，srcState 仅作切换失败时的报错位（平时为空）。 */
+.voice-source { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.voice-source .phys-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 34px; padding: 0 14px; font-size: 0.85rem;
+}
+.voice-source .phys-btn:first-of-type { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.voice-source .phys-btn + .phys-btn { margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.voice-source .phys-btn.primary { position: relative; z-index: 1; }
+.voice-source-link { color: var(--accent); font-size: 0.88rem; font-weight: 600; margin-left: 6px; }
+.voice-source-state { color: var(--text-dim); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.voice-source-state.bad { color: var(--danger); }
+.voice-source-state:empty { display: none; }
+
+/* TTS合成API设置：独立面板，Key 状态徽章挂在标题行右端 */
+.tts-key-state { font-size: 0.85rem; font-weight: 600; }
+.tts-key-state.ok { color: var(--ok); }
+.tts-key-state.bad { color: var(--danger); }
+/* TTS 设置：三个动作按钮窄屏自动换行；「已获取 N 个模型 · M 个音色」提示行（空则占位不塌） */
+.tts-actions { flex-wrap: wrap; }
+.tts-pick-hint { margin: 10px 0 0; font-size: 0.82rem; line-height: 1.5; min-height: 1.2em; }
+.tts-pick-hint:empty { display: none; }
+
+/* 操作区：两张等宽分组卡（试听自检 / 重新生成），窄屏纵向堆叠；
+   组内按钮等高、均分剩余宽度，换行只发生在组内，不再跨组错行。 */
+.voice-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.toolbar-group {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 10px 12px 12px;
+  background: var(--sf-1); border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+}
+.toolbar-caption { flex-basis: 100%; color: var(--text-mute); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; }
+.voice-toolbar .phys-btn {
+  flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; padding: 0 12px; font-size: 0.85rem; white-space: nowrap;
+}
+
+/* 状态总览：等距小徽章（点色与表格图例一致），替代一长串文字；
+   播放中的纯文本提示也落在同一行高里，不跳动。 */
+.voice-status {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-height: 26px;
+  color: var(--text-dim); font-size: 0.82rem; font-variant-numeric: tabular-nums;
+}
+.voice-stat {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  background: var(--sf-1); border: 1px solid var(--panel-edge); border-radius: 999px;
+}
+.voice-stat b { color: var(--text); font-weight: 700; }
+.v-dot.v-flag { background: var(--warn); }
+
+/* 进度区：有内容时才显形为一张浅底卡，空闲时不占视觉 */
+.regen-progress { font-size: 0.88rem; display: flex; flex-direction: column; gap: 6px; }
+.regen-progress:not(:empty) {
+  padding: 10px 12px; background: var(--sf-1);
+  border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+}
+.regen-progress .ok { color: var(--ok); }
+.regen-progress .bad { color: var(--danger); }
+.regen-bar { height: 10px; background: var(--space-2); border: 1px solid var(--panel-edge); border-radius: 5px; overflow: hidden; }
+.regen-bar span { display: block; height: 100%; background: var(--accent); transition: width 0.4s ease; }
+/* 表格「读音来源」列：状态点 + 来源徽标（真人 / AI / 旧 mp3 / 缺失）。
+   AI 用专属蓝 --src-ai：三套皮肤下都与真人绿 / 旧 mp3 黄 / 缺失红明确区分。 */
+.admin-body { --src-ai: #9cc8ff; }
+html[data-skin="daylight"] .admin-body { --src-ai: #2b76ad; }
+html[data-skin="nebula"] .admin-body { --src-ai: #6fc3ff; }
+.voice-cell, .src-cell, .actions-cell { white-space: nowrap; }
+.v-src { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; }
+.v-src.src-lib { color: var(--ok); }
+.v-src.src-tts { color: var(--src-ai); }
+.v-src.src-mp3 { color: var(--warn); }
+.v-src.src-none { color: var(--danger); }
+.v-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--text-dim); }
+.v-dot.v-wav { background: var(--ok); }
+.v-dot.v-wav.s-tts { background: var(--src-ai); }
+.v-dot.v-mp3 { background: var(--warn); }
+.v-dot.v-tts { background: var(--danger); }
+.v-override {
+  margin-left: 6px; padding: 0 6px; font-size: 0.68rem; line-height: 1.7;
+  color: var(--text-mute); border: 1px solid var(--panel-edge); border-radius: 999px;
+}
+.row-btn.flagged { border-color: var(--warn); color: var(--warn); font-weight: 700; }
+
+@media (max-width: 760px) {
+  .voice-toolbar { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .admin-tab { flex: 1 1 auto; padding: 8px 10px; font-size: 0.88rem; text-align: center; }
+  .form-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 96px 1fr 56px; }
+  .skin-picker, .skin-picker.two { grid-template-columns: 1fr; }
+  .mission-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mission-filters .flt-search { grid-column: span 2; }
+  .mission-filters .row-btn { grid-column: 1; }
+  .flt-count { grid-column: 2; }
+  .mission-table th, .mission-table td { padding: 7px 6px; }
+}
+
+/* ----------------------------- 界面风格选择器 ----------------------------- */
+.skin-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.skin-picker.two { grid-template-columns: repeat(2, 1fr); } /* 发射动画：两个选项 */
+.skin-card {
+  appearance: none; cursor: pointer; text-align: left; position: relative;
+  display: flex; flex-direction: column; gap: 6px; padding: 14px;
+  color: var(--text-dim); font-size: 0.82rem; line-height: 1.5;
+  background: var(--sf-1); border: 2px solid var(--ed-1); border-radius: var(--radius);
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+.skin-card b { color: var(--text); font-size: 0.95rem; }
+.skin-card:active { transform: scale(0.98); }
+.skin-card[aria-checked="true"] { border-color: var(--accent); background: var(--sel-tint); }
+.skin-card[aria-checked="true"]::after {
+  content: '✓ 使用中'; position: absolute; top: 10px; right: 10px;
+  padding: 3px 9px; font-size: 0.72rem; font-weight: 700;
+  color: var(--accent-ink); background: var(--accent); border-radius: 999px;
+}
+.skin-prev {
+  display: flex; align-items: flex-end; gap: 5px; height: 52px; padding: 8px;
+  border-radius: calc(var(--radius-sm) + 2px); border: 1px solid var(--ed-1);
+}
+.skin-prev i { width: 16px; height: 16px; border-radius: 4px; display: block; }
+.skin-prev i:nth-child(2) { height: 24px; }
+.skin-prev i:nth-child(3) { height: 32px; }
+.prev-hud { background: linear-gradient(160deg, #071120, #030812); }
+.prev-hud i { background: #10223a; border: 1px solid rgba(83, 215, 255, .5); }
+.prev-hud i:nth-child(2) { background: rgba(83, 215, 255, .35); }
+.prev-hud i:nth-child(3) { background: linear-gradient(180deg, #8ee6ff, #18a6d8); border-color: #a5ecff; }
+.prev-daylight { background: linear-gradient(160deg, #c6dcee, #8fb8d9); }
+.prev-daylight i { background: #fbfdff; border: 2px solid #bcd9ef; }
+.prev-daylight i:nth-child(2) { background: #ffd166; border-color: #ffe49a; }
+.prev-daylight i:nth-child(3) { background: linear-gradient(180deg, #7cc4ff, #3d9be0); border-color: rgba(255, 255, 255, .55); }
+.prev-nebula { background: linear-gradient(160deg, #241850, #120c28); }
+.prev-nebula i { background: #2c2358; border: 1px solid rgba(255, 255, 255, .3); }
+.prev-nebula i:nth-child(2) { background: #ffd166; border-color: #ffe49a; }
+.prev-nebula i:nth-child(3) { background: linear-gradient(180deg, #ff9d6b, #ff7a8a); border-color: rgba(255, 255, 255, .35); }
+.skin-status { margin: 12px 0 0; color: var(--ok); font-size: 0.88rem; font-weight: 600; min-height: 1.4em; }
+
+/* ----------------------------- 图标风格选择器（复用 skin-card 布局） ----------------------------- */
+.icon-prev {
+  display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; padding: 8px;
+  border-radius: calc(var(--radius-sm) + 2px); border: 1px solid var(--ed-1);
+  background: linear-gradient(160deg, #0a0e16, #05070d);
+}
+.icon-prev img { width: 44px; height: 44px; object-fit: contain; }
+.icon-prev img:nth-child(2) { width: 52px; height: 52px; }

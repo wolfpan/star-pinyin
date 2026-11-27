@@ -1,0 +1,114 @@
+[
+  {
+    "id": "saturn_v", "name": "土星五号", "nameEn": "Saturn V", "agency": "美国 NASA",
+    "category": "登月重型火箭", "year": 1967, "unlockAt": 0, "starter": true, "icon": "🌕",
+    "image": "/images/rockets/saturn_v.png",
+    "summary": "把人类第一次送上月球的传奇火箭，是有史以来最强大的运载火箭之一，阿波罗登月计划的主力。",
+    "facts": ["高约 110 米，比自由女神像还高", "近地轨道运力约 140 吨", "1969 年阿波罗 11 号登月由它发射"]
+  },
+  {
+    "id": "long_march_1", "name": "长征一号", "nameEn": "Long March 1", "agency": "中国航天科技集团",
+    "category": "早期运载火箭", "year": 1970, "unlockAt": 3, "icon": "🛰️",
+    "image": "/images/rockets/long_march_1.png",
+    "summary": "中国第一枚运载火箭，1970 年把东方红一号卫星送入太空，让中国成为第五个独立发射卫星的国家。",
+    "facts": ["1970 年 4 月 24 日首飞", "发射东方红一号卫星", "三级火箭，高约 29 米"]
+  },
+  {
+    "id": "long_march_2f", "name": "长征二号F", "nameEn": "Long March 2F", "agency": "中国航天科技集团",
+    "category": "载人运载火箭", "year": 1999, "unlockAt": 6, "icon": "👨‍🚀",
+    "image": "/images/rockets/long_march_2f.png",
+    "summary": "中国唯一一型载人运载火箭，专门发射神舟飞船，被誉为“神箭”，顶部有标志性的逃逸塔。",
+    "facts": ["配有逃逸塔保障航天员安全", "1999 年首飞", "2003 年送杨利伟进入太空（神舟五号）"]
+  },
+  {
+    "id": "atlas_v", "name": "宇宙神五号", "nameEn": "Atlas V", "agency": "美国 ULA",
+    "category": "中型运载火箭", "year": 2002, "unlockAt": 9, "icon": "🚀",
+    "image": "/images/rockets/atlas_v.png",
+    "summary": "美国主力运载火箭之一，可靠性极高，发射过好奇号火星车与众多军用和科学卫星。",
+    "facts": ["2002 年首飞", "可捆绑最多 5 枚固体助推器", "2011 年发射好奇号火星车"]
+  },
+  {
+    "id": "delta_iv_heavy", "name": "德尔塔四号重型", "nameEn": "Delta IV Heavy", "agency": "美国 ULA",
+    "category": "重型运载火箭", "year": 2004, "unlockAt": 12, "icon": "🔥",
+    "image": "/images/rockets/delta_iv_heavy.png",
+    "summary": "由三枚橙色核心并排组成的重型火箭，起飞时烈焰壮观，曾是美国运力最强的火箭之一。",
+    "facts": ["三枚橙色液氢液氧核心并排", "2004 年首飞", "2024 年退役，共发射 40 余次"]
+  },
+  {
+    "id": "falcon_9", "name": "猎鹰九号", "nameEn": "Falcon 9", "agency": "美国 SpaceX",
+    "category": "可回收运载火箭", "year": 2010, "unlockAt": 15, "icon": "♻️",
+    "image": "/images/rockets/falcon_9.png",
+    "summary": "世界上第一枚能多次回收复用的轨道级火箭，一级火箭可以垂直落回地面或海上平台。",
+    "facts": ["一级火箭可重复使用数十次", "使用 9 台梅林发动机", "2010 年首飞，2015 年首次陆地回收"]
+  },
+  {
+    "id": "long_march_5", "name": "长征五号", "nameEn": "Long March 5", "agency": "中国航天科技集团",
+    "category": "重型运载火箭", "year": 2016, "unlockAt": 18, "icon": "🐳",
+    "image": "/images/rockets/long_march_5.png",
+    "summary": "中国目前运力最强的火箭之一，昵称“胖五”，负责把嫦娥探测器、天问火星探测器和空间站舱段送上太空。",
+    "facts": ["芯级直径达 5 米", "近地轨道运力约 25 吨", "2016 年 11 月 3 日首飞"]
+  },
+  {
+    "id": "falcon_heavy", "name": "重型猎鹰", "nameEn": "Falcon Heavy", "agency": "美国 SpaceX",
+    "category": "可回收重型火箭", "year": 2018, "unlockAt": 21, "icon": "🚗",
+    "image": "/images/rockets/falcon_heavy.png",
+    "summary": "由三枚猎鹰九号核心并排组成的可回收重型火箭，首飞时把一辆红色跑车送入了太空。",
+    "facts": ["三枚核心并排，27 台发动机", "2018 年首飞", "两枚侧助推器可同时垂直回收"]
+  },
+  {
+    "id": "sls", "name": "太空发射系统", "nameEn": "SLS", "agency": "美国 NASA",
+    "category": "登月重型火箭", "year": 2022, "unlockAt": 24, "icon": "🌙",
+    "image": "/images/rockets/sls.png",
+    "summary": "美国新一代登月重型火箭，橙色核心加两枚白色固体助推器，执行阿尔忒弥斯重返月球计划。",
+    "facts": ["2022 年阿尔忒弥斯 1 号首飞", "橙色液氢液氧核心", "运力超过土星五号"]
+  },
+  {
+    "id": "starship", "name": "星舰", "nameEn": "Starship", "agency": "美国 SpaceX",
+    "category": "完全可回收超重型火箭", "year": 2023, "unlockAt": 27, "icon": "✨",
+    "image": "/images/rockets/starship.png",
+    "summary": "史上最大最强的火箭，不锈钢银色箭体，目标是完全重复使用并把人类送上火星。",
+    "facts": ["高约 120 米，直径 9 米", "不锈钢银色箭体", "2023 年首次轨道级试飞"]
+  },
+  {
+    "id": "vulcan", "name": "火神半人马", "nameEn": "Vulcan Centaur", "agency": "美国 ULA",
+    "category": "重型运载火箭", "year": 2024, "unlockAt": 30, "icon": "🔥",
+    "image": "/images/rockets/vulcan.png",
+    "summary": "ULA 新一代重型火箭，用两台 BE-4 甲烷发动机替代俄制引擎，首飞即把月球着陆器送入太空。",
+    "facts": ["2024 年 1 月首飞", "使用液氧甲烷发动机", "可捆绑最多 6 枚固体助推器"]
+  },
+  {
+    "id": "ariane_6", "name": "阿丽亚娜6号", "nameEn": "Ariane 6", "agency": "欧洲 ESA",
+    "category": "重型运载火箭", "year": 2024, "unlockAt": 33, "icon": "🌍",
+    "image": "/images/rockets/ariane_6.png",
+    "summary": "欧洲新一代主力运载火箭，白色箭体配固体助推器，从库鲁航天中心发射，接替阿丽亚娜5号。",
+    "facts": ["2024 年 7 月首飞", "有 A62 / A64 两种助推器构型", "欧洲自主进入太空的保障"]
+  },
+  {
+    "id": "new_glenn", "name": "新格伦", "nameEn": "New Glenn", "agency": "美国 Blue Origin",
+    "category": "可回收重型火箭", "year": 2025, "unlockAt": 36, "icon": "🌊",
+    "image": "/images/rockets/new_glenn.png",
+    "summary": "蓝色起源的重型可回收火箭，直径 7 米，一级设计可重复使用，名字来自首位美国轨道宇航员约翰·格伦。",
+    "facts": ["2025 年 1 月首飞", "直径 7 米，运力强大", "一级火箭可海上回收复用"]
+  },
+  {
+    "id": "zhuque_3", "name": "朱雀三号", "nameEn": "Zhuque-3", "agency": "中国 蓝箭航天",
+    "category": "可回收运载火箭", "year": 2025, "unlockAt": 39, "icon": "🐦",
+    "image": "/images/rockets/zhuque_3.png",
+    "summary": "中国商业航天的不锈钢可回收液氧甲烷火箭，对标猎鹰九号，一级设计垂直回收复用，把中国商业运力带上大台阶。",
+    "facts": ["2025 年 12 月首飞", "不锈钢箭体 + 液氧甲烷", "一级可垂直回收复用"]
+  },
+  {
+    "id": "falcon_21", "name": "猎鹰21号", "nameEn": "Falcon 21", "agency": "美国 SpaceX",
+    "category": "未来概念·超重型火箭", "year": null, "concept": true, "unlockAt": 42, "icon": "🦅",
+    "image": "/images/rockets/falcon_21.png",
+    "summary": "猎鹰家族的未来概念旗舰：21 台发动机并联的超级火箭，一二级都能垂直回收，运力远超重型猎鹰，是火星货运航线的概念主力。",
+    "facts": ["概念设计：21 台液氧甲烷发动机并联", "一二级均可垂直回收复用", "目标：百吨级近地轨道运力"]
+  },
+  {
+    "id": "starship_9", "name": "星舰9号", "nameEn": "Starship 9", "agency": "美国 SpaceX",
+    "category": "未来概念·超重型火箭", "year": null, "concept": true, "unlockAt": 45, "icon": "🌌",
+    "image": "/images/rockets/starship_9.png",
+    "summary": "星舰家族的未来概念型号：第 9 代完全复用星舰，更大的不锈钢箭体与更强发动机，目标一次运送百名乘客和货物直飞火星。",
+    "facts": ["概念设计：第 9 代完全复用构型", "在轨加注燃料后直飞火星", "目标：百人级火星移民运输"]
+  }
+]

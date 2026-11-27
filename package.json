@@ -1,0 +1,32 @@
+{
+  "name": "star-pinyin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "星际发射指挥官 StarPinyin Commander — 小学拼音航天发射游戏（iPad Safari PWA）。Milestone 1：工程骨架 + PWA 壳 + 拼音规则内核。",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "stop": "node scripts/stop-server.mjs",
+    "test": "node test/rules.test.mjs && node test/seeds.test.mjs && node test/wordbank.test.mjs && node test/assembly.test.mjs && node test/tone.test.mjs && node test/parse.test.mjs && node test/rewards.test.mjs && node test/rocket.test.mjs && node test/part-voice.test.mjs && node test/destinations.test.mjs && node test/textbook.test.mjs && node test/textbook-api.test.mjs && node test/rewards-api.test.mjs && node test/progress-reset-api.test.mjs && node test/launchfx-api.test.mjs && node test/medialmode-api.test.mjs && node test/voice-admin-api.test.mjs && node test/voice-source.test.mjs && node test/standard-voice.test.mjs",
+    "validate": "node test/seeds.test.mjs",
+    "wordbank": "node scripts/expand-missions-grade3.mjs && node scripts/expand-missions-primary.mjs && node scripts/expand-missions-1000.mjs && node scripts/sync-textbook-wordbank.mjs",
+    "wordbank:check": "node scripts/expand-missions-grade3.mjs --dry-run && node scripts/expand-missions-primary.mjs --dry-run && node scripts/expand-missions-1000.mjs --dry-run && node scripts/sync-textbook-wordbank.mjs --dry-run",
+    "textbook": "node scripts/sync-textbook-wordbank.mjs",
+    "textbook:check": "node scripts/sync-textbook-wordbank.mjs --dry-run",
+    "voice": "node scripts/gen-voice.mjs",
+    "voice:import": "node scripts/import-standard-voice.mjs",
+    "voice:import:check": "node scripts/import-standard-voice.mjs --dry-run",
+    "voice:syllable": "node scripts/gen-syllable-voice.mjs",
+    "voice:syllable:check": "node scripts/gen-syllable-voice.mjs --dry-run",
+    "voice:parts": "node scripts/gen-part-voice.mjs",
+    "voice:parts:verify": "node scripts/gen-part-voice.mjs --verify",
+    "voice:system": "node scripts/gen-system-voice.mjs",
+    "rockets:images": "node scripts/gen-rocket-images.mjs && python scripts/chroma-key-rockets.py",
+    "icons:images": "node scripts/gen-ui-icons.mjs && python scripts/chroma-key-icons.py",
+    "boot:assets": "python scripts/gen-boot-assets.py"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {}
+}

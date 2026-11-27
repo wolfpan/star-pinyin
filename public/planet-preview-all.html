@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星球画风样板 · 全星球</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #05070f; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <script type="module">
+    import { drawPlanet, drawOrbitEarth } from '/js/planet-fx.js';
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+
+    // 固定星野（种子稳定）
+    let seed = 1234567;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    const stars = Array.from({ length: 220 }, () => ({ x: rnd(), y: rnd(), r: rnd() * 1.4 + 0.3, a: rnd() * 0.55 + 0.2 }));
+
+    const ITEMS = [
+      { id: 'earth_low', name: '低空轨道', view: 'low' },
+      { id: 'earth_high', name: '高空轨道', view: 'high' },
+      { id: 'earth_far', name: '远地轨道', view: 'far' },
+      { id: 'moon', name: '月球' },
+      { id: 'venus', name: '金星' },
+      { id: 'mars', name: '火星' },
+      { id: 'mercury', name: '水星' },
+      { id: 'jupiter', name: '木星' },
+      { id: 'saturn', name: '土星' },
+      { id: 'uranus', name: '天王星' },
+      { id: 'neptune', name: '海王星' },
+      { id: 'pluto', name: '冥王星' },
+      { id: 'oort', name: '奥尔特云' },
+      { id: 'interstellar', name: '星际空间' },
+    ];
+    // 静态样板相位：让标志性特征朝向观察者
+    const ROT = {
+      earth: 0.55, moon: 0.35, venus: 0.35, mars: 0.3, mercury: 0.35,
+      jupiter: 0.2, saturn: 0.3, uranus: 0.3, neptune: 0.25, pluto: 0.1, oort: 0.4, interstellar: 0.4,
+    };
+
+    function render() {
+      const W = window.innerWidth, H = window.innerHeight;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // 深空背景
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#070b18'); bg.addColorStop(1, '#04060e');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      for (const s of stars) {
+        ctx.globalAlpha = s.a; ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      const cols = 3, rows = Math.ceil(ITEMS.length / cols);
+      const cellW = W / cols, cellH = H / rows;
+      ITEMS.forEach((it, i) => {
+        const row = Math.floor(i / cols);
+        const inRow = Math.min(cols, ITEMS.length - row * cols);
+        const col = i % cols;
+        const xOff = (W - inRow * cellW) / 2; // 末行居中
+        const cx = xOff + cellW * (col + 0.5);
+        const cy = cellH * row + cellH * 0.42;
+        if (it.view) {
+          // 地球三层轨道：整格场景式绘制（与发射入轨段同视角）
+          ctx.save();
+          ctx.translate(xOff + col * cellW, cellH * row);
+          drawOrbitEarth(ctx, it.view, cellW, cellH * 0.78, 0);
+          ctx.restore();
+        } else {
+          let r = Math.min(cellW, cellH) * 0.24;
+          if (it.id === 'saturn') r *= 0.7;   // 光环外延预留空间
+          if (it.id === 'jupiter') r *= 0.88; // 伽利略卫星预留空间
+          drawPlanet(ctx, it.id, cx, cy, r, 0, { rot: ROT[it.id] });
+        }
+        ctx.textAlign = 'center';
+        ctx.font = `bold ${Math.round(cellH * 0.075)}px sans-serif`;
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(4,6,14,0.85)';
+        ctx.strokeText(it.name, cx, cellH * row + cellH * 0.82);
+        ctx.fillStyle = '#eaf2ff';
+        ctx.fillText(it.name, cx, cellH * row + cellH * 0.82);
+      });
+      window.__ready = true;
+    }
+    render();
+    window.addEventListener('resize', render);
+    window.__render = render;
+  </script>
+</body>
+</html>

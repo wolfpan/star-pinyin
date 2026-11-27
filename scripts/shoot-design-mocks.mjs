@@ -1,0 +1,62 @@
+/**
+ * shoot-design-mocks.mjs — 无头 Chrome 渲染三套风格样板整页截图
+ * 用法：node scripts/shoot-design-mocks.mjs
+ * 输出：.ui-shots/design-{a,b,c}.png（1024 宽 × 整页高，2x）
+ */
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+
+const CHROME = 'C:\\Users\\panft\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe';
+const PORT = 9267;
+const OUT = 'C:\\Codes\\star-pinyin\\.ui-shots';
+fs.mkdirSync(OUT, { recursive: true });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
+  '--remote-debugging-port=' + PORT, '--window-size=1024,1800', '--allow-file-access-from-files',
+  '--user-data-dir=C:\\Codes\\star-pinyin\\.chrome-debugMocks', 'about:blank'], { stdio: 'ignore', detached: true });
+
+async function getTarget() {
+  for (let i = 0; i < 80; i++) {
+    try {
+      const l = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+      const p = l.find((t) => t.type === 'page');
+      if (p) return p;
+    } catch {}
+    await sleep(250);
+  }
+  throw new Error('no target');
+}
+const ws = new WebSocket((await getTarget()).webSocketDebuggerUrl);
+await new Promise((r) => ws.addEventListener('open', r, { once: true }));
+let idc = 0; const pending = new Map(); const errors = [];
+ws.addEventListener('message', (evt) => {
+  const m = JSON.parse(evt.data);
+  if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); }
+  if (m.method === 'Runtime.exceptionThrown') errors.push(m.params.exceptionDetails?.exception?.description || 'exc');
+});
+const send = (method, params = {}) => new Promise((res) => { const id = ++idc; pending.set(id, res); ws.send(JSON.stringify({ id, method, params })); });
+async function ev(expression) {
+  const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+  if (r.result?.exceptionDetails) errors.push('EVAL ' + (r.result.exceptionDetails.exception?.description || ''));
+  return r.result?.result?.value;
+}
+await send('Runtime.enable'); await send('Page.enable');
+
+for (const key of ['a', 'b', 'c']) {
+  await send('Page.navigate', { url: `file:///C:/Codes/star-pinyin/design-mocks/mock-${key}.html` });
+  await sleep(1200);
+  const h = await ev('document.body.scrollHeight');
+  await send('Emulation.setDeviceMetricsOverride', { width: 1024, height: h, deviceScaleFactor: 2, mobile: false, screenWidth: 1024, screenHeight: h });
+  await sleep(500);
+  const r = await send('Page.captureScreenshot', { format: 'png' });
+  if (r.result?.data) {
+    fs.writeFileSync(`${OUT}/design-${key}.png`, Buffer.from(r.result.data, 'base64'));
+    console.log(`design-${key}.png  (1024x${h} @2x)`);
+  } else errors.push('shot failed: ' + key);
+}
+console.log('ERRORS:', errors.length ? errors : 'none');
+ws.close();
+try { process.kill(-chrome.pid); } catch {}
+try { chrome.kill(); } catch {}
+process.exit(0);

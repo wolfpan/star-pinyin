@@ -1,0 +1,188 @@
+/**
+ * rewards-api.test.mjs — 课时奖励系统服务端集成验收（零依赖）
+ * 运行：node test/rewards-api.test.mjs
+ *
+ * 在隔离的临时 DATA_DIR 副本上启动真实 server.js（不碰真实玩家数据），验证：
+ *  - GET /api/profile 返回课时奖励进度（lessonsCompleted / lessonsTotal / rewardLevel / currentDestination / nextReward）；
+ *  - POST /api/progress/record 补完一课时 → lessonCompleted + 跨档解锁新目的地（newlyReachedDestination）；
+ *  - 只练了部分生字的课时不算完成（不推进奖励）；
+ *  - 难度接口已下线（/api/difficulty/select → 404），旧客户端的 ?difficulty= 被忽略。
+ */
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { groupMissionsByLesson, lessonKey } from '../public/js/rewards.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, '..');
+const PORT = Number(process.env.TEST_PORT) || 3201;
+const BASE = `http://127.0.0.1:${PORT}`;
+
+const missions = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'missions.json'), 'utf8'));
+const groups = [...groupMissionsByLesson(missions).values()].sort((a, b) => a.missions.length - b.missions.length);
+// 取生字最少的两个课时：A 预先练完（= 已完成 1 课时），B 待逐字补完
+const lessonA = groups[0];
+const lessonB = groups[1];
+const lessonBig = groups[groups.length - 1];
+if (!lessonA || !lessonB || lessonB.missions.length < 2) throw new Error('词库里找不到两个可构造用例的课时');
+
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'star-pinyin-reward-'));
+for (const f of ['missions.json', 'textbook.json', 'badges.json']) {
+  fs.copyFileSync(path.join(ROOT, 'data', f), path.join(tmp, f));
+}
+const seededStats = {};
+for (const m of lessonA.missions) seededStats[m.id] = { attempts: 1, errors: 0, weight: 1 };
+// 7 次发射已经解锁的火箭写进档案（与真实 record 流程一致）
+const badges = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'badges.json'), 'utf8'));
+const seededBadges = badges.filter((b) => Number(b.unlockAt) <= 7).map((b) => b.id);
+fs.writeFileSync(path.join(tmp, 'progress.json'), JSON.stringify({
+  callsign: '测试指挥官', totalLaunches: 7, unlockedBadges: seededBadges, recentMissionIds: [], stats: seededStats,
+}, null, 2));
+
+const child = spawn(process.execPath, ['server.js'], {
+  cwd: ROOT,
+  env: { ...process.env, PORT: String(PORT), HOST: '127.0.0.1', DATA_DIR: tmp },
+  stdio: 'ignore',
+});
+const cleanup = () => { try { child.kill(); } catch {} try { fs.rmSync(tmp, { recursive: true, force: true }); } catch {} };
+process.on('exit', cleanup);
+const watchdog = setTimeout(() => { console.error('❌ 集成测试超时'); cleanup(); process.exit(1); }, 60000);
+
+let pass = 0, fail = 0;
+const failures = [];
+async function test(name, fn) {
+  try { await fn(); pass++; console.log('  ✓ ' + name); }
+  catch (e) { fail++; failures.push([name, e]); console.log('  ✗ ' + name + ' → ' + e.message); }
+}
+const eq = assert.equal;
+const ok = assert.ok;
+const get = async (p) => { const r = await fetch(BASE + p); return { status: r.status, body: await r.json() }; };
+const post = async (p, body) => {
+  const r = await fetch(BASE + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  return { status: r.status, body: await r.json() };
+};
+const record = (missionId, destinationId, extra = {}) => post('/api/progress/record', {
+  missionId, assemblyErrors: 0, toneErrors: 0, durationMs: 12000, destinationId, ...extra,
+});
+
+async function waitReady() {
+  for (let i = 0; i < 60; i++) {
+    try { const r = await fetch(BASE + '/api/health'); if (r.ok) return; } catch {}
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  throw new Error('服务器未就绪');
+}
+
+try {
+  await waitReady();
+  const totalLessons = groupMissionsByLesson(missions).size;
+
+  console.log('\n[1] 档案：课时奖励进度');
+  let profile;
+  await test('profile 返回课时 / 档位 / 最新目的地', async () => {
+    const { status, body } = await get('/api/profile');
+    eq(status, 200);
+    profile = body;
+    eq(body.lessonsCompleted, 1);
+    eq(body.lessonsTotal, totalLessons);
+    eq(body.rewardLevel, 1);
+    eq(body.currentDestination.id, 'earth_low');
+    eq(body.nextReward.level, 2);
+    eq(body.nextReward.need, 1);
+    eq(body.nextReward.destination.id, 'earth_high');
+  });
+  await test('难度字段已从档案移除', () => {
+    eq(profile.maxDifficulty, undefined);
+    eq(profile.selectedDifficulty, undefined);
+  });
+  await test('发射次数只影响火箭收藏（7 次 = 已解锁若干枚）', () => {
+    eq(profile.totalLaunches, 7);
+    ok(profile.ownedRockets.length >= 2);
+  });
+
+  console.log('\n[2] 上报补完课时 → 跨档解锁新目的地');
+  const bCount = lessonB.missions.length;
+  await test(`补完前 ${bCount - 1} 个生字：课时还没完成，不推进奖励`, async () => {
+    for (let i = 0; i < bCount - 1; i++) {
+      const { status, body } = await record(lessonB.missions[i].id, 'earth_low');
+      eq(status, 200);
+      eq(body.lessonCompleted, null);
+      eq(body.lessonsCompleted, 1);
+      eq(body.rewardLevel, 1);
+      eq(body.newlyReachedDestination, null);
+      eq(body.firstVisit, i === 0); // 第一次到访低空轨道
+      eq(body.totalLaunches, 8 + i);
+    }
+  });
+  await test('补完最后一个生字：完成课时 + 跨档解锁高空轨道', async () => {
+    const { body } = await record(lessonB.missions[bCount - 1].id, 'earth_low');
+    eq(lessonKey(body.lessonCompleted), lessonB.key);
+    eq(body.lessonCompleted.title, lessonB.ref.title);
+    eq(body.lessonsCompleted, 2);
+    eq(body.rewardLevel, 2);
+    eq(body.newlyReachedDestination.id, 'earth_high');
+    eq(body.destinationId, 'earth_low');
+    eq(body.firstVisit, false); // 重复到访低空轨道
+    eq(body.totalLaunches, 7 + bCount);
+  });
+  await test('重复上报同一题 → 不再重复解锁', async () => {
+    const { body } = await record(lessonB.missions[bCount - 1].id, 'earth_high');
+    eq(body.lessonCompleted, null);
+    eq(body.newlyReachedDestination, null);
+    eq(body.lessonsCompleted, 2);
+    eq(body.rewardLevel, 2);
+    eq(body.firstVisit, true); // 第一次到访高空轨道
+    eq(body.totalLaunches, 8 + bCount);
+  });
+  await test('档案刷新：最新目的地 = 高空轨道，下一份还差 2 课时', async () => {
+    const { body } = await get('/api/profile');
+    eq(body.rewardLevel, 2);
+    eq(body.currentDestination.id, 'earth_high');
+    eq(body.nextReward.level, 3);
+    eq(body.nextReward.need, 2);
+    eq(body.nextReward.destination.id, 'earth_far');
+  });
+  await test('上报进度已落盘（stats / 发射数）', () => {
+    const saved = JSON.parse(fs.readFileSync(path.join(tmp, 'progress.json'), 'utf8'));
+    ok(saved.stats[lessonB.missions[0].id]?.attempts >= 1);
+    ok(saved.stats[lessonB.missions[bCount - 1].id]?.attempts >= 1);
+    eq(saved.totalLaunches, 8 + bCount);
+    eq(saved.visitedDestinations.earth_low, bCount);
+  });
+
+  console.log('\n[3] 只练部分生字不推进奖励');
+  await test('长课时只练 1 个字：不算完成', async () => {
+    const { body } = await record(lessonBig.missions[0].id, 'earth_high', { assemblyErrors: 1 });
+    eq(body.lessonCompleted, null);
+    eq(body.lessonsCompleted, 2); // 仍是 2 课时
+    eq(body.rewardLevel, 2);
+  });
+
+  console.log('\n[4] 难度接口下线');
+  await test('POST /api/difficulty/select → 404', async () => {
+    const { status } = await post('/api/difficulty/select', { difficulty: 5 });
+    eq(status, 404);
+  });
+  await test('GET /api/missions/next 忽略旧 difficulty 参数', async () => {
+    const { status, body } = await get('/api/missions/next?mode=all&difficulty=14');
+    eq(status, 200);
+    ok(body.id && body.hanzi, '应正常返回题目');
+  });
+} catch (e) {
+  fail++;
+  failures.push(['运行', e]);
+  console.error('❌ ' + e.message);
+} finally {
+  clearTimeout(watchdog);
+  cleanup();
+}
+
+console.log(`\n课时奖励 API 测试结果: ${pass} 通过, ${fail} 失败`);
+if (fail) {
+  console.error('\n失败明细:');
+  for (const [name, e] of failures) console.error(`  - ${name}: ${e.message}`);
+  process.exit(1);
+}

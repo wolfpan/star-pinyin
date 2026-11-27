@@ -1,0 +1,99 @@
+/* 方案 B · 天空积木 — 星云式玩具糖果语言 / 天空蓝色系 / 大圆角 / 玩具按压按钮 / 偏亮护眼 */
+:root {
+  --ink: #16324a; --ink-dim: #4a6478;
+  --coral: #ff7a8a; --mint: #4fe3c1; --sunny: #ffd166; --sky: #6fc3ff;
+  --card-bg: #fbfdff; --card-edge: #bcd9ef;
+  /* SVG 火箭（不锈钢保持金属感，塔架随色系） */
+  --st1: #6a7684; --st2: #c6cfd9; --st3: #f6f9fc; --st4: #b4bec9; --st5: #59636f;
+  --sd1: #4a545f; --sd2: #8b95a1; --sd3: #b9c2cc; --sd4: #77818d; --sd5: #39424d;
+  --nz1: #39424d; --nz2: #171c24;
+  --tile-a: #232a34; --tile-b: #39424e;
+  --tower: #6a96bb; --tower-edge: #5a86ad; --tower-arm: #8fb8d9; --tower-brace: #6a96bb;
+  --pad: #6a96bb; --flange: #5a86ad; --hull-edge: #16324a; --bezel: #9dbdd8;
+  --glow: rgba(61, 155, 224, .25); --beacon: #ff7a8a;
+  --slot-bg: #fbfdff; --slot-edge: #8fb8d9;
+  --slot-label: #16324a; --slot-q: #2b76ad; --slot-locked: #4a6478;
+}
+body { background: #8fb8d9; }
+.mock-head { background: #fbfdff; border-color: #bcd9ef; }
+.mock-name { color: #16324a; }
+.mock-name em { color: #2b76ad; opacity: .9; }
+.mock-desc { color: #4a6478; }
+.frame-cap { background: #8fb8d9; color: #2b4a63; }
+
+.frame { background:
+  radial-gradient(700px 420px at 85% 8%, rgba(111, 195, 255, .28), transparent 65%),
+  radial-gradient(800px 520px at 8% 92%, rgba(79, 227, 193, .18), transparent 60%),
+  radial-gradient(1000px 700px at 50% 45%, rgba(255, 209, 102, .22), transparent 70%),
+  linear-gradient(160deg, #c6dcee, #a5c6e2 45%, #8fb8d9);
+  color: #16324a; }
+/* 糖果纸屑点缀（亮底版星星） */
+.frame::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image:
+  radial-gradient(2.5px 2.5px at 12% 20%, rgba(255, 122, 138, .5), transparent 100%),
+  radial-gradient(2px 2px at 30% 70%, rgba(79, 227, 193, .5), transparent 100%),
+  radial-gradient(2.5px 2.5px at 55% 15%, rgba(255, 209, 102, .55), transparent 100%),
+  radial-gradient(2px 2px at 72% 55%, rgba(255, 255, 255, .5), transparent 100%),
+  radial-gradient(2.5px 2.5px at 90% 30%, rgba(255, 122, 138, .45), transparent 100%),
+  radial-gradient(2px 2px at 44% 88%, rgba(79, 227, 193, .45), transparent 100%),
+  radial-gradient(2px 2px at 8% 52%, rgba(255, 209, 102, .5), transparent 100%),
+  radial-gradient(2.5px 2.5px at 66% 82%, rgba(255, 255, 255, .45), transparent 100%); }
+.frame-tag { color: #2b76ad; }
+
+.panel, .tray { background: var(--card-bg); border: 2px solid var(--card-edge); border-radius: 22px; box-shadow: 0 4px 0 rgba(22, 50, 74, .18); }
+.h-id .avatar { background: linear-gradient(135deg, #7cc4ff, #3d9be0); color: #fff; border: 3px solid rgba(255, 255, 255, .65); box-shadow: 0 4px 0 rgba(22, 50, 74, .18); }
+.callsign { color: #16324a; }
+.stat-chip { border: 2px solid var(--card-edge); border-radius: 999px; background: #fbfdff; color: #4a6478; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.stat-chip b { color: #2b76ad; }
+.stat-chip .ic { color: #d94f63; }
+.btn.ghost { border: 2px solid var(--card-edge); border-radius: 999px; background: #fbfdff; color: #16324a; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.btn.ghost .ic { color: #2b76ad; }
+.btn.dest { border: 2px solid rgba(111, 195, 255, .55); border-radius: 16px; background: rgba(111, 195, 255, .14); color: #16324a; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.dest-k { color: #2b76ad; font-weight: 700; }
+.dest-v .ic { color: #0e8f74; }
+
+.p-title { color: #16324a; }
+.step-num { background: linear-gradient(135deg, #2b76ad, #1e8f74); color: #fff; border-radius: 10px; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.p-en { color: #7d94a6; }
+.tb-status { color: #4a6478; }
+.tb-status .ic { color: #a06e00; }
+.tb-status b { color: #a06e00; }
+
+.btn.grade, .btn.term, .btn.lesson { border: 2px solid var(--card-edge); border-radius: 14px; background: #fbfdff; color: #4a6478; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.btn.grade.sel { background: #ffd166; border-color: #ffe49a; color: #4a3208; box-shadow: 0 4px 0 #c99b3f; }
+.btn.term.sel { background: #ffd166; border-color: #ffe49a; color: #4a3208; box-shadow: 0 4px 0 #c99b3f; }
+.btn.lesson.sel { background: #6fc3ff; border-color: #a5d9ff; color: #0d3a5c; box-shadow: 0 4px 0 #3d84bd; }
+.btn.lesson.sel span { opacity: .8; }
+.btn.auto-tag { border: 2px solid var(--card-edge); border-radius: 999px; color: #4a6478; background: #fbfdff; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.btn.auto-tag .ic { color: #0e8f74; }
+
+.current-rocket { background: #fbfdff; border: 2px solid rgba(255, 209, 102, .55); border-radius: 18px; box-shadow: 0 4px 0 rgba(22, 50, 74, .18); }
+.cr-meta b { color: #16324a; }
+.cr-meta span { color: #4a6478; }
+.cr-flag { background: #ff7a8a; color: #fff; border-radius: 999px; box-shadow: 0 3px 0 rgba(217, 79, 99, .45); }
+.hint { color: #4a6478; }
+.btn.pick { border: 2px solid var(--card-edge); border-radius: 16px; background: #fbfdff; color: #4a6478; box-shadow: 0 3px 0 rgba(22, 50, 74, .18); }
+.btn.pick.sel { border-color: #ffd166; background: rgba(255, 209, 102, .18); color: #16324a; box-shadow: 0 4px 0 #c99b3f; }
+.unlock-badge { background: rgba(79, 227, 193, .16); border: 2px solid rgba(79, 227, 193, .5); color: #0e8f74; border-radius: 999px; }
+.unlock-badge .ic { color: #a06e00; }
+
+.btn.launch { border-radius: 999px; color: #fff; background: linear-gradient(180deg, #7cc4ff, #3d9be0); border: 3px solid rgba(255, 255, 255, .55); box-shadow: 0 6px 0 #2b76ad, 0 12px 26px rgba(61, 155, 224, .30); text-shadow: 0 2px 0 rgba(0, 0, 0, .12); }
+.btn.launch .en { color: #e3f2ff; opacity: .85; }
+
+/* 组装：糖果发射场 */
+.tray-head { border-bottom: 2px dashed #bcd9ef; }
+.tray-head b { color: #16324a; }
+.tray-head span { color: #7d94a6; }
+.g-initial .tg-dot { background: #ff7a8a; box-shadow: 0 0 8px #ff7a8a; }
+.g-final .tg-dot { background: #6fc3ff; box-shadow: 0 0 8px #6fc3ff; }
+.g-initial .tg-label { color: #d94f63; }
+.g-final .tg-label { color: #2b76ad; }
+.part { border: 2px solid #bcd9ef; border-radius: 16px; background: linear-gradient(180deg, #ffffff, #fbfdff); color: #16324a; box-shadow: 0 4px 0 rgba(22, 50, 74, .18); }
+.g-initial .part { border-color: rgba(255, 122, 138, .6); }
+.g-final .part { border-color: rgba(111, 195, 255, .6); }
+.tray-hint { color: #4a6478; }
+.slot-body { fill: var(--slot-bg); stroke: var(--slot-edge); }
+.slot-group { fill: var(--slot-label); }
+.slot-value { fill: var(--slot-q); }
+.slot-value.locked-note { fill: var(--slot-locked); }
+.slot-light { fill: #9dbdd8; }
+.beacon { filter: drop-shadow(0 0 6px #ff7a8a); }

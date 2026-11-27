@@ -1,0 +1,94 @@
+/* mock-base.css — 三套方案共享的结构布局（1024×768 双屏样板） */
+@font-face { font-family: 'D-DIN'; src: url('../public/fonts/d-din-400.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'D-DIN'; src: url('../public/fonts/d-din-700.woff2') format('woff2'); font-weight: 700; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  width: 1024px;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  background: #101216;
+  -webkit-font-smoothing: antialiased;
+}
+.ic { width: 1.15em; height: 1.15em; flex: none; }
+
+/* ---- 方案标题条 ---- */
+.mock-head { height: 92px; padding: 18px 28px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: #14171c; border-bottom: 1px solid #262b33; }
+.mock-name { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: .02em; }
+.mock-name em { font-style: normal; font-family: 'D-DIN'; font-size: 13px; letter-spacing: .28em; margin-left: 12px; opacity: .55; }
+.mock-desc { font-size: 13px; color: #9aa3b2; }
+.frame-cap { height: 30px; display: flex; align-items: center; padding: 0 28px; font-size: 12px; letter-spacing: .12em; color: #6b7482; background: #101216; }
+
+/* ---- 画框 ---- */
+.frame { width: 1024px; height: 768px; position: relative; overflow: hidden; }
+.frame-tag { display: none; } /* 画框说明由 .frame-cap 承担，避免遮挡内容 */
+
+/* ---- 指挥官界面 ---- */
+.hangar { display: flex; flex-direction: column; gap: 14px; padding: 18px 24px 20px; }
+.h-head { display: flex; align-items: center; justify-content: space-between; min-height: 58px; }
+.h-id { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; }
+.callsign { font-size: 21px; font-weight: 800; letter-spacing: .03em; }
+.h-actions { display: flex; align-items: stretch; gap: 12px; }
+.stat-chip { display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; font-size: 15px; }
+.stat-chip b { font-family: 'D-DIN'; font-size: 20px; }
+.btn { appearance: none; border: none; background: none; font: inherit; color: inherit; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.ghost { padding: 0 18px; font-size: 15px; font-weight: 600; }
+.btn.dest { flex-direction: column; align-items: flex-start; gap: 2px; padding: 7px 16px; }
+.dest-k { font-size: 11px; letter-spacing: .1em; opacity: .65; }
+.dest-v { display: inline-flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; }
+
+.h-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; flex: 1; min-height: 0; }
+.panel { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+.p-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.p-title { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; letter-spacing: .04em; }
+.step-num { width: 28px; height: 28px; display: inline-grid; place-items: center; font-family: 'D-DIN'; font-size: 16px; font-weight: 700; }
+.p-en { font-family: 'D-DIN'; font-size: 11px; letter-spacing: .3em; opacity: .45; }
+.tb-status { display: flex; align-items: center; gap: 7px; font-size: 13.5px; }
+.tb-status b { font-family: 'D-DIN'; font-size: 16px; }
+
+.grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.btn.grade { height: 52px; font-size: 16px; font-weight: 700; }
+.terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn.term { height: 46px; font-size: 16px; font-weight: 700; }
+.lessons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: auto; }
+.btn.lesson { flex-direction: column; gap: 3px; height: 66px; }
+.btn.lesson b { font-size: 15.5px; }
+.btn.lesson span { font-size: 12px; opacity: .75; }
+
+.btn.auto-tag { padding: 7px 14px; font-size: 13px; font-weight: 600; }
+.current-rocket { display: flex; align-items: center; gap: 16px; padding: 12px 16px; position: relative; }
+.current-rocket img { height: 92px; width: auto; }
+.cr-meta { display: flex; flex-direction: column; gap: 4px; }
+.cr-meta b { font-size: 21px; font-weight: 800; letter-spacing: .03em; }
+.cr-meta span { font-size: 13px; opacity: .7; }
+.cr-flag { position: absolute; top: 10px; right: 12px; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; padding: 4px 10px; }
+.hint { font-size: 13px; opacity: .7; }
+.picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.btn.pick { flex-direction: column; gap: 6px; height: 118px; padding: 8px 4px; }
+.btn.pick img { height: 66px; width: auto; }
+.btn.pick span { font-size: 13.5px; font-weight: 700; }
+.unlock-badge { display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; font-size: 14.5px; font-weight: 700; margin-top: auto; }
+
+.btn.launch { height: 66px; width: 100%; font-size: 22px; font-weight: 800; letter-spacing: .3em; position: relative; }
+.btn.launch .ic { width: 26px; height: 26px; }
+.btn.launch .en { position: absolute; right: 20px; font-family: 'D-DIN'; font-size: 11px; letter-spacing: .24em; font-weight: 400; opacity: .6; }
+
+/* ---- 组装界面 ---- */
+.assembly { display: grid; grid-template-columns: 350px 1fr; gap: 20px; padding: 26px 28px; align-items: center; }
+.tray { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.tray-head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 10px; }
+.tray-head b { font-size: 17px; font-weight: 800; letter-spacing: .06em; }
+.tray-head span { font-family: 'D-DIN'; font-size: 11px; letter-spacing: .3em; opacity: .5; }
+.tg-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.tg-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.parts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.part { height: 68px; font-family: 'D-DIN', 'Segoe UI', sans-serif; font-size: 27px; font-weight: 700; display: grid; place-items: center; cursor: grab; }
+.tray-hint { font-size: 12.5px; opacity: .6; text-align: center; margin-top: 2px; }
+.stage { height: 100%; display: grid; place-items: center; }
+.rocket-svg { height: 716px; width: auto; overflow: visible; }
+
+.slot-group { font-size: 14px; font-weight: 700; letter-spacing: .2em; }
+.slot-value { font-family: 'D-DIN', sans-serif; font-size: 30px; font-weight: 700; }
+.slot-value.locked-note { font-size: 14px; font-weight: 600; letter-spacing: .1em; }
+.slot-body { stroke-width: 1.5; }
+.slot-body.dashed { stroke-dasharray: 5 4; }

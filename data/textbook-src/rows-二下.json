@@ -1,0 +1,2643 @@
+{
+  "book": "二下",
+  "label": "二年级下册",
+  "term": 2,
+  "pages": [
+    118,
+    119,
+    120,
+    121
+  ],
+  "recognPrintedTotal": 450,
+  "rows": [
+    {
+      "order": 1,
+      "kind": "课文",
+      "no": 1,
+      "title": "古诗二首",
+      "chars": [
+        {
+          "hanzi": "咏",
+          "pinyin": "yǒng",
+          "word": "吟咏"
+        },
+        {
+          "hanzi": "贺",
+          "pinyin": "hè",
+          "word": "祝贺"
+        },
+        {
+          "hanzi": "妆",
+          "pinyin": "zhuāng",
+          "word": "化妆"
+        },
+        {
+          "hanzi": "丝",
+          "pinyin": "sī",
+          "word": "丝线"
+        },
+        {
+          "hanzi": "裁",
+          "pinyin": "cái",
+          "word": "裁剪"
+        },
+        {
+          "hanzi": "剪",
+          "pinyin": "jiǎn",
+          "word": "剪刀"
+        },
+        {
+          "hanzi": "莺",
+          "pinyin": "yīng",
+          "word": "黄莺"
+        },
+        {
+          "hanzi": "拂",
+          "pinyin": "fú",
+          "word": "吹拂"
+        },
+        {
+          "hanzi": "堤",
+          "pinyin": "dī",
+          "word": "河堤"
+        },
+        {
+          "hanzi": "醉",
+          "pinyin": "zuì",
+          "word": "陶醉"
+        },
+        {
+          "hanzi": "趁",
+          "pinyin": "chèn",
+          "word": "趁机"
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "kind": "课文",
+      "no": 2,
+      "title": "找春天",
+      "chars": [
+        {
+          "hanzi": "脱",
+          "pinyin": "tuō",
+          "word": "脱掉"
+        },
+        {
+          "hanzi": "袄",
+          "pinyin": "ǎo",
+          "word": "棉袄"
+        },
+        {
+          "hanzi": "遮",
+          "pinyin": "zhē",
+          "word": "遮挡"
+        },
+        {
+          "hanzi": "掩",
+          "pinyin": "yǎn",
+          "word": "掩盖"
+        },
+        {
+          "hanzi": "探",
+          "pinyin": "tàn",
+          "word": "探索"
+        },
+        {
+          "hanzi": "眉",
+          "pinyin": "méi",
+          "word": "眉毛"
+        },
+        {
+          "hanzi": "吐",
+          "pinyin": "tǔ",
+          "word": "吞吐"
+        },
+        {
+          "hanzi": "芽",
+          "pinyin": "yá",
+          "word": "发芽"
+        },
+        {
+          "hanzi": "符",
+          "pinyin": "fú",
+          "word": "符号"
+        },
+        {
+          "hanzi": "解",
+          "pinyin": "jiě",
+          "word": "解决"
+        },
+        {
+          "hanzi": "触",
+          "pinyin": "chù",
+          "word": "接触"
+        },
+        {
+          "hanzi": "杜",
+          "pinyin": "dù",
+          "word": "杜鹃"
+        },
+        {
+          "hanzi": "鹃",
+          "pinyin": "juān",
+          "word": "杜鹃"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "kind": "课文",
+      "no": 3,
+      "title": "开满鲜花的小路",
+      "chars": [
+        {
+          "hanzi": "裹",
+          "pinyin": "guǒ",
+          "word": "包裹"
+        },
+        {
+          "hanzi": "颈",
+          "pinyin": "jǐng",
+          "word": "脖颈"
+        },
+        {
+          "hanzi": "寄",
+          "pinyin": "jì",
+          "word": "邮寄"
+        },
+        {
+          "hanzi": "粒",
+          "pinyin": "lì",
+          "word": "米粒"
+        },
+        {
+          "hanzi": "破",
+          "pinyin": "pò",
+          "word": "打破"
+        },
+        {
+          "hanzi": "漏",
+          "pinyin": "lòu",
+          "word": "遗漏"
+        },
+        {
+          "hanzi": "懊",
+          "pinyin": "ào",
+          "word": "懊恼"
+        },
+        {
+          "hanzi": "丧",
+          "pinyin": "sàng",
+          "word": "沮丧"
+        },
+        {
+          "hanzi": "啊",
+          "pinyin": "á",
+          "word": "啊呀",
+          "multiReading": true
+        },
+        {
+          "hanzi": "巧",
+          "pinyin": "qiǎo",
+          "word": "巧妙"
+        },
+        {
+          "hanzi": "绚",
+          "pinyin": "xuàn",
+          "word": "绚丽"
+        },
+        {
+          "hanzi": "狐",
+          "pinyin": "hú",
+          "word": "狐狸"
+        },
+        {
+          "hanzi": "狸",
+          "pinyin": "lí",
+          "word": "狐狸"
+        },
+        {
+          "hanzi": "籽",
+          "pinyin": "zǐ",
+          "word": "花籽"
+        },
+        {
+          "hanzi": "礼",
+          "pinyin": "lǐ",
+          "word": "礼物"
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "kind": "课文",
+      "no": 4,
+      "title": "邓小平爷爷植树",
+      "chars": [
+        {
+          "hanzi": "邓",
+          "pinyin": "dèng",
+          "word": "姓邓"
+        },
+        {
+          "hanzi": "坛",
+          "pinyin": "tán",
+          "word": "花坛"
+        },
+        {
+          "hanzi": "龄",
+          "pinyin": "líng",
+          "word": "年龄"
+        },
+        {
+          "hanzi": "格",
+          "pinyin": "gé",
+          "word": "格外"
+        },
+        {
+          "hanzi": "致",
+          "pinyin": "zhì",
+          "word": "兴致"
+        },
+        {
+          "hanzi": "勃",
+          "pinyin": "bó",
+          "word": "蓬勃"
+        },
+        {
+          "hanzi": "挖",
+          "pinyin": "wā",
+          "word": "挖掘"
+        },
+        {
+          "hanzi": "额",
+          "pinyin": "é",
+          "word": "额头"
+        },
+        {
+          "hanzi": "汗",
+          "pinyin": "hàn",
+          "word": "汗水"
+        },
+        {
+          "hanzi": "仍",
+          "pinyin": "réng",
+          "word": "仍然"
+        },
+        {
+          "hanzi": "肯",
+          "pinyin": "kěn",
+          "word": "肯定"
+        },
+        {
+          "hanzi": "茁",
+          "pinyin": "zhuó",
+          "word": "茁壮"
+        },
+        {
+          "hanzi": "移",
+          "pinyin": "yí",
+          "word": "移动"
+        },
+        {
+          "hanzi": "挥",
+          "pinyin": "huī",
+          "word": "挥手"
+        },
+        {
+          "hanzi": "扶",
+          "pinyin": "fú",
+          "word": "搀扶"
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地一",
+      "chars": [
+        {
+          "hanzi": "亭",
+          "pinyin": "tíng",
+          "word": "亭子"
+        },
+        {
+          "hanzi": "咨",
+          "pinyin": "zī",
+          "word": "咨询"
+        },
+        {
+          "hanzi": "询",
+          "pinyin": "xún",
+          "word": "询问"
+        },
+        {
+          "hanzi": "剧",
+          "pinyin": "jù",
+          "word": "剧场"
+        },
+        {
+          "hanzi": "塔",
+          "pinyin": "tǎ",
+          "word": "宝塔"
+        },
+        {
+          "hanzi": "餐",
+          "pinyin": "cān",
+          "word": "餐厅"
+        },
+        {
+          "hanzi": "厅",
+          "pinyin": "tīng",
+          "word": "大厅"
+        },
+        {
+          "hanzi": "厕",
+          "pinyin": "cè",
+          "word": "厕所"
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "kind": "课文",
+      "no": 5,
+      "title": "雷锋叔叔，你在哪里",
+      "chars": [
+        {
+          "hanzi": "迹",
+          "pinyin": "jì",
+          "word": "足迹"
+        },
+        {
+          "hanzi": "曾",
+          "pinyin": "céng",
+          "word": "曾经"
+        },
+        {
+          "hanzi": "冒",
+          "pinyin": "mào",
+          "word": "感冒"
+        },
+        {
+          "hanzi": "蒙",
+          "pinyin": "méng",
+          "word": "蒙蒙"
+        },
+        {
+          "hanzi": "瞧",
+          "pinyin": "qiáo",
+          "word": "瞧见"
+        },
+        {
+          "hanzi": "泞",
+          "pinyin": "nìng",
+          "word": "泥泞"
+        },
+        {
+          "hanzi": "窝",
+          "pinyin": "wō",
+          "word": "鸟窝"
+        },
+        {
+          "hanzi": "顺",
+          "pinyin": "shùn",
+          "word": "顺利"
+        },
+        {
+          "hanzi": "荆",
+          "pinyin": "jīng",
+          "word": "荆棘"
+        },
+        {
+          "hanzi": "棘",
+          "pinyin": "jí",
+          "word": "荆棘"
+        },
+        {
+          "hanzi": "瓣",
+          "pinyin": "bàn",
+          "word": "花瓣"
+        },
+        {
+          "hanzi": "莹",
+          "pinyin": "yíng",
+          "word": "晶莹"
+        },
+        {
+          "hanzi": "觅",
+          "pinyin": "mì",
+          "word": "寻觅"
+        },
+        {
+          "hanzi": "需",
+          "pinyin": "xū",
+          "word": "需要"
+        },
+        {
+          "hanzi": "献",
+          "pinyin": "xiàn",
+          "word": "奉献"
+        }
+      ]
+    },
+    {
+      "order": 7,
+      "kind": "课文",
+      "no": 6,
+      "title": "千人糕",
+      "chars": [
+        {
+          "hanzi": "糕",
+          "pinyin": "gāo",
+          "word": "蛋糕"
+        },
+        {
+          "hanzi": "尝",
+          "pinyin": "cháng",
+          "word": "品尝"
+        },
+        {
+          "hanzi": "嘛",
+          "pinyin": "má",
+          "word": "干嘛"
+        },
+        {
+          "hanzi": "磨",
+          "pinyin": "mò",
+          "word": "磨坊"
+        },
+        {
+          "hanzi": "粉",
+          "pinyin": "fěn",
+          "word": "面粉"
+        },
+        {
+          "hanzi": "糖",
+          "pinyin": "táng",
+          "word": "糖果"
+        },
+        {
+          "hanzi": "料",
+          "pinyin": "liào",
+          "word": "材料"
+        },
+        {
+          "hanzi": "甘",
+          "pinyin": "gān",
+          "word": "甘蔗"
+        },
+        {
+          "hanzi": "蔗",
+          "pinyin": "zhè",
+          "word": "甘蔗"
+        },
+        {
+          "hanzi": "汁",
+          "pinyin": "zhī",
+          "word": "果汁"
+        },
+        {
+          "hanzi": "熬",
+          "pinyin": "áo",
+          "word": "煎熬"
+        },
+        {
+          "hanzi": "销",
+          "pinyin": "xiāo",
+          "word": "销售"
+        },
+        {
+          "hanzi": "售",
+          "pinyin": "shòu",
+          "word": "销售"
+        },
+        {
+          "hanzi": "的",
+          "pinyin": "dí",
+          "word": "的确",
+          "multiReading": true
+        },
+        {
+          "hanzi": "确",
+          "pinyin": "què",
+          "word": "的确"
+        },
+        {
+          "hanzi": "应",
+          "pinyin": "yīng",
+          "word": "应该"
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "kind": "课文",
+      "no": 7,
+      "title": "我不是最弱小的",
+      "chars": [
+        {
+          "hanzi": "弱",
+          "pinyin": "ruò",
+          "word": "弱小"
+        },
+        {
+          "hanzi": "末",
+          "pinyin": "mò",
+          "word": "周末"
+        },
+        {
+          "hanzi": "亚",
+          "pinyin": "yà",
+          "word": "亚军"
+        },
+        {
+          "hanzi": "簇",
+          "pinyin": "cù",
+          "word": "簇拥"
+        },
+        {
+          "hanzi": "拥",
+          "pinyin": "yōng",
+          "word": "拥抱"
+        },
+        {
+          "hanzi": "随",
+          "pinyin": "suí",
+          "word": "跟随"
+        },
+        {
+          "hanzi": "芬",
+          "pinyin": "fēn",
+          "word": "芬芳"
+        },
+        {
+          "hanzi": "芳",
+          "pinyin": "fāng",
+          "word": "芳香"
+        },
+        {
+          "hanzi": "突",
+          "pinyin": "tū",
+          "word": "突然"
+        },
+        {
+          "hanzi": "紧",
+          "pinyin": "jǐn",
+          "word": "紧张"
+        },
+        {
+          "hanzi": "递",
+          "pinyin": "dì",
+          "word": "传递"
+        },
+        {
+          "hanzi": "摸",
+          "pinyin": "mō",
+          "word": "抚摸"
+        },
+        {
+          "hanzi": "显",
+          "pinyin": "xiǎn",
+          "word": "显示"
+        },
+        {
+          "hanzi": "娇",
+          "pinyin": "jiāo",
+          "word": "娇嫩"
+        },
+        {
+          "hanzi": "掀",
+          "pinyin": "xiān",
+          "word": "掀开"
+        }
+      ]
+    },
+    {
+      "order": 9,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地二",
+      "chars": [
+        {
+          "hanzi": "程",
+          "pinyin": "chéng",
+          "word": "课程"
+        },
+        {
+          "hanzi": "魔",
+          "pinyin": "mó",
+          "word": "魔术"
+        },
+        {
+          "hanzi": "术",
+          "pinyin": "shù",
+          "word": "技术"
+        },
+        {
+          "hanzi": "建",
+          "pinyin": "jiàn",
+          "word": "建造"
+        },
+        {
+          "hanzi": "筑",
+          "pinyin": "zhù",
+          "word": "建筑"
+        },
+        {
+          "hanzi": "发",
+          "pinyin": "fā",
+          "word": "发现",
+          "multiReading": true
+        },
+        {
+          "hanzi": "演",
+          "pinyin": "yǎn",
+          "word": "表演"
+        },
+        {
+          "hanzi": "营",
+          "pinyin": "yíng",
+          "word": "营养"
+        },
+        {
+          "hanzi": "务",
+          "pinyin": "wù",
+          "word": "任务"
+        },
+        {
+          "hanzi": "判",
+          "pinyin": "pàn",
+          "word": "判断"
+        },
+        {
+          "hanzi": "饲",
+          "pinyin": "sì",
+          "word": "饲料"
+        },
+        {
+          "hanzi": "养",
+          "pinyin": "yǎng",
+          "word": "培养"
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "kind": "识字",
+      "no": 1,
+      "title": "神州谣",
+      "chars": [
+        {
+          "hanzi": "州",
+          "pinyin": "zhōu",
+          "word": "神州"
+        },
+        {
+          "hanzi": "谣",
+          "pinyin": "yáo",
+          "word": "歌谣"
+        },
+        {
+          "hanzi": "华",
+          "pinyin": "huá",
+          "word": "中华"
+        },
+        {
+          "hanzi": "涌",
+          "pinyin": "yǒng",
+          "word": "涌现"
+        },
+        {
+          "hanzi": "耸",
+          "pinyin": "sǒng",
+          "word": "高耸"
+        },
+        {
+          "hanzi": "隔",
+          "pinyin": "gé",
+          "word": "隔开"
+        },
+        {
+          "hanzi": "峡",
+          "pinyin": "xiá",
+          "word": "海峡"
+        },
+        {
+          "hanzi": "与",
+          "pinyin": "yǔ",
+          "word": "与其"
+        },
+        {
+          "hanzi": "陆",
+          "pinyin": "lù",
+          "word": "陆地"
+        },
+        {
+          "hanzi": "各",
+          "pinyin": "gè",
+          "word": "各自"
+        },
+        {
+          "hanzi": "谊",
+          "pinyin": "yì",
+          "word": "友谊"
+        },
+        {
+          "hanzi": "浓",
+          "pinyin": "nóng",
+          "word": "浓厚"
+        },
+        {
+          "hanzi": "齐",
+          "pinyin": "qí",
+          "word": "整齐"
+        },
+        {
+          "hanzi": "奋",
+          "pinyin": "fèn",
+          "word": "奋斗"
+        },
+        {
+          "hanzi": "繁",
+          "pinyin": "fán",
+          "word": "繁华"
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "kind": "识字",
+      "no": 2,
+      "title": "传统节日",
+      "chars": [
+        {
+          "hanzi": "传",
+          "pinyin": "chuán",
+          "word": "传说"
+        },
+        {
+          "hanzi": "统",
+          "pinyin": "tǒng",
+          "word": "统一"
+        },
+        {
+          "hanzi": "贴",
+          "pinyin": "tiē",
+          "word": "粘贴"
+        },
+        {
+          "hanzi": "宵",
+          "pinyin": "xiāo",
+          "word": "元宵"
+        },
+        {
+          "hanzi": "巷",
+          "pinyin": "xiàng",
+          "word": "小巷"
+        },
+        {
+          "hanzi": "潮",
+          "pinyin": "cháo",
+          "word": "潮水"
+        },
+        {
+          "hanzi": "祭",
+          "pinyin": "jì",
+          "word": "祭祀"
+        },
+        {
+          "hanzi": "扫",
+          "pinyin": "sǎo",
+          "word": "打扫"
+        },
+        {
+          "hanzi": "艾",
+          "pinyin": "ài",
+          "word": "艾草"
+        },
+        {
+          "hanzi": "堂",
+          "pinyin": "táng",
+          "word": "课堂"
+        },
+        {
+          "hanzi": "乞",
+          "pinyin": "qǐ",
+          "word": "乞求"
+        },
+        {
+          "hanzi": "郎",
+          "pinyin": "láng",
+          "word": "新郎"
+        },
+        {
+          "hanzi": "饼",
+          "pinyin": "bǐng",
+          "word": "月饼"
+        },
+        {
+          "hanzi": "赏",
+          "pinyin": "shǎng",
+          "word": "欣赏"
+        },
+        {
+          "hanzi": "菊",
+          "pinyin": "jú",
+          "word": "菊花"
+        }
+      ]
+    },
+    {
+      "order": 12,
+      "kind": "识字",
+      "no": 3,
+      "title": "“贝”的故事",
+      "chars": [
+        {
+          "hanzi": "甲",
+          "pinyin": "jiǎ",
+          "word": "指甲"
+        },
+        {
+          "hanzi": "骨",
+          "pinyin": "gǔ",
+          "word": "骨头"
+        },
+        {
+          "hanzi": "漂",
+          "pinyin": "piào",
+          "word": "漂亮",
+          "multiReading": true
+        },
+        {
+          "hanzi": "贵",
+          "pinyin": "guì",
+          "word": "珍贵"
+        },
+        {
+          "hanzi": "饰",
+          "pinyin": "shì",
+          "word": "装饰"
+        },
+        {
+          "hanzi": "品",
+          "pinyin": "pǐn",
+          "word": "物品"
+        },
+        {
+          "hanzi": "携",
+          "pinyin": "xié",
+          "word": "携带"
+        },
+        {
+          "hanzi": "易",
+          "pinyin": "yì",
+          "word": "容易"
+        },
+        {
+          "hanzi": "损",
+          "pinyin": "sǔn",
+          "word": "损失"
+        },
+        {
+          "hanzi": "钱",
+          "pinyin": "qián",
+          "word": "钱包"
+        },
+        {
+          "hanzi": "币",
+          "pinyin": "bì",
+          "word": "硬币"
+        },
+        {
+          "hanzi": "财",
+          "pinyin": "cái",
+          "word": "财产"
+        },
+        {
+          "hanzi": "赚",
+          "pinyin": "zhuàn",
+          "word": "赚钱"
+        },
+        {
+          "hanzi": "赔",
+          "pinyin": "péi",
+          "word": "赔钱"
+        },
+        {
+          "hanzi": "购",
+          "pinyin": "gòu",
+          "word": "购买"
+        }
+      ]
+    },
+    {
+      "order": 13,
+      "kind": "识字",
+      "no": 4,
+      "title": "中国美食",
+      "chars": [
+        {
+          "hanzi": "拌",
+          "pinyin": "bàn",
+          "word": "凉拌"
+        },
+        {
+          "hanzi": "菠",
+          "pinyin": "bō",
+          "word": "菠菜"
+        },
+        {
+          "hanzi": "煎",
+          "pinyin": "jiān",
+          "word": "煎饼"
+        },
+        {
+          "hanzi": "腐",
+          "pinyin": "fǔ",
+          "word": "豆腐"
+        },
+        {
+          "hanzi": "茄",
+          "pinyin": "qié",
+          "word": "茄子"
+        },
+        {
+          "hanzi": "烤",
+          "pinyin": "kǎo",
+          "word": "烧烤"
+        },
+        {
+          "hanzi": "葱",
+          "pinyin": "cōng",
+          "word": "大葱"
+        },
+        {
+          "hanzi": "炖",
+          "pinyin": "dùn",
+          "word": "炖肉"
+        },
+        {
+          "hanzi": "蘑",
+          "pinyin": "mó",
+          "word": "蘑菇"
+        },
+        {
+          "hanzi": "菇",
+          "pinyin": "gū",
+          "word": "蘑菇"
+        },
+        {
+          "hanzi": "蒸",
+          "pinyin": "zhēng",
+          "word": "蒸饺"
+        },
+        {
+          "hanzi": "饺",
+          "pinyin": "jiǎo",
+          "word": "饺子"
+        },
+        {
+          "hanzi": "炸",
+          "pinyin": "zhá",
+          "word": "油炸",
+          "multiReading": true
+        },
+        {
+          "hanzi": "酱",
+          "pinyin": "jiàng",
+          "word": "酱油"
+        },
+        {
+          "hanzi": "粥",
+          "pinyin": "zhōu",
+          "word": "米粥"
+        },
+        {
+          "hanzi": "蛋",
+          "pinyin": "dàn",
+          "word": "鸡蛋"
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地三",
+      "chars": [
+        {
+          "hanzi": "津",
+          "pinyin": "jīn",
+          "word": "天津"
+        },
+        {
+          "hanzi": "酸",
+          "pinyin": "suān",
+          "word": "酸奶"
+        },
+        {
+          "hanzi": "溜",
+          "pinyin": "liū",
+          "word": "溜冰"
+        },
+        {
+          "hanzi": "辣",
+          "pinyin": "là",
+          "word": "辣椒"
+        },
+        {
+          "hanzi": "乎",
+          "pinyin": "hū",
+          "word": "几乎"
+        },
+        {
+          "hanzi": "喷",
+          "pinyin": "pēn",
+          "word": "喷泉"
+        },
+        {
+          "hanzi": "腻",
+          "pinyin": "nì",
+          "word": "油腻"
+        },
+        {
+          "hanzi": "绵",
+          "pinyin": "mián",
+          "word": "绵羊"
+        },
+        {
+          "hanzi": "脆",
+          "pinyin": "cuì",
+          "word": "干脆"
+        },
+        {
+          "hanzi": "邦",
+          "pinyin": "bāng",
+          "word": "邻邦"
+        }
+      ]
+    },
+    {
+      "order": 15,
+      "kind": "课文",
+      "no": 8,
+      "title": "彩色的梦",
+      "chars": [
+        {
+          "hanzi": "梦",
+          "pinyin": "mèng",
+          "word": "做梦"
+        },
+        {
+          "hanzi": "躺",
+          "pinyin": "tǎng",
+          "word": "躺下"
+        },
+        {
+          "hanzi": "聊",
+          "pinyin": "liáo",
+          "word": "聊天"
+        },
+        {
+          "hanzi": "蹦",
+          "pinyin": "bèng",
+          "word": "蹦跳"
+        },
+        {
+          "hanzi": "郁",
+          "pinyin": "yù",
+          "word": "葱郁"
+        },
+        {
+          "hanzi": "囱",
+          "pinyin": "cōng",
+          "word": "烟囱"
+        },
+        {
+          "hanzi": "般",
+          "pinyin": "bān",
+          "word": "一般"
+        },
+        {
+          "hanzi": "精",
+          "pinyin": "jīng",
+          "word": "精彩"
+        },
+        {
+          "hanzi": "境",
+          "pinyin": "jìng",
+          "word": "环境"
+        },
+        {
+          "hanzi": "叮",
+          "pinyin": "dīng",
+          "word": "叮嘱"
+        },
+        {
+          "hanzi": "咛",
+          "pinyin": "níng",
+          "word": "叮咛"
+        }
+      ]
+    },
+    {
+      "order": 16,
+      "kind": "课文",
+      "no": 9,
+      "title": "一匹出色的马",
+      "chars": [
+        {
+          "hanzi": "匹",
+          "pinyin": "pǐ",
+          "word": "马匹"
+        },
+        {
+          "hanzi": "郊",
+          "pinyin": "jiāo",
+          "word": "郊外"
+        },
+        {
+          "hanzi": "微",
+          "pinyin": "wēi",
+          "word": "微笑"
+        },
+        {
+          "hanzi": "泛",
+          "pinyin": "fàn",
+          "word": "广泛"
+        },
+        {
+          "hanzi": "波",
+          "pinyin": "bō",
+          "word": "波纹"
+        },
+        {
+          "hanzi": "纹",
+          "pinyin": "wén",
+          "word": "波纹"
+        },
+        {
+          "hanzi": "异",
+          "pinyin": "yì",
+          "word": "差异"
+        },
+        {
+          "hanzi": "恋",
+          "pinyin": "liàn",
+          "word": "留恋"
+        },
+        {
+          "hanzi": "舍",
+          "pinyin": "shě",
+          "word": "舍弃"
+        },
+        {
+          "hanzi": "求",
+          "pinyin": "qiú",
+          "word": "请求"
+        },
+        {
+          "hanzi": "株",
+          "pinyin": "zhū",
+          "word": "植株"
+        },
+        {
+          "hanzi": "拾",
+          "pinyin": "shí",
+          "word": "捡拾"
+        },
+        {
+          "hanzi": "骑",
+          "pinyin": "qí",
+          "word": "骑马"
+        },
+        {
+          "hanzi": "骄",
+          "pinyin": "jiāo",
+          "word": "骄傲"
+        },
+        {
+          "hanzi": "傲",
+          "pinyin": "ào",
+          "word": "骄傲"
+        }
+      ]
+    },
+    {
+      "order": 17,
+      "kind": "课文",
+      "no": 10,
+      "title": "枫树上的喜鹊",
+      "chars": [
+        {
+          "hanzi": "渡",
+          "pinyin": "dù",
+          "word": "渡口"
+        },
+        {
+          "hanzi": "荫",
+          "pinyin": "yīn",
+          "word": "树荫"
+        },
+        {
+          "hanzi": "蔽",
+          "pinyin": "bì",
+          "word": "遮蔽"
+        },
+        {
+          "hanzi": "阿",
+          "pinyin": "ā",
+          "word": "阿姨"
+        },
+        {
+          "hanzi": "姨",
+          "pinyin": "yí",
+          "word": "阿姨"
+        },
+        {
+          "hanzi": "撑",
+          "pinyin": "chēng",
+          "word": "支撑"
+        },
+        {
+          "hanzi": "便",
+          "pinyin": "biàn",
+          "word": "方便"
+        },
+        {
+          "hanzi": "冈",
+          "pinyin": "gāng",
+          "word": "山冈"
+        },
+        {
+          "hanzi": "懂",
+          "pinyin": "dǒng",
+          "word": "懂得"
+        },
+        {
+          "hanzi": "案",
+          "pinyin": "àn",
+          "word": "方案"
+        }
+      ]
+    },
+    {
+      "order": 18,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地四",
+      "chars": [
+        {
+          "hanzi": "倒",
+          "pinyin": "dǎo",
+          "word": "摔倒",
+          "multiReading": true
+        },
+        {
+          "hanzi": "翁",
+          "pinyin": "wēng",
+          "word": "老翁"
+        },
+        {
+          "hanzi": "橡",
+          "pinyin": "xiàng",
+          "word": "橡皮"
+        },
+        {
+          "hanzi": "枪",
+          "pinyin": "qiāng",
+          "word": "手枪"
+        },
+        {
+          "hanzi": "控",
+          "pinyin": "kòng",
+          "word": "控制"
+        },
+        {
+          "hanzi": "坦",
+          "pinyin": "tǎn",
+          "word": "平坦"
+        },
+        {
+          "hanzi": "克",
+          "pinyin": "kè",
+          "word": "千克"
+        },
+        {
+          "hanzi": "航",
+          "pinyin": "háng",
+          "word": "航行"
+        },
+        {
+          "hanzi": "模",
+          "pinyin": "mó",
+          "word": "模型"
+        },
+        {
+          "hanzi": "型",
+          "pinyin": "xíng",
+          "word": "模型"
+        }
+      ]
+    },
+    {
+      "order": 19,
+      "kind": "课文",
+      "no": 11,
+      "title": "寓言二则",
+      "chars": [
+        {
+          "hanzi": "寓",
+          "pinyin": "yù",
+          "word": "寓言"
+        },
+        {
+          "hanzi": "则",
+          "pinyin": "zé",
+          "word": "规则"
+        },
+        {
+          "hanzi": "亡",
+          "pinyin": "wáng",
+          "word": "死亡"
+        },
+        {
+          "hanzi": "补",
+          "pinyin": "bǔ",
+          "word": "补充"
+        },
+        {
+          "hanzi": "牢",
+          "pinyin": "láo",
+          "word": "牢固"
+        },
+        {
+          "hanzi": "圈",
+          "pinyin": "juān",
+          "word": "羊圈",
+          "multiReading": true
+        },
+        {
+          "hanzi": "叨",
+          "pinyin": "dāo",
+          "word": "唠叨"
+        },
+        {
+          "hanzi": "修",
+          "pinyin": "xiū",
+          "word": "修理"
+        },
+        {
+          "hanzi": "堵",
+          "pinyin": "dǔ",
+          "word": "堵住"
+        },
+        {
+          "hanzi": "悔",
+          "pinyin": "huǐ",
+          "word": "后悔"
+        },
+        {
+          "hanzi": "实",
+          "pinyin": "shí",
+          "word": "实际"
+        },
+        {
+          "hanzi": "焦",
+          "pinyin": "jiāo",
+          "word": "焦急"
+        },
+        {
+          "hanzi": "筋",
+          "pinyin": "jīn",
+          "word": "脑筋"
+        },
+        {
+          "hanzi": "喘",
+          "pinyin": "chuǎn",
+          "word": "喘气"
+        },
+        {
+          "hanzi": "费",
+          "pinyin": "fèi",
+          "word": "浪费"
+        },
+        {
+          "hanzi": "截",
+          "pinyin": "jié",
+          "word": "半截"
+        }
+      ]
+    },
+    {
+      "order": 20,
+      "kind": "课文",
+      "no": 12,
+      "title": "画杨桃",
+      "chars": [
+        {
+          "hanzi": "室",
+          "pinyin": "shì",
+          "word": "教室"
+        },
+        {
+          "hanzi": "而",
+          "pinyin": "ér",
+          "word": "而且"
+        },
+        {
+          "hanzi": "幅",
+          "pinyin": "fú",
+          "word": "篇幅"
+        },
+        {
+          "hanzi": "哈",
+          "pinyin": "hā",
+          "word": "哈哈"
+        },
+        {
+          "hanzi": "审",
+          "pinyin": "shěn",
+          "word": "审查"
+        },
+        {
+          "hanzi": "肃",
+          "pinyin": "sù",
+          "word": "严肃"
+        },
+        {
+          "hanzi": "晌",
+          "pinyin": "shǎng",
+          "word": "半晌"
+        },
+        {
+          "hanzi": "嘻",
+          "pinyin": "xī",
+          "word": "嘻嘻"
+        },
+        {
+          "hanzi": "悦",
+          "pinyin": "yuè",
+          "word": "喜悦"
+        },
+        {
+          "hanzi": "诲",
+          "pinyin": "huì",
+          "word": "教诲"
+        }
+      ]
+    },
+    {
+      "order": 21,
+      "kind": "课文",
+      "no": 13,
+      "title": "小马过河",
+      "chars": [
+        {
+          "hanzi": "棚",
+          "pinyin": "péng",
+          "word": "马棚"
+        },
+        {
+          "hanzi": "驮",
+          "pinyin": "tuó",
+          "word": "驮运"
+        },
+        {
+          "hanzi": "坊",
+          "pinyin": "fáng",
+          "word": "磨坊"
+        },
+        {
+          "hanzi": "挡",
+          "pinyin": "dǎng",
+          "word": "阻挡"
+        },
+        {
+          "hanzi": "伯",
+          "pinyin": "bó",
+          "word": "伯伯"
+        },
+        {
+          "hanzi": "浅",
+          "pinyin": "qiǎn",
+          "word": "深浅"
+        },
+        {
+          "hanzi": "刚",
+          "pinyin": "gāng",
+          "word": "刚才"
+        },
+        {
+          "hanzi": "淹",
+          "pinyin": "yān",
+          "word": "淹没"
+        },
+        {
+          "hanzi": "哩",
+          "pinyin": "lǐ",
+          "word": "一哩"
+        },
+        {
+          "hanzi": "叹",
+          "pinyin": "tàn",
+          "word": "叹气"
+        },
+        {
+          "hanzi": "唉",
+          "pinyin": "āi",
+          "word": "唉呀"
+        },
+        {
+          "hanzi": "蹄",
+          "pinyin": "tí",
+          "word": "马蹄"
+        },
+        {
+          "hanzi": "既",
+          "pinyin": "jì",
+          "word": "既然"
+        }
+      ]
+    },
+    {
+      "order": 22,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地五",
+      "chars": [
+        {
+          "hanzi": "厨",
+          "pinyin": "chú",
+          "word": "厨房"
+        },
+        {
+          "hanzi": "柜",
+          "pinyin": "guì",
+          "word": "衣柜"
+        },
+        {
+          "hanzi": "厢",
+          "pinyin": "xiāng",
+          "word": "车厢"
+        },
+        {
+          "hanzi": "商",
+          "pinyin": "shāng",
+          "word": "商店"
+        },
+        {
+          "hanzi": "厦",
+          "pinyin": "shà",
+          "word": "大厦"
+        },
+        {
+          "hanzi": "洞",
+          "pinyin": "dòng",
+          "word": "山洞"
+        },
+        {
+          "hanzi": "穴",
+          "pinyin": "xué",
+          "word": "洞穴"
+        },
+        {
+          "hanzi": "窟",
+          "pinyin": "kū",
+          "word": "窟窿"
+        },
+        {
+          "hanzi": "窿",
+          "pinyin": "lóng",
+          "word": "窟窿"
+        },
+        {
+          "hanzi": "窖",
+          "pinyin": "jiào",
+          "word": "地窖"
+        },
+        {
+          "hanzi": "窄",
+          "pinyin": "zhǎi",
+          "word": "狭窄"
+        }
+      ]
+    },
+    {
+      "order": 23,
+      "kind": "课文",
+      "no": 14,
+      "title": "古诗二首",
+      "chars": [
+        {
+          "hanzi": "甫",
+          "pinyin": "fǔ",
+          "word": "杜甫"
+        },
+        {
+          "hanzi": "鸣",
+          "pinyin": "míng",
+          "word": "鸣叫"
+        },
+        {
+          "hanzi": "含",
+          "pinyin": "hán",
+          "word": "包含"
+        },
+        {
+          "hanzi": "岭",
+          "pinyin": "lǐng",
+          "word": "山岭"
+        },
+        {
+          "hanzi": "泊",
+          "pinyin": "bó",
+          "word": "停泊"
+        },
+        {
+          "hanzi": "晓",
+          "pinyin": "xiǎo",
+          "word": "知晓"
+        },
+        {
+          "hanzi": "净",
+          "pinyin": "jìng",
+          "word": "干净"
+        },
+        {
+          "hanzi": "寺",
+          "pinyin": "sì",
+          "word": "寺庙"
+        },
+        {
+          "hanzi": "宋",
+          "pinyin": "sòng",
+          "word": "宋朝"
+        },
+        {
+          "hanzi": "毕",
+          "pinyin": "bì",
+          "word": "毕业"
+        },
+        {
+          "hanzi": "竟",
+          "pinyin": "jìng",
+          "word": "竟然"
+        }
+      ]
+    },
+    {
+      "order": 24,
+      "kind": "课文",
+      "no": 15,
+      "title": "雷雨",
+      "chars": [
+        {
+          "hanzi": "压",
+          "pinyin": "yā",
+          "word": "压力"
+        },
+        {
+          "hanzi": "蝉",
+          "pinyin": "chán",
+          "word": "蝉鸣"
+        },
+        {
+          "hanzi": "蜘",
+          "pinyin": "zhī",
+          "word": "蜘蛛"
+        },
+        {
+          "hanzi": "蛛",
+          "pinyin": "zhū",
+          "word": "蜘蛛"
+        },
+        {
+          "hanzi": "响",
+          "pinyin": "xiǎng",
+          "word": "响声"
+        },
+        {
+          "hanzi": "哗",
+          "pinyin": "huā",
+          "word": "哗哗"
+        },
+        {
+          "hanzi": "渐",
+          "pinyin": "jiàn",
+          "word": "渐渐"
+        }
+      ]
+    },
+    {
+      "order": 25,
+      "kind": "课文",
+      "no": 16,
+      "title": "要是你在野外迷了路",
+      "chars": [
+        {
+          "hanzi": "慌",
+          "pinyin": "huāng",
+          "word": "慌张"
+        },
+        {
+          "hanzi": "针",
+          "pinyin": "zhēn",
+          "word": "针线"
+        },
+        {
+          "hanzi": "辨",
+          "pinyin": "biàn",
+          "word": "辨别"
+        },
+        {
+          "hanzi": "忠",
+          "pinyin": "zhōng",
+          "word": "忠实"
+        },
+        {
+          "hanzi": "导",
+          "pinyin": "dǎo",
+          "word": "向导"
+        },
+        {
+          "hanzi": "盏",
+          "pinyin": "zhǎn",
+          "word": "灯盏"
+        },
+        {
+          "hanzi": "永",
+          "pinyin": "yǒng",
+          "word": "永远"
+        },
+        {
+          "hanzi": "闯",
+          "pinyin": "chuǎng",
+          "word": "闯关"
+        },
+        {
+          "hanzi": "碰",
+          "pinyin": "pèng",
+          "word": "碰撞"
+        },
+        {
+          "hanzi": "稠",
+          "pinyin": "chóu",
+          "word": "稠密"
+        },
+        {
+          "hanzi": "稀",
+          "pinyin": "xī",
+          "word": "稀少"
+        },
+        {
+          "hanzi": "渠",
+          "pinyin": "qú",
+          "word": "沟渠"
+        }
+      ]
+    },
+    {
+      "order": 26,
+      "kind": "课文",
+      "no": 17,
+      "title": "太空生活趣事多",
+      "chars": [
+        {
+          "hanzi": "宇",
+          "pinyin": "yǔ",
+          "word": "宇宙"
+        },
+        {
+          "hanzi": "宙",
+          "pinyin": "zhòu",
+          "word": "宇宙"
+        },
+        {
+          "hanzi": "稳",
+          "pinyin": "wěn",
+          "word": "平稳"
+        },
+        {
+          "hanzi": "必",
+          "pinyin": "bì",
+          "word": "必须"
+        },
+        {
+          "hanzi": "须",
+          "pinyin": "xū",
+          "word": "必须"
+        },
+        {
+          "hanzi": "固",
+          "pinyin": "gù",
+          "word": "固定"
+        },
+        {
+          "hanzi": "杯",
+          "pinyin": "bēi",
+          "word": "水杯"
+        },
+        {
+          "hanzi": "重",
+          "pinyin": "zhòng",
+          "word": "重量",
+          "multiReading": true
+        },
+        {
+          "hanzi": "态",
+          "pinyin": "tài",
+          "word": "状态"
+        },
+        {
+          "hanzi": "即",
+          "pinyin": "jí",
+          "word": "即使"
+        },
+        {
+          "hanzi": "使",
+          "pinyin": "shǐ",
+          "word": "使用"
+        },
+        {
+          "hanzi": "饮",
+          "pinyin": "yǐn",
+          "word": "饮水"
+        },
+        {
+          "hanzi": "挤",
+          "pinyin": "jǐ",
+          "word": "拥挤"
+        },
+        {
+          "hanzi": "浴",
+          "pinyin": "yù",
+          "word": "淋浴"
+        },
+        {
+          "hanzi": "桶",
+          "pinyin": "tǒng",
+          "word": "水桶"
+        },
+        {
+          "hanzi": "简",
+          "pinyin": "jiǎn",
+          "word": "简单"
+        }
+      ]
+    },
+    {
+      "order": 27,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地六",
+      "chars": [
+        {
+          "hanzi": "博",
+          "pinyin": "bó",
+          "word": "博士"
+        },
+        {
+          "hanzi": "馆",
+          "pinyin": "guǎn",
+          "word": "饭馆"
+        },
+        {
+          "hanzi": "览",
+          "pinyin": "lǎn",
+          "word": "展览"
+        },
+        {
+          "hanzi": "技",
+          "pinyin": "jì",
+          "word": "技术"
+        },
+        {
+          "hanzi": "育",
+          "pinyin": "yù",
+          "word": "教育"
+        },
+        {
+          "hanzi": "究",
+          "pinyin": "jiū",
+          "word": "研究"
+        },
+        {
+          "hanzi": "哨",
+          "pinyin": "shào",
+          "word": "口哨"
+        },
+        {
+          "hanzi": "诊",
+          "pinyin": "zhěn",
+          "word": "诊断"
+        },
+        {
+          "hanzi": "律",
+          "pinyin": "lǜ",
+          "word": "规律"
+        }
+      ]
+    },
+    {
+      "order": 28,
+      "kind": "课文",
+      "no": 18,
+      "title": "大象的耳朵",
+      "chars": [
+        {
+          "hanzi": "耷",
+          "pinyin": "dā",
+          "word": "耷拉"
+        },
+        {
+          "hanzi": "遇",
+          "pinyin": "yù",
+          "word": "遇到"
+        },
+        {
+          "hanzi": "咦",
+          "pinyin": "yí",
+          "word": "咦呀"
+        },
+        {
+          "hanzi": "竖",
+          "pinyin": "shù",
+          "word": "竖立"
+        },
+        {
+          "hanzi": "竿",
+          "pinyin": "gān",
+          "word": "竹竿"
+        },
+        {
+          "hanzi": "舞",
+          "pinyin": "wǔ",
+          "word": "跳舞"
+        },
+        {
+          "hanzi": "痛",
+          "pinyin": "tòng",
+          "word": "疼痛"
+        },
+        {
+          "hanzi": "烦",
+          "pinyin": "fán",
+          "word": "烦恼"
+        },
+        {
+          "hanzi": "扇",
+          "pinyin": "shàn",
+          "word": "扇子",
+          "multiReading": true
+        }
+      ]
+    },
+    {
+      "order": 29,
+      "kind": "课文",
+      "no": 19,
+      "title": "蜘蛛开店",
+      "chars": [
+        {
+          "hanzi": "店",
+          "pinyin": "diàn",
+          "word": "店铺"
+        },
+        {
+          "hanzi": "寂",
+          "pinyin": "jì",
+          "word": "寂寞"
+        },
+        {
+          "hanzi": "寞",
+          "pinyin": "mò",
+          "word": "寂寞"
+        },
+        {
+          "hanzi": "罩",
+          "pinyin": "zhào",
+          "word": "灯罩"
+        },
+        {
+          "hanzi": "牌",
+          "pinyin": "pái",
+          "word": "招牌"
+        },
+        {
+          "hanzi": "编",
+          "pinyin": "biān",
+          "word": "编织"
+        },
+        {
+          "hanzi": "顾",
+          "pinyin": "gù",
+          "word": "顾客"
+        },
+        {
+          "hanzi": "夫",
+          "pinyin": "fū",
+          "word": "功夫"
+        },
+        {
+          "hanzi": "完",
+          "pinyin": "wán",
+          "word": "完成"
+        },
+        {
+          "hanzi": "脖",
+          "pinyin": "bó",
+          "word": "脖子"
+        },
+        {
+          "hanzi": "趴",
+          "pinyin": "pā",
+          "word": "趴下"
+        },
+        {
+          "hanzi": "袜",
+          "pinyin": "wà",
+          "word": "袜子"
+        },
+        {
+          "hanzi": "匆",
+          "pinyin": "cōng",
+          "word": "匆忙"
+        },
+        {
+          "hanzi": "蜈",
+          "pinyin": "wú",
+          "word": "蜈蚣"
+        },
+        {
+          "hanzi": "蚣",
+          "pinyin": "gōng",
+          "word": "蜈蚣"
+        }
+      ]
+    },
+    {
+      "order": 30,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地七",
+      "chars": [
+        {
+          "hanzi": "扫",
+          "pinyin": "sào",
+          "word": "扫帚",
+          "multiReading": true
+        },
+        {
+          "hanzi": "帚",
+          "pinyin": "zhǒu",
+          "word": "扫帚"
+        },
+        {
+          "hanzi": "抹",
+          "pinyin": "mā",
+          "word": "抹布"
+        },
+        {
+          "hanzi": "拖",
+          "pinyin": "tuō",
+          "word": "拖把"
+        },
+        {
+          "hanzi": "簸",
+          "pinyin": "bò",
+          "word": "簸箕"
+        },
+        {
+          "hanzi": "箕",
+          "pinyin": "jī",
+          "word": "簸箕"
+        },
+        {
+          "hanzi": "玻",
+          "pinyin": "bō",
+          "word": "玻璃"
+        },
+        {
+          "hanzi": "璃",
+          "pinyin": "lí",
+          "word": "玻璃"
+        },
+        {
+          "hanzi": "垃",
+          "pinyin": "lā",
+          "word": "垃圾"
+        },
+        {
+          "hanzi": "圾",
+          "pinyin": "jī",
+          "word": "垃圾"
+        }
+      ]
+    },
+    {
+      "order": 31,
+      "kind": "课文",
+      "no": 20,
+      "title": "青蛙卖泥塘",
+      "chars": [
+        {
+          "hanzi": "烂",
+          "pinyin": "làn",
+          "word": "烂泥"
+        },
+        {
+          "hanzi": "换",
+          "pinyin": "huàn",
+          "word": "交换"
+        },
+        {
+          "hanzi": "搬",
+          "pinyin": "bān",
+          "word": "搬家"
+        },
+        {
+          "hanzi": "喝",
+          "pinyin": "hē",
+          "word": "喝水",
+          "multiReading": true
+        },
+        {
+          "hanzi": "坑",
+          "pinyin": "kēng",
+          "word": "泥坑"
+        },
+        {
+          "hanzi": "舒",
+          "pinyin": "shū",
+          "word": "舒服"
+        },
+        {
+          "hanzi": "集",
+          "pinyin": "jí",
+          "word": "集中"
+        },
+        {
+          "hanzi": "播",
+          "pinyin": "bō",
+          "word": "播种"
+        },
+        {
+          "hanzi": "茵",
+          "pinyin": "yīn",
+          "word": "绿茵"
+        },
+        {
+          "hanzi": "砍",
+          "pinyin": "kǎn",
+          "word": "砍树"
+        },
+        {
+          "hanzi": "灌",
+          "pinyin": "guàn",
+          "word": "灌溉"
+        },
+        {
+          "hanzi": "缺",
+          "pinyin": "quē",
+          "word": "缺少"
+        },
+        {
+          "hanzi": "栽",
+          "pinyin": "zāi",
+          "word": "栽树"
+        },
+        {
+          "hanzi": "泳",
+          "pinyin": "yǒng",
+          "word": "游泳"
+        },
+        {
+          "hanzi": "愣",
+          "pinyin": "lèng",
+          "word": "发愣"
+        }
+      ]
+    },
+    {
+      "order": 32,
+      "kind": "课文",
+      "no": 21,
+      "title": "小毛虫",
+      "chars": [
+        {
+          "hanzi": "量",
+          "pinyin": "liáng",
+          "word": "测量",
+          "multiReading": true
+        },
+        {
+          "hanzi": "昆",
+          "pinyin": "kūn",
+          "word": "昆虫"
+        },
+        {
+          "hanzi": "怜",
+          "pinyin": "lián",
+          "word": "可怜"
+        },
+        {
+          "hanzi": "另",
+          "pinyin": "lìng",
+          "word": "另外"
+        },
+        {
+          "hanzi": "仿",
+          "pinyin": "fǎng",
+          "word": "仿佛"
+        },
+        {
+          "hanzi": "佛",
+          "pinyin": "fú",
+          "word": "仿佛"
+        },
+        {
+          "hanzi": "尽",
+          "pinyin": "jǐn",
+          "word": "尽管",
+          "multiReading": true
+        },
+        {
+          "hanzi": "并",
+          "pinyin": "bìng",
+          "word": "并且"
+        },
+        {
+          "hanzi": "任",
+          "pinyin": "rèn",
+          "word": "任何"
+        },
+        {
+          "hanzi": "何",
+          "pinyin": "hé",
+          "word": "任何"
+        },
+        {
+          "hanzi": "纺",
+          "pinyin": "fǎng",
+          "word": "纺织"
+        },
+        {
+          "hanzi": "竭",
+          "pinyin": "jié",
+          "word": "竭力"
+        },
+        {
+          "hanzi": "规",
+          "pinyin": "guī",
+          "word": "规则"
+        },
+        {
+          "hanzi": "待",
+          "pinyin": "dài",
+          "word": "等待"
+        },
+        {
+          "hanzi": "醒",
+          "pinyin": "xǐng",
+          "word": "苏醒"
+        },
+        {
+          "hanzi": "挣",
+          "pinyin": "zhèng",
+          "word": "挣钱"
+        },
+        {
+          "hanzi": "愉",
+          "pinyin": "yú",
+          "word": "愉快"
+        }
+      ]
+    },
+    {
+      "order": 33,
+      "kind": "课文",
+      "no": 22,
+      "title": "羿射九日",
+      "chars": [
+        {
+          "hanzi": "射",
+          "pinyin": "shè",
+          "word": "射击"
+        },
+        {
+          "hanzi": "桑",
+          "pinyin": "sāng",
+          "word": "桑树"
+        },
+        {
+          "hanzi": "值",
+          "pinyin": "zhí",
+          "word": "价值"
+        },
+        {
+          "hanzi": "熔",
+          "pinyin": "róng",
+          "word": "熔化"
+        },
+        {
+          "hanzi": "类",
+          "pinyin": "lèi",
+          "word": "种类"
+        },
+        {
+          "hanzi": "箭",
+          "pinyin": "jiàn",
+          "word": "弓箭"
+        },
+        {
+          "hanzi": "翻",
+          "pinyin": "fān",
+          "word": "翻身"
+        },
+        {
+          "hanzi": "跨",
+          "pinyin": "kuà",
+          "word": "跨越"
+        },
+        {
+          "hanzi": "搭",
+          "pinyin": "dā",
+          "word": "搭桥"
+        },
+        {
+          "hanzi": "裂",
+          "pinyin": "liè",
+          "word": "裂开"
+        },
+        {
+          "hanzi": "窜",
+          "pinyin": "cuàn",
+          "word": "逃窜"
+        },
+        {
+          "hanzi": "炎",
+          "pinyin": "yán",
+          "word": "炎热"
+        },
+        {
+          "hanzi": "滋",
+          "pinyin": "zī",
+          "word": "滋润"
+        },
+        {
+          "hanzi": "润",
+          "pinyin": "rùn",
+          "word": "滋润"
+        },
+        {
+          "hanzi": "腾",
+          "pinyin": "téng",
+          "word": "沸腾"
+        }
+      ]
+    },
+    {
+      "order": 34,
+      "kind": "课文",
+      "no": 23,
+      "title": "黄帝的传说",
+      "chars": [
+        {
+          "hanzi": "帝",
+          "pinyin": "dì",
+          "word": "皇帝"
+        },
+        {
+          "hanzi": "创",
+          "pinyin": "chuàng",
+          "word": "创造"
+        },
+        {
+          "hanzi": "帽",
+          "pinyin": "mào",
+          "word": "帽子"
+        },
+        {
+          "hanzi": "启",
+          "pinyin": "qǐ",
+          "word": "启发"
+        },
+        {
+          "hanzi": "召",
+          "pinyin": "zhào",
+          "word": "召开"
+        },
+        {
+          "hanzi": "按",
+          "pinyin": "àn",
+          "word": "按照"
+        },
+        {
+          "hanzi": "设",
+          "pinyin": "shè",
+          "word": "设计"
+        },
+        {
+          "hanzi": "材",
+          "pinyin": "cái",
+          "word": "材料"
+        },
+        {
+          "hanzi": "断",
+          "pinyin": "duàn",
+          "word": "果断"
+        },
+        {
+          "hanzi": "替",
+          "pinyin": "tì",
+          "word": "代替"
+        },
+        {
+          "hanzi": "其",
+          "pinyin": "qí",
+          "word": "其他"
+        },
+        {
+          "hanzi": "待",
+          "pinyin": "dài",
+          "word": "等待",
+          "multiReading": true
+        },
+        {
+          "hanzi": "段",
+          "pinyin": "duàn",
+          "word": "段落"
+        },
+        {
+          "hanzi": "互",
+          "pinyin": "hù",
+          "word": "互相"
+        },
+        {
+          "hanzi": "供",
+          "pinyin": "gōng",
+          "word": "提供"
+        },
+        {
+          "hanzi": "善",
+          "pinyin": "shàn",
+          "word": "善良"
+        }
+      ]
+    },
+    {
+      "order": 35,
+      "kind": "课文",
+      "no": 24,
+      "title": "大禹治水",
+      "chars": [
+        {
+          "hanzi": "洪",
+          "pinyin": "hóng",
+          "word": "洪水"
+        },
+        {
+          "hanzi": "滥",
+          "pinyin": "làn",
+          "word": "泛滥"
+        },
+        {
+          "hanzi": "毁",
+          "pinyin": "huǐ",
+          "word": "毁坏"
+        },
+        {
+          "hanzi": "毒",
+          "pinyin": "dú",
+          "word": "毒蛇"
+        },
+        {
+          "hanzi": "伤",
+          "pinyin": "shāng",
+          "word": "伤害"
+        },
+        {
+          "hanzi": "难",
+          "pinyin": "nàn",
+          "word": "灾难",
+          "multiReading": true
+        },
+        {
+          "hanzi": "继",
+          "pinyin": "jì",
+          "word": "继续"
+        },
+        {
+          "hanzi": "续",
+          "pinyin": "xù",
+          "word": "继续"
+        },
+        {
+          "hanzi": "败",
+          "pinyin": "bài",
+          "word": "失败"
+        },
+        {
+          "hanzi": "训",
+          "pinyin": "xùn",
+          "word": "训练"
+        },
+        {
+          "hanzi": "疏",
+          "pinyin": "shū",
+          "word": "疏忽"
+        },
+        {
+          "hanzi": "努",
+          "pinyin": "nǔ",
+          "word": "努力"
+        },
+        {
+          "hanzi": "驱",
+          "pinyin": "qū",
+          "word": "驱赶"
+        },
+        {
+          "hanzi": "恢",
+          "pinyin": "huī",
+          "word": "恢复"
+        },
+        {
+          "hanzi": "功",
+          "pinyin": "gōng",
+          "word": "功劳"
+        },
+        {
+          "hanzi": "绩",
+          "pinyin": "jì",
+          "word": "成绩"
+        }
+      ]
+    },
+    {
+      "order": 36,
+      "kind": "语文园地",
+      "no": null,
+      "title": "语文园地八",
+      "chars": [
+        {
+          "hanzi": "钩",
+          "pinyin": "gōu",
+          "word": "钩子"
+        },
+        {
+          "hanzi": "铲",
+          "pinyin": "chǎn",
+          "word": "铲子"
+        },
+        {
+          "hanzi": "橙",
+          "pinyin": "chéng",
+          "word": "橙子"
+        },
+        {
+          "hanzi": "柿",
+          "pinyin": "shì",
+          "word": "柿子"
+        },
+        {
+          "hanzi": "源",
+          "pinyin": "yuán",
+          "word": "水源"
+        },
+        {
+          "hanzi": "涨",
+          "pinyin": "zhǎng",
+          "word": "涨潮"
+        },
+        {
+          "hanzi": "炬",
+          "pinyin": "jù",
+          "word": "火炬"
+        },
+        {
+          "hanzi": "灿",
+          "pinyin": "càn",
+          "word": "灿烂"
+        },
+        {
+          "hanzi": "垮",
+          "pinyin": "kuǎ",
+          "word": "垮塌"
+        },
+        {
+          "hanzi": "坟",
+          "pinyin": "fén",
+          "word": "坟墓"
+        }
+      ]
+    }
+  ],
+  "sources": []
+}

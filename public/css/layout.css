@@ -1,0 +1,145 @@
+/* layout.css — iPad 竖屏响应式布局（兼容 9.7"–12.9"），贴合安全区 */
+
+#app {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 16px)
+    calc(env(safe-area-inset-right, 0px) + 16px)
+    calc(env(safe-area-inset-bottom, 0px) + 16px)
+    calc(env(safe-area-inset-left, 0px) + 16px);
+}
+
+.screen { width: 100%; max-width: 820px; margin: 0 auto; }
+
+/* 首屏：SpaceX 星舰风格主视觉，样式见 boot.css（全幅 fixed，独立于此处的限宽布局） */
+
+/* 机库：不滚动，内容超出时由 fitHangar() 整体等比缩放 */
+.hangar { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; scrollbar-width: none; }
+.hangar::-webkit-scrollbar { display: none; }
+.hangar-body {
+  flex: 0 0 auto; align-self: flex-start;
+  display: flex; flex-direction: column; gap: 14px;
+  padding-top: 8px; transform-origin: top left;
+}
+.hangar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 6px 4px;
+}
+.hangar-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.hangar-actions {
+  display: flex; align-items: center; justify-content: flex-end;
+  flex-wrap: wrap; gap: 8px 10px; min-width: 0; margin-left: auto;
+}
+.callsign { font-family: var(--font-brand); font-weight: 400; font-size: 1.85rem; line-height: 1.2; letter-spacing: .06em; color: var(--accent); }
+.hangar-foot { color: var(--text-dim); font-size: 0.8rem; text-align: center; opacity: 0.75; }
+
+/* 任务简报 */
+.briefing { flex: 1; min-height: 0; overflow-y: auto; justify-content: center; }
+
+/* 游戏舞台容器 */
+.game { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+/* 声调校准 / 结算屏幕 */
+.tone { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-top: 6px; }
+.reward { flex: 1; min-height: 0; overflow-y: auto; }
+@media (max-width: 560px) {
+  .tone-curves { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 组装台：竖屏 = 上 55% 塔架/火箭 + 下 45% 零件托盘；横屏 = 左托盘 + 右火箭（见下方 media） */
+.assembly {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 8px;
+}
+.stage-area {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 零件托盘 = 内容自适应的紧凑卡片：宽度取最长零件行、高度取内容，
+   居中悬浮于火箭下方，不顶屏幕边缘、不留大块空白 */
+.tray-area {
+  flex: 0 0 auto;
+  align-self: center;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 0 auto 12px;
+  min-height: 0;
+  overflow: visible; /* 允许拖拽中的零件越出托盘进入火箭区（不可被裁剪） */
+  background: var(--panel); border: 1px solid var(--panel-edge);
+  border-radius: var(--radius); padding: 12px 16px 14px;
+}
+.rocket-svg { width: 100%; height: 100%; min-height: 0; max-height: 100%; margin: 0 auto; }
+
+/* 组装台横屏：零件托盘在左、火箭在右（row-reverse：DOM 顺序 stage→tray 反转为 tray→stage） */
+@media (orientation: landscape) {
+  /* 游戏舞台横屏放开 820px 限宽，组装台才能铺满（托盘左 / 火箭右） */
+  .game { max-width: none; }
+  .assembly { flex-direction: row-reverse; gap: 10px; max-width: none; }
+  .stage-area { flex: 1 1 auto; }
+  .tray-area {
+    flex: 0 0 auto;
+    align-self: center;
+    width: fit-content;
+    max-width: 44%;
+    margin: 16px 8px 16px 16px;
+  }
+}
+/* 矮横屏（手机横放）：零件与行距收紧，保证三拼三行也放得下 */
+@media (orientation: landscape) and (max-height: 520px) {
+  .tray-area { padding: 10px 12px; margin: 10px 6px 10px 10px; }
+  .tray-title { margin-bottom: 6px; }
+  .tray-tools { gap: 6px; }
+  .tray-tools .phys-btn.small { padding: 6px 10px; font-size: .8rem; min-height: 36px; }
+  .tray-row { margin-bottom: 8px; }
+  .tray-row-label { margin-bottom: 4px; }
+  .tray-cells { gap: 8px; }
+  .module { min-width: 52px; padding: 8px 12px; font-size: 1.1rem; }
+}
+
+/* 大屏（12.9"）适度放大 */
+@media (min-width: 1000px) {
+  .panel { padding: 26px; }
+  .brief-hanzi { font-size: 7rem; }
+  .module { font-size: 1.6rem; padding: 14px 20px; }
+}
+
+/* 超大 iPad 竖屏（12.9"，竖向空间充裕）：火箭选择恢复换行网格，
+   一次看全所有已获得火箭，顺便填掉底部的大片留白。 */
+@media (orientation: portrait) and (min-height: 1250px) {
+  .rocket-picker { flex-wrap: wrap; overflow: visible; scroll-snap-type: none; }
+  .rocket-picker.has-more,
+  .rocket-picker.has-left { -webkit-mask-image: none; mask-image: none; }
+  .rocket-chip { width: 92px; }
+}
+
+/* iPad 横屏 / 分屏宽屏：机库改双栏（课文同步 | 出战座驾），
+   避免整块等比缩小把字压到 7–9px；顶部栏与发射按钮横跨两栏。 */
+@media (orientation: landscape) and (min-width: 900px) {
+  .hangar { max-width: none; }
+  .hangar-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 18px;
+    row-gap: 14px;
+  }
+  .hangar-body > .hangar-head,
+  .hangar-body > .launch-btn { grid-column: 1 / -1; }
+  .hangar-body > .launch-btn { width: 100%; }
+}

@@ -1,0 +1,282 @@
+/* space.css — 各界面适配首页 SpaceX 星舰风格（发射界面与动画 launch-fx 不动）
+ * 语言：近黑深空 + 白色细描边 + 直角锐利表面 + D-DIN 大写宽字距（仅 ASCII 标签，
+ * 拼音带声调符号仍用 PingFang，避免缺字形混排）。
+ */
+
+/* ---------- 全局星野底 ---------- */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: url('/images/boot/starfield.jpg') center / cover no-repeat;
+  opacity: .38;
+  pointer-events: none;
+  z-index: 0;
+}
+#app, .admin-wrap { position: relative; z-index: 1; }
+
+/* ---------- 基础组件：描边按钮 / 锐利面板 ---------- */
+.phys-btn {
+  border-radius: 2px;
+  border-color: var(--ed-4);
+  background: var(--sf-1);
+  letter-spacing: .18em;
+  font-weight: 600;
+}
+.phys-btn:hover { background: var(--sf-3); }
+.phys-btn.primary { border-color: var(--btn-primary-edge); background: var(--btn-primary-bg); letter-spacing: .22em; }
+.phys-btn.primary:hover { background: var(--btn-primary-bg-hover); }
+
+.panel {
+  border-radius: var(--radius);
+  border-color: var(--ed-1);
+  background: var(--panel-glass);
+}
+.panel-title {
+  color: var(--text);
+  letter-spacing: .2em;
+  font-size: .98rem;
+}
+.panel-desc { letter-spacing: .02em; }
+
+/* DIN 只用于 ASCII 安全标签：等级 / 数字 / 英文 / 坐标 */
+.launch-count b, .badge-card-en, .badge-card-year,
+.stat-rate, .pager-info, .boot-foot {
+  font-family: var(--font-display);
+}
+
+/* ---------- 机库 ---------- */
+.hangar-head {
+  border-bottom: 1px solid var(--ed-1);
+  padding-bottom: 12px;
+}
+.callsign { color: var(--accent); letter-spacing: .06em; }
+/* 发射次数 / 博物馆 / 最新目的地三块几何已在 theme.css 统一（圆角走 --radius-sm），此处只保留字距风味 */
+.launch-count { letter-spacing: .08em; }
+.launch-count b { letter-spacing: .06em; }
+
+.step-num {
+  border-radius: 2px;
+  background: transparent;
+  border: 1px solid var(--ed-4);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/* 右上角「最新目的地」：几何与发射次数/博物馆统一（theme.css），此处只保留 hover 与字距 */
+.dest-corner:hover { border-color: var(--ed-4); background: var(--sf-2); }
+.dest-corner-label { letter-spacing: .22em; }
+.dest-corner-main b { letter-spacing: .12em; }
+
+/* 课文同步面板：与火箭芯片同语言 */
+.tb-chip {
+  border-radius: 3px;
+  border-color: var(--ed-2);
+  background: var(--sf-1);
+  letter-spacing: .04em;
+}
+.tb-chip:hover:not(.active) { border-color: var(--ed-4); }
+.tb-chip.active { border-color: var(--btn-primary-edge); background: var(--btn-primary-bg); }
+.tb-lesson {
+  border-radius: 3px;
+  border-color: var(--ed-1);
+  background: var(--sf-1);
+}
+.tb-lesson:hover { border-color: var(--ed-3); }
+.tb-lesson.active { border-color: var(--btn-primary-edge); background: var(--sel-tint); }
+.tb-lesson.active .tb-lesson-no, .tb-lesson.active .tb-lesson-title { color: var(--accent); }
+.tb-status { letter-spacing: .06em; }
+
+.rocket-auto-tag {
+  border-radius: 2px;
+  border-color: var(--ed-3);
+  background: var(--sf-1);
+  letter-spacing: .12em;
+}
+.rocket-auto-tag:not(.is-auto) { color: var(--accent); border-color: var(--btn-primary-edge); }
+
+.current-rocket {
+  border-radius: 3px;
+  border-color: var(--ed-1);
+  background: var(--sf-1);
+}
+.current-rocket b { color: var(--text); letter-spacing: .08em; }
+.current-rocket-sub { letter-spacing: .06em; }
+.rocket-hint { letter-spacing: .06em; }
+
+.rocket-chip {
+  border-radius: 3px;
+  border-color: var(--ed-1);
+  background: var(--sf-1);
+}
+.rocket-chip:hover { border-color: var(--ed-3); }
+.rocket-chip.active { border-color: var(--btn-primary-edge); background: var(--sel-tint); }
+.rocket-chip.active .rocket-chip-name { color: var(--accent); }
+
+.next-rocket { border-radius: 3px; border-color: var(--ed-1); background: var(--sf-1); }
+.next-rocket-label { letter-spacing: .16em; }
+.next-rocket-bar { border-radius: 2px; border-color: var(--ed-1); background: var(--sf-2); }
+.next-rocket-bar i { border-radius: 0; background: var(--btn-primary-bg); }
+
+.launch-btn {
+  letter-spacing: .34em;
+  text-indent: .34em;
+  font-weight: 800;
+  border-radius: 2px;
+}
+
+.emergency-light { border-radius: 3px; letter-spacing: .12em; }
+
+/* ---------- 任务简报 ---------- */
+.brief-hanzi { text-shadow: 0 2px 28px rgba(0, 0, 0, .6); }
+.brief-word { letter-spacing: .22em; }
+.brief-source { border-radius: 2px; letter-spacing: .08em; }
+.brief-replay .phys-btn { letter-spacing: .14em; }
+
+/* ---------- 组装台 ---------- */
+.tray-area {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  border-color: var(--ed-1);
+  background: var(--panel-glass);
+  box-shadow: inset 0 1px 0 var(--sf-2);
+}
+/* 卡片高度随内容收紧：末行不留多余下边距 */
+.tray-row:last-child { margin-bottom: 0; }
+.tray-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  letter-spacing: .34em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--ed-1);
+  padding-bottom: 8px;
+}
+.tray-tools .phys-btn { letter-spacing: .1em; }
+.tray-row-label {
+  color: var(--text-dim);
+  letter-spacing: .24em;
+  border-left: 2px solid var(--ed-3);
+  padding-left: 8px;
+}
+/* 零件 = 金属货牌（渐变钢面 + 内高光 + 细描边）；dock 后箭体上只留拼音，不另画框 */
+.module {
+  border-radius: 3px;
+  border-color: var(--ed-3);
+  background: linear-gradient(180deg, var(--mod-1) 0%, var(--mod-2) 45%, var(--mod-3) 100%);
+  box-shadow: inset 0 1px 0 var(--hi), var(--mod-shadow);
+  letter-spacing: .04em;
+}
+.module.dragging {
+  border-color: var(--btn-primary-edge);
+  background: linear-gradient(180deg, var(--mod-d1) 0%, var(--mod-d2) 45%, var(--mod-d3) 100%);
+  box-shadow: inset 0 1px 0 var(--hi), 0 10px 24px rgba(0, 0, 0, .5);
+}
+/* 已取走的零件留下虚线空插座（保持货架占位，视觉连贯） */
+.module.docked {
+  opacity: .22;
+  border-style: dashed;
+  border-color: var(--ed-2);
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
+}
+/* 舱段 stencil 标签印在钢面上 → 深色字 */
+.slot-group {
+  fill: var(--rk-slot-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .3em;
+}
+.rocket-svg .beacon { animation: bootBeacon 2.4s ease-in-out infinite; }
+.assembly-banner { border-radius: 3px; background: var(--space-1); }
+.banner-text { letter-spacing: .14em; }
+
+/* ---------- 声调校准 ---------- */
+.tone-tag { color: var(--text-dim); letter-spacing: .44em; }
+.tone-base { letter-spacing: .14em; }
+.tone-pad {
+  border-radius: var(--radius);
+  border-color: var(--ed-2);
+  background: var(--sf-1);
+}
+.curve-btn {
+  border-radius: 3px;
+  border-color: var(--ed-2);
+  background: var(--sf-1);
+  color: var(--text);
+}
+.curve-btn:hover { border-color: var(--ed-4); }
+.curve-btn:active { background: var(--sf-3); border-color: var(--btn-primary-edge); }
+.curve-label { letter-spacing: .2em; }
+
+/* ---------- 结算 ---------- */
+.completion-tag { letter-spacing: .3em; }
+.completion-pinyin { color: var(--ice); letter-spacing: .06em; }
+.reward-dest { color: var(--ice); letter-spacing: .08em; }
+.reward-fact { letter-spacing: .02em; }
+.reward-badge { border-radius: 3px; }
+.reward-next { font-family: var(--font-display); letter-spacing: .1em; }
+.completion-actions .phys-btn { letter-spacing: .2em; }
+
+/* ---------- 摘墨镜 ---------- */
+.dot-overlay { background: var(--scrim); }
+.dot-card { border-radius: var(--radius); }
+.dot-spark { letter-spacing: .2em; }
+.dot-tip { letter-spacing: .2em; }
+
+/* ---------- 太空博物馆 ---------- */
+.museum-overlay { background: var(--scrim-solid); }
+.museum-panel {
+  border-radius: var(--radius);
+  border-color: var(--ed-1);
+  background: var(--panel);
+}
+.museum-head { background: var(--panel); }
+.museum-title { color: var(--text); letter-spacing: .18em; }
+.museum-subtitle { letter-spacing: .06em; color: var(--text); }
+.badge-card {
+  border-radius: 3px;
+  border-color: var(--ed-1);
+  background: var(--sf-1);
+}
+.badge-card.unlocked { border-color: var(--ed-3); }
+.badge-card.is-current { border-color: var(--btn-primary-edge); }
+.badge-card-year { border-radius: 2px; letter-spacing: .1em; }
+.badge-card-en { letter-spacing: .14em; }
+.badge-card-img { border-radius: 3px; background: var(--space-1); }
+.badge-card-action {
+  border-radius: 2px;
+  border-color: var(--ed-3);
+  background: var(--sf-1);
+  letter-spacing: .16em;
+}
+.badge-card-action:hover:not(.active) { border-color: var(--ed-4); }
+.badge-card-action.active { border-color: var(--btn-primary-edge); background: var(--btn-primary-bg); }
+.planet-thumb { border-radius: 3px; }
+
+/* ---------- 博物馆 · 星球图鉴（课时奖励进度 + 目的地图鉴已合并） ---------- */
+.reward-progress {
+  border-radius: 3px;
+  border-color: var(--ed-1);
+  background: var(--sf-1);
+}
+.reward-progress-label { letter-spacing: .12em; }
+.reward-progress-next { letter-spacing: .06em; }
+.reward-bar { border-radius: 2px; border-color: var(--ed-1); background: var(--sf-2); }
+.reward-bar i { border-radius: 0; background: var(--btn-primary-bg); }
+.planet-card-state { border-radius: 2px; letter-spacing: .08em; }
+.planet-card.current { border-color: var(--btn-primary-edge); background: var(--sel-tint); }
+.planet-card.next { border-color: var(--ed-4); border-style: dashed; }
+.reward-lesson { letter-spacing: .04em; }
+
+/* ---------- 家长后台 ---------- */
+.admin-head h1 { letter-spacing: .14em; }
+.admin-sub { letter-spacing: .06em; }
+.preview-pinyin { color: var(--ice); }
+.mission-table .py { color: var(--ice); }
+.stat-bar { border-radius: 2px; }
+.stat-tag { letter-spacing: .06em; }
+.mission-table th { letter-spacing: .1em; }

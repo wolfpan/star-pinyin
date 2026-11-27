@@ -1,0 +1,103 @@
+/* 方案 C · 星云乐园 — 紫星云渐变 / 糖果色分类 / 大圆角 / 玩具按压按钮 */
+:root {
+  --ink: #fff7ff;
+  --ink-dim: #c9bfe8;
+  --coral: #ff7a8a;
+  --mint: #4fe3c1;
+  --sunny: #ffd166;
+  --sky: #6fc3ff;
+  --card-bg: rgba(255, 255, 255, .07);
+  --card-edge: rgba(255, 255, 255, .16);
+  /* SVG 火箭 */
+  --st1: #5b5f7a; --st2: #c9cbe0; --st3: #f8f8ff; --st4: #b2b5cc; --st5: #4a4d66;
+  --sd1: #3a3d54; --sd2: #7f829c; --sd3: #a9acc4; --sd4: #6a6d88; --sd5: #2c2e42;
+  --nz1: #33354c; --nz2: #0d0e1c;
+  --tile-a: #191a2e; --tile-b: #262840;
+  --tower: #2a2350; --tower-edge: rgba(255, 255, 255, .16); --tower-arm: #352b63; --tower-brace: #453a7a;
+  --pad: #3b3168; --flange: #565a78; --hull-edge: #16172a; --bezel: #3a3d58;
+  --glow: rgba(255, 209, 102, .30); --beacon: #ff7a8a;
+  --slot-bg: #1c1638; --slot-edge: rgba(255, 255, 255, .45);
+  --slot-label: #3d3a5c; --slot-q: #ffd166; --slot-locked: #8f87b8;
+}
+body { background: #120c28; }
+.mock-head { background: #1a1236; border-color: rgba(255, 255, 255, .12); }
+.mock-name em { color: var(--sunny); opacity: .9; }
+.mock-desc { color: var(--ink-dim); }
+.frame-cap { background: #120c28; color: #7a6fa0; }
+
+.frame { background:
+  radial-gradient(700px 420px at 85% 8%, rgba(255, 122, 138, .20), transparent 65%),
+  radial-gradient(800px 520px at 8% 92%, rgba(79, 227, 193, .14), transparent 60%),
+  radial-gradient(1000px 700px at 50% 45%, rgba(111, 99, 255, .25), transparent 70%),
+  linear-gradient(160deg, #241850, #1a1140 45%, #120c28);
+  color: var(--ink); }
+/* 星星点缀 */
+.frame::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image:
+  radial-gradient(2px 2px at 12% 20%, rgba(255,255,255,.8), transparent 100%),
+  radial-gradient(1.5px 1.5px at 30% 70%, rgba(255,255,255,.6), transparent 100%),
+  radial-gradient(2px 2px at 55% 15%, rgba(255,255,255,.7), transparent 100%),
+  radial-gradient(1.5px 1.5px at 72% 55%, rgba(255,255,255,.55), transparent 100%),
+  radial-gradient(2px 2px at 90% 30%, rgba(255,255,255,.75), transparent 100%),
+  radial-gradient(1.5px 1.5px at 44% 88%, rgba(255,255,255,.5), transparent 100%),
+  radial-gradient(1.5px 1.5px at 8% 52%, rgba(255,255,255,.5), transparent 100%),
+  radial-gradient(2px 2px at 66% 82%, rgba(255,255,255,.6), transparent 100%); }
+.frame-tag { color: var(--sunny); }
+
+.panel, .tray { background: var(--card-bg); border: 2px solid var(--card-edge); border-radius: 22px; backdrop-filter: blur(3px); }
+.h-id .avatar { background: linear-gradient(135deg, var(--coral), #ff9d6b); color: #fff; border: 3px solid rgba(255, 255, 255, .35); box-shadow: 0 4px 0 rgba(0, 0, 0, .25); }
+.callsign { color: var(--ink); }
+.stat-chip { border: 2px solid var(--card-edge); border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--ink-dim); }
+.stat-chip b { color: var(--sunny); }
+.stat-chip .ic { color: var(--coral); }
+.btn.ghost { border: 2px solid var(--card-edge); border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--ink); }
+.btn.ghost .ic { color: var(--sky); }
+.btn.dest { border: 2px solid rgba(111, 195, 255, .45); border-radius: 16px; background: rgba(111, 195, 255, .12); color: var(--ink); }
+.dest-k { color: var(--sky); font-weight: 700; }
+.dest-v .ic { color: var(--mint); }
+
+.p-title { color: var(--ink); }
+.step-num { background: linear-gradient(135deg, var(--sky), #8f7bff); color: #fff; border-radius: 10px; box-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+.p-en { color: #8f83bd; }
+.tb-status { color: var(--ink-dim); }
+.tb-status .ic { color: var(--sunny); }
+.tb-status b { color: var(--sunny); }
+
+.btn.grade, .btn.term, .btn.lesson { border: 2px solid var(--card-edge); border-radius: 14px; background: rgba(255, 255, 255, .05); color: var(--ink-dim); }
+.btn.grade.sel { background: var(--sunny); border-color: #ffe49a; color: #4a3208; box-shadow: 0 4px 0 #c99b3f; }
+.btn.term.sel { background: var(--mint); border-color: #8bf0d9; color: #0b3d31; box-shadow: 0 4px 0 #2ba189; }
+.btn.lesson.sel { background: var(--sky); border-color: #a5d9ff; color: #0d3a5c; box-shadow: 0 4px 0 #3d84bd; }
+.btn.lesson.sel span { opacity: .8; }
+.btn.auto-tag { border: 2px solid var(--card-edge); border-radius: 999px; color: var(--ink-dim); background: rgba(255, 255, 255, .05); }
+.btn.auto-tag .ic { color: var(--mint); }
+
+.current-rocket { background: rgba(255, 255, 255, .06); border: 2px solid rgba(255, 209, 102, .4); border-radius: 18px; }
+.cr-meta b { color: var(--ink); }
+.cr-meta span { color: var(--ink-dim); }
+.cr-flag { background: var(--coral); color: #fff; border-radius: 999px; box-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+.hint { color: var(--ink-dim); }
+.btn.pick { border: 2px solid var(--card-edge); border-radius: 16px; background: rgba(255, 255, 255, .05); color: var(--ink-dim); }
+.btn.pick.sel { border-color: var(--sunny); background: rgba(255, 209, 102, .14); color: var(--ink); box-shadow: 0 0 18px rgba(255, 209, 102, .25); }
+.unlock-badge { background: rgba(79, 227, 193, .12); border: 2px solid rgba(79, 227, 193, .4); color: var(--mint); border-radius: 999px; }
+.unlock-badge .ic { color: var(--sunny); }
+
+.btn.launch { border-radius: 999px; color: #fff; background: linear-gradient(180deg, #ff9d6b, var(--coral)); border: 3px solid rgba(255, 255, 255, .35); box-shadow: 0 6px 0 #b04a5c, 0 12px 26px rgba(255, 122, 138, .35); text-shadow: 0 2px 0 rgba(0, 0, 0, .18); }
+.btn.launch .en { color: #ffe1e6; opacity: .85; }
+
+/* 组装：星云发射场 */
+.tray-head { border-bottom: 2px dashed rgba(255, 255, 255, .18); }
+.tray-head b { color: var(--ink); }
+.tray-head span { color: #8f83bd; }
+.g-initial .tg-dot { background: var(--coral); box-shadow: 0 0 8px var(--coral); }
+.g-final .tg-dot { background: var(--sky); box-shadow: 0 0 8px var(--sky); }
+.g-initial .tg-label { color: var(--coral); }
+.g-final .tg-label { color: var(--sky); }
+.part { border: 2px solid rgba(255, 255, 255, .28); border-radius: 16px; background: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .05)); color: var(--ink); box-shadow: 0 4px 0 rgba(0, 0, 0, .3); }
+.g-initial .part { border-color: rgba(255, 122, 138, .55); }
+.g-final .part { border-color: rgba(111, 195, 255, .55); }
+.tray-hint { color: var(--ink-dim); }
+.slot-body { fill: var(--slot-bg); stroke: var(--slot-edge); }
+.slot-group { fill: var(--slot-label); }
+.slot-value { fill: var(--slot-q); }
+.slot-value.locked-note { fill: var(--slot-locked); }
+.slot-light { fill: #4a4270; }
+.beacon { filter: drop-shadow(0 0 6px var(--coral)); }

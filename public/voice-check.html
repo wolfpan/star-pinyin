@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>发音自检 · 星际发射指挥官</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <style>
+    body { margin: 0; padding: 18px 14px 80px; background: #05070f; color: #e8eefc; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    h1 { font-size: 20px; margin: 0 0 6px; }
+    .sub { color: #8fa3c8; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+    .bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 0; background: linear-gradient(#05070f, #05070fee 70%, #05070f00); }
+    button { border: 1px solid #2b3b5e; background: #131b2e; color: #dbe7ff; border-radius: 10px; padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    button.primary { background: #1d4ed8; border-color: #3b82f6; color: #fff; }
+    button:disabled { opacity: .45; cursor: default; }
+    input[type=search] { flex: 1 1 160px; min-width: 120px; border: 1px solid #2b3b5e; background: #0b1220; color: #e8eefc; border-radius: 10px; padding: 8px 10px; font-size: 14px; }
+    .stat { font-size: 13px; color: #8fa3c8; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+    .card { border: 1px solid #1f2b45; background: #0b1220; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .card.missing { border-color: #7f1d1d; background: #1a0d10; }
+    .card.flagged { outline: 2px solid #f59e0b; }
+    .py { font-size: 22px; font-weight: 700; letter-spacing: .5px; }
+    .meta { font-size: 12px; color: #8fa3c8; }
+    .row2 { display: flex; gap: 6px; }
+    .row2 button { flex: 1; padding: 6px 8px; font-size: 13px; }
+    .row3 { display: flex; gap: 4px; align-items: center; }
+    .row3 select { flex: 1; min-width: 0; border: 1px solid #2b3b5e; background: #0b1220; color: #dbe7ff; border-radius: 8px; padding: 4px 4px; font-size: 12px; }
+    .row3 button { padding: 4px 6px; font-size: 12px; white-space: nowrap; }
+    .row3 button.ab-lib { border-color: #14532d; color: #86efac; }
+    .row3 button.ab-tts { border-color: #1e3a8a; color: #93c5fd; }
+    .flag { background: #3a2a06; border-color: #b45309; color: #fcd34d; }
+    textarea { width: 100%; height: 96px; margin-top: 10px; border: 1px solid #2b3b5e; background: #0b1220; color: #a7f3d0; border-radius: 10px; padding: 8px; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1><img class="ui-icon" src="/images/icons/a/search.png" data-icon="search" alt="" aria-hidden="true" draggable="false"> 发音自检</h1>
+  <p class="sub">
+    逐个试听词库里每个音节的读音。<b>真人录音库与 AI 合成两份并存</b>：每张卡片可切换该音节来源、A/B 对比试听；
+    「重新生成」只更新 AI 那份，绝不覆盖真人录音。<br />
+    听出不顺耳的音节就点「标记」——<b>标记会自动保存到服务端</b>（<code>data/voice-flags.json</code>），并在底部显示 override 模板。
+  </p>
+
+  <div class="bar">
+    <button class="primary" id="playAll">▶ 依次播放全部</button>
+    <button id="playMissing"><img class="ui-icon" src="/images/icons/a/warning.png" data-icon="warning" alt="" aria-hidden="true" draggable="false"> 只播缺失/可疑</button>
+    <button id="stop">■ 停止</button>
+    <input type="search" id="q" placeholder="搜索拼音或例字，如 ju / 聚 / jù" />
+    <span class="stat" id="stat">加载中…</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <textarea id="overrides" readonly placeholder="被标记的音节会出现在这里"></textarea>
+
+  <script>try{var _i=localStorage.getItem('sp_iconstyle');document.documentElement.dataset.iconStyle=(_i==='b'||_i==='c')?_i:'a';}catch(e){document.documentElement.dataset.iconStyle='a';}</script>
+  <script type="module">
+    import { buildSyllable } from '/js/pinyin-rules.js';
+    import { applyIconStyle } from '/js/icons.js';
+    applyIconStyle(localStorage.getItem('sp_iconstyle'));
+
+    const $ = (id) => document.getElementById(id);
+    const FLAG_KEY = 'starpinyin-voice-flags';
+    const flags = new Set(JSON.parse(localStorage.getItem(FLAG_KEY) || '[]'));
+
+    /** 标记自动上传到服务端（data/voice-flags.json），下次重做发音时脚本直接读它。 */
+    let saveTimer = 0;
+    function saveFlags() {
+      localStorage.setItem(FLAG_KEY, JSON.stringify([...flags]));
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        try {
+          await fetch('/api/voice/flags', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keys: [...flags] }),
+          });
+        } catch { /* 离线时只留本地 */ }
+      }, 400);
+    }
+
+    let groups = [];      // [{ key, display, hanziSet:Set, missing:boolean, status:'wav'|'mp3'|'tts' }]
+    let srcCfg = { default: 'lib', keys: {} };  // 读音来源配置（真人 lib / AI tts）
+    let libSet = new Set();   // 有真人录音的音节
+    let ttsSet = new Set();   // 有 AI 录音的音节
+    let queue = [];
+    let playing = false;
+    let currentAudio = null;
+    let currentObjUrl = null;
+
+    const releaseObjUrl = () => {
+      if (currentObjUrl) { try { URL.revokeObjectURL(currentObjUrl); } catch {} currentObjUrl = null; }
+    };
+
+    /** 先 fetch 成 blob 再播（no-store 强制回源）：浏览器媒体缓存会按 URL 缓存旧音频、
+     *  无视 no-cache 且跨刷新仍在；取字节播放保证重新生成后立刻听到新读音。 */
+    async function fetchAudio(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      if (!blob.size) throw new Error('空音频');
+      releaseObjUrl();
+      currentObjUrl = URL.createObjectURL(blob);
+      const u = currentObjUrl;
+      const a = new Audio(u);
+      const release = () => { if (currentObjUrl === u) releaseObjUrl(); };
+      a.addEventListener('ended', release, { once: true });
+      a.addEventListener('error', release, { once: true });
+      return a;
+    }
+
+    const fileKey = (k) => String(k).replace(/ü/g, 'v');
+    const head = async (u) => { try { return (await fetch(u, { method: 'HEAD' })).ok; } catch { return false; } };
+
+    async function load() {
+      // 与服务端已保存的标记合并（换设备/换浏览器也不丢）
+      try {
+        const sf = await (await fetch('/api/voice/flags')).json();
+        for (const k of sf.keys || []) flags.add(k);
+        localStorage.setItem(FLAG_KEY, JSON.stringify([...flags]));
+      } catch { /* 忽略 */ }
+      const data = await (await fetch('/api/admin/missions')).json();
+      const map = new Map();
+      for (const m of data.missions) {
+        const key = buildSyllable(m.parts, m.type) + m.tone;
+        if (!map.has(key)) map.set(key, { key, display: m.displayPinyin, hanziSet: new Set() });
+        map.get(key).hanziSet.add(m.hanzi);
+      }
+      groups = [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
+      // 一次拿全：状态 + 标记 + 双源信息（比逐个 HEAD 快，且知道两份录音各自是否存在）
+      try {
+        const st = await (await fetch('/api/admin/voice/status')).json();
+        srcCfg = st.source || { default: 'lib', keys: {} };
+        libSet = new Set(st.libKeys || []);
+        ttsSet = new Set(st.ttsKeys || []);
+        for (const g of groups) {
+          g.status = (st.files || {})[g.key] || 'tts';
+          g.missing = g.status !== 'wav';
+        }
+      } catch {
+        // 兜底：逐个探测本地文件
+        await Promise.all(groups.map(async (g) => {
+          if (await head(`/audio/voice/${fileKey(g.key)}.wav`)) g.status = 'wav';
+          else if (await head(`/audio/voice/${fileKey(g.key)}.mp3`)) g.status = 'mp3';
+          else g.status = 'tts';
+          g.missing = g.status !== 'wav';
+        }));
+      }
+      render();
+    }
+
+    /** 该音节当前生效源（逐音节覆盖 > 全局默认）。 */
+    const activeSrc = (key) => {
+      const s = srcCfg.keys[fileKey(key)];
+      return (s === 'lib' || s === 'tts') ? s : (srcCfg.default === 'tts' ? 'tts' : 'lib');
+    };
+
+    /** 逐音节来源切换（null = 跟随全局默认），落盘 data/voice-source.json。 */
+    async function setKeySource(key, val) {
+      const fk = fileKey(key);
+      try {
+        const r = await fetch('/api/admin/voice/source', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ keys: { [fk]: val } }),
+        });
+        if (!r.ok) throw new Error((await r.json()).error || 'HTTP ' + r.status);
+        if (val === null) delete srcCfg.keys[fk]; else srcCfg.keys[fk] = val;
+        render();
+      } catch (e) { $('stat').textContent = '来源切换失败：' + e.message; }
+    }
+
+    /** A/B 对比试听：?src= 强制播某一源，不改配置。 */
+    async function playExplicit(key, src) {
+      stop();
+      try {
+        const a = await fetchAudio(`/audio/voice/${fileKey(key)}.wav?src=${src}`);
+        currentAudio = a;
+        await a.play().catch(() => {});
+      } catch { /* 该源缺失时静默 */ }
+    }
+
+    function render() {
+      const q = $('q').value.trim().toLowerCase();
+      const list = groups.filter((g) => !q || g.key.includes(q) || g.display.includes(q) || [...g.hanziSet].some((h) => h.includes(q)));
+      const wav = groups.filter((g) => g.status === 'wav').length;
+      const mp3 = groups.filter((g) => g.status === 'mp3').length;
+      const tts = groups.filter((g) => g.status === 'tts').length;
+      const defName = srcCfg.default === 'tts' ? 'AI 合成' : '真人录音库';
+      $('stat').textContent = `音节 ${groups.length} · 真人 ${libSet.size} · AI ${ttsSet.size} · 默认来源 ${defName} · 本地 wav ${wav} · 仅 mp3 ${mp3} · 需现场合成 ${tts} · 已标记 ${flags.size}`;
+      $('grid').innerHTML = '';
+      for (const g of list) {
+        const card = document.createElement('div');
+        card.className = 'card' + (g.missing ? ' missing' : '') + (flags.has(g.key) ? ' flagged' : '');
+        const fk = fileKey(g.key);
+        const hasLib = libSet.has(g.key), hasTts = ttsSet.has(g.key);
+        const sel = srcCfg.keys[fk] || '';
+        const activeName = g.status === 'wav' ? (activeSrc(g.key) === 'tts' ? 'AI' : '真人') : g.status === 'mp3' ? '旧 mp3' : '现场合成';
+        card.innerHTML = `
+          <div class="py">${g.display}</div>
+          <div class="meta">${g.key} · ${[...g.hanziSet].slice(0, 4).join('')} · ${activeName}</div>
+          <div class="row2">
+            <button data-play="${g.key}">▶ 试听</button>
+            <button class="flag" data-flag="${g.key}">${flags.has(g.key) ? '取消标记' : '标记'}</button>
+          </div>
+          <div class="row3">
+            <select data-src="${g.key}" title="该音节的读音来源">
+              <option value=""${sel === '' ? ' selected' : ''}>跟随默认</option>
+              <option value="lib"${sel === 'lib' ? ' selected' : ''}>真人</option>
+              <option value="tts"${sel === 'tts' ? ' selected' : ''}>AI</option>
+            </select>
+            <button class="ab-lib" data-ab-lib="${g.key}" title="试听真人录音" ${hasLib ? '' : 'disabled'}>▶人</button>
+            <button class="ab-tts" data-ab-tts="${g.key}" title="试听 AI 合成" ${hasTts ? '' : 'disabled'}>▶AI</button>
+          </div>`;
+        $('grid').append(card);
+      }
+      $('grid').querySelectorAll('[data-play]').forEach((b) => b.addEventListener('click', () => playOne(b.dataset.play)));
+      $('grid').querySelectorAll('[data-flag]').forEach((b) => b.addEventListener('click', () => toggleFlag(b.dataset.flag)));
+      $('grid').querySelectorAll('[data-src]').forEach((s) => s.addEventListener('change', () => setKeySource(s.dataset.src, s.value || null)));
+      $('grid').querySelectorAll('[data-ab-lib]').forEach((b) => b.addEventListener('click', () => playExplicit(b.dataset.abLib, 'lib')));
+      $('grid').querySelectorAll('[data-ab-tts]').forEach((b) => b.addEventListener('click', () => playExplicit(b.dataset.abTts, 'tts')));
+      renderOverrides();
+    }
+
+    function renderOverrides() {
+      const obj = {};
+      for (const key of flags) obj[fileKey(key)] = { text: '', hanzi: '' };
+      $('overrides').value = Object.keys(obj).length
+        ? JSON.stringify(obj, null, 2)
+        : '';
+    }
+
+    function toggleFlag(key) {
+      if (flags.has(key)) flags.delete(key); else flags.add(key);
+      saveFlags();
+      render();
+    }
+
+    async function playOne(key) {
+      stop();
+      const g = groups.find((x) => x.key === key);
+      if (!g) return;
+      const url = g.status === 'wav' ? `/audio/voice/${fileKey(key)}.wav`
+        : g.status === 'mp3' ? `/audio/voice/${fileKey(key)}.mp3`
+        : `/api/tts?text=${encodeURIComponent([...g.hanziSet][0])}`;
+      try {
+        const a = await fetchAudio(url);
+        currentAudio = a;
+        await a.play().catch(() => {});
+      } catch { /* 试听失败静默 */ }
+    }
+
+    function stop() {
+      if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+      releaseObjUrl();
+      playing = false;
+      queue = [];
+    }
+
+    /** 依次播放：只播本地 wav（缺失的跳过并高亮），播完自动继续。 */
+    async function playQueue(list) {
+      stop();
+      queue = list.slice();
+      playing = true;
+      while (playing && queue.length) {
+        const g = queue.shift();
+        const url = g.status === 'wav' ? `/audio/voice/${fileKey(g.key)}.wav`
+          : g.status === 'mp3' ? `/audio/voice/${fileKey(g.key)}.mp3`
+          : `/api/tts?text=${encodeURIComponent([...g.hanziSet][0])}`;
+        $('stat').textContent = `正在播放 ${g.display}（剩余 ${queue.length}）`;
+        await new Promise((resolve) => {
+          fetchAudio(url).then((a) => {
+            if (!playing) { releaseObjUrl(); resolve(); return; }
+            currentAudio = a;
+            a.addEventListener('ended', resolve, { once: true });
+            a.addEventListener('error', resolve, { once: true });
+            a.play().catch(resolve);
+          }).catch(resolve);
+          setTimeout(resolve, 3000);
+        });
+      }
+      if (playing) render();
+    }
+
+    $('q').addEventListener('input', render);
+    $('stop').addEventListener('click', () => { stop(); render(); });
+    $('playAll').addEventListener('click', () => playQueue(groups.filter((g) => !flags.has(g.key))));
+    $('playMissing').addEventListener('click', () => playQueue(groups.filter((g) => g.missing || flags.has(g.key))));
+
+    load().catch((e) => { $('stat').textContent = '加载失败：' + e.message; });
+  </script>
+</body>
+</html>

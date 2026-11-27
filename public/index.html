@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- iPad Safari：禁止缩放、贴合刘海安全区 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#02040a" />
+
+  <!-- PWA 伪原生配置 -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="星际发射指挥官" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+
+  <title>星际发射指挥官 · StarPinyin Commander</title>
+  <script>/* 皮肤/图标风格首帧前应用（家长后台保存于 localStorage） */try{var _s=localStorage.getItem('sp_skin');document.documentElement.dataset.skin=(_s==='daylight'||_s==='nebula')?_s:'hud';var _i=localStorage.getItem('sp_iconstyle');document.documentElement.dataset.iconStyle=(_i==='b'||_i==='c')?_i:'a';}catch(e){document.documentElement.dataset.skin='hud';document.documentElement.dataset.iconStyle='a';}</script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/boot.css" />
+  <link rel="stylesheet" href="/css/space.css" />
+  <link rel="stylesheet" href="/css/skins.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- 首屏：SpaceX 星舰风格主视觉（首次点击解锁 iOS 音频） -->
+    <section id="boot" class="screen boot">
+      <div class="boot-sky" aria-hidden="true"></div>
+      <div class="boot-twinkle" aria-hidden="true"></div>
+      <div class="boot-twinkle2" aria-hidden="true"></div>
+      <div class="boot-ground" aria-hidden="true"></div>
+      <div class="boot-padlight" aria-hidden="true"></div>
+
+      <!-- 发射塔 + 星舰：矗立在地平线上 -->
+      <div class="boot-pad" aria-hidden="true">
+        <svg class="boot-tower" viewBox="0 0 70 500" preserveAspectRatio="xMidYMax meet" focusable="false">
+          <g fill="#0b1220" stroke="rgba(130,160,210,.16)" stroke-width="1">
+            <polygon points="10,500 18,468 44,468 52,500" />
+            <rect x="18" y="24" width="26" height="448" />
+            <polygon points="18,24 0,13 0,19 18,32" />
+            <polygon points="44,160 68,166 68,173 44,171" />
+            <polygon points="44,188 68,181 68,188 44,196" />
+          </g>
+          <g stroke="rgba(130,160,210,.13)" stroke-width="1" fill="none">
+            <path d="M18 54h26M18 84h26M18 114h26M18 144h26M18 204h26M18 234h26M18 264h26M18 294h26M18 324h26M18 354h26M18 384h26M18 414h26M18 444h26" />
+            <path d="M18 54l26 30M44 84l-26 30M18 114l26 30M44 204l-26 30M18 234l26 30M44 264l-26 30M18 294l26 30M44 324l-26 30M18 354l26 30M44 384l-26 30M18 414l26 30" />
+            <path d="M2 19v44" />
+          </g>
+          <circle class="beacon" cx="31" cy="18" r="2.6" fill="#ff5d5d" />
+          <circle class="beacon b2" cx="31" cy="250" r="2.2" fill="#ff5d5d" />
+        </svg>
+        <div class="boot-ship-wrap">
+          <img class="boot-ship" src="/images/boot/starship-hero.png" alt="" />
+          <div class="boot-engine" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <header class="boot-top">
+        <span class="boot-wordmark"><span class="star" aria-hidden="true">✦</span>STARPINYIN</span>
+        <span class="boot-top-tag">拼音航天发射场 · STARBASE</span>
+      </header>
+
+      <div class="boot-hero">
+        <p class="boot-kicker">STARPINYIN COMMANDER</p>
+        <h1 class="boot-title">星际发射<br class="boot-title-br" />指挥官</h1>
+        <p class="boot-sub">组装拼音 · 校准声调 · 点火入轨</p>
+        <button id="enterBtn" class="boot-cta" type="button">
+          <span class="boot-cta-zh">进入指挥中心</span>
+          <span class="boot-cta-en">ENTER COMMAND CENTER</span>
+        </button>
+      </div>
+
+      <footer class="boot-foot" aria-hidden="true">
+        <span>STARBASE · BOCA CHICA, TX</span>
+        <span class="boot-foot-coord">25.997° N · 97.156° W</span>
+      </footer>
+    </section>
+
+    <!-- 机库待命：① 课文同步 → ② 选座驾 → 发射（右上角显示最新目的地；hangar-body 整体自适应缩放，无滚动条） -->
+    <section id="hangar" class="screen hangar" hidden>
+      <div class="hangar-body" id="hangarBody">
+      <header class="hangar-head">
+        <div class="hangar-id">
+          <img class="hangar-id-icon" src="/images/icons/a/astronaut.png" data-icon="astronaut" alt="" aria-hidden="true" draggable="false">
+          <span class="callsign" id="callsign">指挥官</span>
+        </div>
+        <div class="hangar-actions">
+          <span class="launch-count" title="累计发射次数"><img class="launch-count-icon" src="/images/icons/a/rocket.png" data-icon="rocket" alt="" aria-hidden="true" draggable="false"> 发射 <b id="launchCount">0</b> 次</span>
+          <button id="museumBtn" class="phys-btn small" type="button"><img class="ui-icon" src="/images/icons/a/museum.png" data-icon="museum" alt="" aria-hidden="true" draggable="false"> 博物馆</button>
+          <button id="latestDest" class="dest-corner" type="button" aria-label="最新目的地"></button>
+        </div>
+      </header>
+
+      <button id="emergencyLight" class="emergency-light" type="button" hidden>
+        <span class="emergency-dot"></span> 紧急任务
+      </button>
+
+      <div class="panel hangar-step">
+        <div class="panel-title-row">
+          <h2 class="panel-title step-title"><span class="step-num" aria-hidden="true">1</span> 课文同步</h2>
+          <div class="tb-status" id="tbStatus"></div>
+        </div>
+        <div class="tb-grades" id="tbGrades" role="group" aria-label="选择年级"></div>
+        <div class="tb-detail" id="tbDetail" hidden>
+          <div class="tb-terms" id="tbTerms" role="group" aria-label="选择学期"></div>
+          <div class="tb-lessons" id="tbLessons" role="group" aria-label="选择课文学习进度"></div>
+        </div>
+      </div>
+
+      <div class="panel hangar-step">
+        <div class="panel-title-row">
+          <h2 class="panel-title step-title"><span class="step-num" aria-hidden="true">2</span> 出战座驾</h2>
+          <button id="rocketAutoTag" class="rocket-auto-tag" type="button" title="点一下改回「自动 · 最新火箭」">自动 · 最新火箭</button>
+        </div>
+        <div class="current-rocket" id="currentRocket"></div>
+        <p class="rocket-hint">点下面任意一枚火箭，就换它出战。</p>
+        <div class="rocket-picker" id="rocketPicker" role="group" aria-label="选择出战火箭" hidden></div>
+        <div class="next-rocket" id="nextBadge"></div>
+      </div>
+
+      <button id="launchBtn" class="phys-btn primary launch-btn" type="button"><img class="ui-icon" src="/images/icons/a/rocket.png" data-icon="rocket" alt="" aria-hidden="true" draggable="false"> 发射</button>
+      </div>
+    </section>
+
+    <!-- 游戏舞台：任务简报 / 组装台 由 ui-renderer 动态绘制 -->
+    <section id="game" class="screen game" hidden></section>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

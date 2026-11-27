@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#04060c" />
+  <title>家长控制面板 · 星际发射指挥官</title>
+  <script>/* 皮肤/图标风格首帧前应用（与孩子端共用 localStorage） */try{var _s=localStorage.getItem('sp_skin');document.documentElement.dataset.skin=(_s==='daylight'||_s==='nebula')?_s:'hud';var _i=localStorage.getItem('sp_iconstyle');document.documentElement.dataset.iconStyle=(_i==='b'||_i==='c')?_i:'a';}catch(e){document.documentElement.dataset.skin='hud';document.documentElement.dataset.iconStyle='a';}</script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="/css/space.css" />
+  <link rel="stylesheet" href="/css/skins.css" />
+</head>
+<body class="admin-body">
+  <div class="admin-wrap">
+    <header class="admin-head">
+      <h1><img class="ui-icon" src="/images/icons/a/satellite.png" data-icon="satellite" alt="" aria-hidden="true" draggable="false"> 家长控制面板</h1>
+      <p class="admin-sub">星际发射指挥官 · 错题热注入 / 词库管理 / 学习统计</p>
+    </header>
+
+    <!-- 分页：学习管理 / 界面 / 发音 / 系统（hash 直达 #study #ui #voice #reset，记住上次停留页） -->
+    <nav class="admin-tabs" role="tablist" aria-label="控制面板分页">
+      <button class="admin-tab" id="tab-study" type="button" role="tab" data-page="study" aria-controls="page-study" aria-selected="false" tabindex="-1" title="介母装配 · 紧急载荷 · 薄弱拼音标签">学习管理</button>
+      <button class="admin-tab" id="tab-ui" type="button" role="tab" data-page="ui" aria-controls="page-ui" aria-selected="true" title="界面风格 · 图标风格 · 发射动画">界面</button>
+      <button class="admin-tab" id="tab-voice" type="button" role="tab" data-page="voice" aria-controls="page-voice" aria-selected="false" tabindex="-1" title="发音自检 · 重新生成 · 词库管理">发音</button>
+      <button class="admin-tab" id="tab-reset" type="button" role="tab" data-page="reset" aria-controls="page-reset" aria-selected="false" tabindex="-1" title="系统自检 · 一键清除学习记录">系统</button>
+    </nav>
+
+    <!-- 家长校验（繁体数字）：JS 会把此面板移入当前受保护页；界面页无需校验 -->
+    <section class="panel page-gate" id="adminGate" hidden>
+      <h2 class="panel-title">家长校验</h2>
+      <p class="panel-desc">此页可修改学习数据。为避免孩子错触，请输入下面数字的繁体写法解锁（仅本次浏览器会话有效；「界面」页无需校验）。</p>
+      <div class="gate-challenge">请输入「<b id="gateChar">五</b>」的繁体字</div>
+      <div class="gate-row">
+        <input id="gateInput" type="text" maxlength="2" autocomplete="off" placeholder="繁体数字" aria-label="输入繁体数字" />
+        <button id="gateBtn" class="phys-btn primary" type="button">解锁</button>
+        <button id="gateNew" class="phys-btn" type="button">换一题</button>
+      </div>
+      <div id="gateMsg" class="inject-msg" aria-live="polite"></div>
+    </section>
+
+    <!-- 第 1 页 · 学习管理（需家长校验） -->
+    <div class="admin-page" id="page-study" role="tabpanel" aria-labelledby="tab-study" hidden>
+      <div class="page-body" hidden>
+      <section class="panel">
+        <h2 class="panel-title">介母装配（三拼音节）</h2>
+        <p class="panel-desc">介母是三拼音节中间那个音，如 chuán 的 u。</p>
+        <div class="skin-picker two" id="medialModePicker" role="radiogroup" aria-label="选择介母装配方式">
+          <button class="skin-card" type="button" data-medialmode="required" role="radio" aria-checked="false">
+            <b>A · 孩子装配（默认）</b>
+            <span>托盘出声母、介母、韵母三种零件，练得更完整。</span>
+          </button>
+          <button class="skin-card" type="button" data-medialmode="auto" role="radio" aria-checked="false">
+            <b>B · 自动预装</b>
+            <span>托盘只出声母、韵母两种零件，三拼更轻松。</span>
+          </button>
+        </div>
+        <p class="skin-status" id="medialModeStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">注入紧急载荷（错题）</h2>
+        <p class="panel-desc">输入汉字与拼音（如 <code>chuán</code> 或 <code>chuan2</code>），系统自动辅助拆分，微调后一键提交。</p>
+        <div class="form-grid">
+          <label>汉字<input id="fHanzi" type="text" maxlength="4" placeholder="船" /></label>
+          <label>拼音<input id="fPinyin" type="text" placeholder="chuán 或 chuan2" /></label>
+          <label>词组<input id="fWord" type="text" placeholder="宇宙飞船" /></label>
+          <label>提示<input id="fHint" type="text" placeholder="在太空里航行的交通工具" /></label>
+        </div>
+        <div id="splitFields" class="split-fields"></div>
+        <div class="split-preview">预览：<span id="previewPinyin" class="preview-pinyin">—</span> <span id="previewRule" class="preview-rule"></span></div>
+        <div class="form-actions">
+          <button id="submitBtn" class="phys-btn primary" type="button">提交紧急载荷 ▸</button>
+        </div>
+        <div id="injectMsg" class="inject-msg" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">近期薄弱拼音标签</h2>
+        <p class="panel-desc">按错误率排序，错误率越高越需加强（来自孩子作答记录）。</p>
+        <div id="stats" class="stats"></div>
+      </section>
+      </div>
+    </div>
+
+    <!-- 第 2 页 · 界面（默认打开，无需校验） -->
+    <div class="admin-page" id="page-ui" role="tabpanel" aria-labelledby="tab-ui">
+      <section class="panel">
+        <h2 class="panel-title">界面风格</h2>
+        <div class="skin-picker" id="skinPicker" role="radiogroup" aria-label="选择界面风格">
+          <button class="skin-card" type="button" data-skin="hud" role="radio" aria-checked="false">
+            <span class="skin-prev prev-hud" aria-hidden="true"><i></i><i></i><i></i></span>
+            <b>A · 深空座舱 HUD</b>
+            <span>青蓝辉光 / 四角括线 / 仪表感，科幻沉浸</span>
+          </button>
+          <button class="skin-card" type="button" data-skin="daylight" role="radio" aria-checked="false">
+            <span class="skin-prev prev-daylight" aria-hidden="true"><i></i><i></i><i></i></span>
+            <b>B · 天空积木</b>
+            <span>浅天蓝 / 糖果分类 / 玩具按压按钮，偏亮护眼</span>
+          </button>
+          <button class="skin-card" type="button" data-skin="nebula" role="radio" aria-checked="false">
+            <span class="skin-prev prev-nebula" aria-hidden="true"><i></i><i></i><i></i></span>
+            <b>C · 星云乐园</b>
+            <span>紫星云 / 糖果色分类 / 玩具按钮，低龄友好</span>
+          </button>
+        </div>
+        <p class="skin-status" id="skinStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">图标风格</h2>
+        <div class="skin-picker" id="iconStylePicker" role="radiogroup" aria-label="选择图标风格">
+          <button class="skin-card" type="button" data-iconstyle="a" role="radio" aria-checked="false">
+            <span class="icon-prev" aria-hidden="true"><img src="/images/icons/a/rocket.png" alt=""><img src="/images/icons/a/dest/saturn.png" alt=""><img src="/images/icons/a/astronaut.png" alt=""></span>
+            <b>A · 写实航天渲染</b>
+            <span>微缩实物模型 / 电影级材质，与火箭模型同语言</span>
+          </button>
+          <button class="skin-card" type="button" data-iconstyle="b" role="radio" aria-checked="false">
+            <span class="icon-prev" aria-hidden="true"><img src="/images/icons/b/rocket.png" alt=""><img src="/images/icons/b/dest/saturn.png" alt=""><img src="/images/icons/b/astronaut.png" alt=""></span>
+            <b>B · 扁平几何仪表</b>
+            <span>矢量插画 / 冰蓝琥珀橙 / HUD 科技感，小尺寸清晰</span>
+          </button>
+          <button class="skin-card" type="button" data-iconstyle="c" role="radio" aria-checked="false">
+            <span class="icon-prev" aria-hidden="true"><img src="/images/icons/c/rocket.png" alt=""><img src="/images/icons/c/dest/saturn.png" alt=""><img src="/images/icons/c/astronaut.png" alt=""></span>
+            <b>C · 复古丝网海报</b>
+            <span>NASA 旅行海报风 / 颗粒纹理 / 复古配色，艺术温度</span>
+          </button>
+        </div>
+        <p class="skin-status" id="iconStyleStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">发射动画</h2>
+        <div class="skin-picker two" id="launchFxPicker" role="radiogroup" aria-label="选择发射动画播放方式">
+          <button class="skin-card" type="button" data-launchfx="always" role="radio" aria-checked="false">
+            <b>A · 每次完整播放（默认）</b>
+            <span>倒计时 → 点火 → 升空 → 入轨 / 抵达。</span>
+          </button>
+          <button class="skin-card" type="button" data-launchfx="unit-first" role="radio" aria-checked="false">
+            <b>B · 每单元仅首次</b>
+            <span>同单元第二次起跳过动画，直接结算；汉语拼音课等无单元的题照常播。</span>
+          </button>
+        </div>
+        <p class="skin-status" id="launchFxStatus" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <!-- 第 3 页 · 发音（读音来源 / TTS合成API设置 / 发音自检 / 词库表格，需家长校验） -->
+    <div class="admin-page" id="page-voice" role="tabpanel" aria-labelledby="tab-voice" hidden>
+      <div class="page-body" hidden>
+      <section class="panel">
+        <h2 class="panel-title">读音来源</h2>
+        <div class="voice-source" role="group" aria-label="读音来源">
+          <button id="srcLib" class="phys-btn" type="button" aria-pressed="true">真人发声</button>
+          <button id="srcTts" class="phys-btn" type="button" aria-pressed="false">AI合成</button>
+          <a class="voice-source-link" href="/voice-check.html" target="_blank" rel="noopener">音节全面自检</a>
+          <span id="srcState" class="voice-source-state" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <section class="panel" id="ttsConfigBox">
+        <div class="panel-title-row">
+          <h2 class="panel-title"><img class="ui-icon" src="/images/icons/a/pencil.png" data-icon="pencil" alt="" aria-hidden="true" draggable="false"> TTS合成API设置</h2>
+          <span id="ttsKeyState" class="tts-key-state"></span>
+        </div>
+        <p class="panel-desc">填好 API 地址与 Key，再点「自动获取模型 / 音色」——模型列表直接问接口要（<code>/v1/models</code>），音色按模型内置（系统音色没有查询接口，音色必须与模型同族）。也可点下拉框里的「手动填写…」自己填。</p>
+        <div class="form-grid">
+          <label>API 地址<input id="ttsUrl" type="text" spellcheck="false" placeholder="https://…/api/v1/services/audio/tts/SpeechSynthesizer" /></label>
+          <label>API Key<input id="ttsKey" type="password" autocomplete="new-password" spellcheck="false" placeholder="填入你的 API Key" /></label>
+          <label>模型
+            <select id="ttsModelSel" aria-label="可用模型"></select>
+            <input id="ttsModel" type="text" spellcheck="false" placeholder="自动获取，或手填模型名" hidden />
+          </label>
+          <label>音色
+            <select id="ttsVoiceSel" aria-label="可用音色"></select>
+            <input id="ttsVoice" type="text" spellcheck="false" placeholder="自动获取，或手填音色名" hidden />
+          </label>
+        </div>
+        <div class="form-actions tts-actions">
+          <button id="ttsDiscoverBtn" class="phys-btn primary" type="button">自动获取模型 / 音色</button>
+          <button id="ttsSaveBtn" class="phys-btn" type="button">保存设置</button>
+          <button id="ttsTestBtn" class="phys-btn" type="button">测试合成</button>
+        </div>
+        <p class="panel-desc tts-pick-hint" id="ttsPickHint" aria-live="polite"></p>
+        <div id="ttsMsg" class="inject-msg" aria-live="polite"></div>
+      </section>
+
+      <section class="panel voice-admin">
+        <h2 class="panel-title"><img class="ui-icon" src="/images/icons/a/radio.png" data-icon="radio" alt="" aria-hidden="true" draggable="false"> 发音自检 · 重新生成</h2>
+        <p class="panel-desc">逐条试听读音（本地录音优先，缺失时现场合成）；听出不顺耳的点「标记」，再一键重新生成。<b>重新生成只更新 AI 合成读音，绝不覆盖真人录音。</b></p>
+        <div class="voice-toolbar">
+          <div class="toolbar-group" role="group" aria-label="试听自检">
+            <span class="toolbar-caption">试听自检</span>
+            <button id="voicePlayAll" class="phys-btn" type="button">▶ 依次自检</button>
+            <button id="voicePlayBad" class="phys-btn" type="button"><img class="ui-icon" src="/images/icons/a/warning.png" data-icon="warning" alt="" aria-hidden="true" draggable="false"> 只播标记/缺失</button>
+            <button id="voiceStop" class="phys-btn" type="button">■ 停止</button>
+          </div>
+          <div class="toolbar-group" role="group" aria-label="重新生成">
+            <span class="toolbar-caption">重新生成</span>
+            <button id="voiceRegenFlagged" class="phys-btn primary" type="button"><img class="ui-icon" src="/images/icons/a/spark.png" data-icon="spark" alt="" aria-hidden="true" draggable="false"> 重新生成标记</button>
+            <button id="voiceRegenAll" class="phys-btn" type="button"><img class="ui-icon" src="/images/icons/a/spark.png" data-icon="spark" alt="" aria-hidden="true" draggable="false"> 全部重新生成</button>
+            <button id="voiceRegenStop" class="phys-btn danger" type="button">停止生成</button>
+          </div>
+        </div>
+        <div id="voiceStatus" class="voice-status" aria-live="polite"></div>
+        <div id="regenProgress" class="regen-progress" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">词库管理</h2>
+        <p class="panel-desc">共 <span id="missionCount">0</span> 题。<img class="ui-icon" src="/images/icons/a/beacon.png" data-icon="beacon" alt="" aria-hidden="true" draggable="false"> = 家长紧急载荷。</p>
+
+        <div class="mission-filters">
+          <label>标记
+            <select id="fltFlag">
+              <option value="all">全部</option>
+              <option value="flagged">已标记</option>
+              <option value="unflagged">未标记</option>
+            </select>
+          </label>
+          <label>年级
+            <select id="fltGrade">
+              <option value="all">全部</option>
+              <option value="1">一年级</option>
+              <option value="2">二年级</option>
+              <option value="3">三年级</option>
+              <option value="none">无教材归属</option>
+            </select>
+          </label>
+          <label>构型
+            <select id="fltType">
+              <option value="all">全部</option>
+              <option value="two_part">两拼</option>
+              <option value="three_part">三拼</option>
+              <option value="zero_initial">零声母</option>
+              <option value="whole_syllable">整体认读</option>
+            </select>
+          </label>
+          <label>来源
+            <select id="fltSource">
+              <option value="all">全部</option>
+              <option value="injected">紧急载荷</option>
+              <option value="seed">种子</option>
+              <option value="grade3">三年级专项</option>
+              <option value="extend">小学扩展</option>
+              <option value="advanced">进阶扩展</option>
+              <option value="textbook">课文同步</option>
+            </select>
+          </label>
+          <label class="flt-search">搜索
+            <input id="fltSearch" type="search" placeholder="汉字 / 拼音 / 词组" />
+          </label>
+          <button id="fltReset" class="row-btn" type="button">清除筛选</button>
+          <span id="fltCount" class="flt-count" aria-live="polite"></span>
+        </div>
+
+        <div class="voice-legend">
+          <span>读音来源：</span>
+          <span><i class="v-dot v-wav s-lib"></i>真人录音</span>
+          <span><i class="v-dot v-wav s-tts"></i>AI 合成</span>
+          <span><i class="v-dot v-mp3"></i>旧 mp3</span>
+          <span><i class="v-dot v-tts"></i>缺失（现场合成）</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="mission-table">
+            <thead><tr><th>汉字</th><th>拼音</th><th class="ctr">构型</th><th class="num">错误率</th><th class="ctr">来源</th><th class="ctr">读音来源</th><th>发音</th><th>操作</th></tr></thead>
+            <tbody id="missionBody"></tbody>
+          </table>
+        </div>
+        <div class="pager" id="pager"></div>
+      </section>
+      </div>
+    </div>
+
+    <!-- 第 4 页 · 系统（系统自检 / 清空学习记录，需家长校验） -->
+    <div class="admin-page" id="page-reset" role="tabpanel" aria-labelledby="tab-reset" hidden>
+      <div class="page-body" hidden>
+      <section class="panel">
+        <h2 class="panel-title">系统自检</h2>
+        <p class="panel-desc">对全部任务执行「拆分 / 标调 / j·q·x 去点」规则校验，结果同时输出到浏览器控制台。</p>
+        <button id="selfTestBtn" class="phys-btn" type="button">运行拼音规则自检</button>
+        <div id="selfTestResult" class="selftest-result" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">学习记录管理</h2>
+        <p class="panel-desc">一键清空孩子的作答统计与错误率、发射次数、火箭解锁与自选座驾、星球图鉴和课时奖励进度，从零开始。保留呼号、课文同步选择、发射动画与介母装配选项、词库（含紧急载荷）。此操作不可恢复。</p>
+        <div class="form-actions">
+          <button id="resetProgressBtn" class="phys-btn danger" type="button"><img class="ui-icon" src="/images/icons/a/warning.png" data-icon="warning" alt="" aria-hidden="true" draggable="false"> 一键清除学习记录</button>
+        </div>
+        <div id="resetMsg" class="inject-msg" aria-live="polite"></div>
+      </section>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/js/admin.js"></script>
+</body>
+</html>
