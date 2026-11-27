@@ -1194,6 +1194,36 @@ function bootMedialModePicker() {
   });
 }
 
+/* ----------------------------- 单元练习总字数（10~20） ----------------------------- */
+// 存服务端档案 progress.unitTotal；复习名额 = 总字数 − 本课新字数。孩子端下次选题单即生效。
+const UNIT_TOTAL_MIN = 10, UNIT_TOTAL_MAX = 20, UNIT_TOTAL_DEFAULT = 15;
+const clampTotal = (v) => Math.min(UNIT_TOTAL_MAX, Math.max(UNIT_TOTAL_MIN, Math.floor(Number(v) || UNIT_TOTAL_DEFAULT)));
+function bootUnitTotalPicker() {
+  const range = $('unitTotalRange'), out = $('unitTotalValue'), status = $('unitTotalStatus');
+  if (!range || !out || !status) return;
+  let saved = UNIT_TOTAL_DEFAULT;
+  const show = (v, msg) => { range.value = String(v); out.textContent = String(v); status.textContent = msg || `当前：每单元 ${v} 字`; };
+  show(saved);
+  fetch('/api/profile').then((r) => r.json()).then((p) => { saved = clampTotal(p.unitTotal); show(saved); }).catch(() => {});
+  range.addEventListener('input', () => { out.textContent = range.value; });
+  range.addEventListener('change', async () => {
+    const v = clampTotal(range.value);
+    show(v, `保存中… ${v} 字`);
+    try {
+      const r = await fetch('/api/unittotal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ unitTotal: v }) });
+      if (!r.ok) {
+        const err = await r.json().then((j) => j?.error).catch(() => null);
+        throw new Error(err || ('HTTP ' + r.status));
+      }
+      saved = v;
+      show(saved, `已保存 ✓ 每单元 ${saved} 字`);
+    } catch (err) {
+      const tip = err?.message ? '服务器返回：' + err.message : '服务器未连接';
+      show(saved, `保存失败（${tip}），已恢复原值。若服务是改代码前启动的，重启 node server.js 后重试`);
+    }
+  });
+}
+
 /* ----------------------------- 一键清除学习记录 ----------------------------- */
 async function resetProgress() {
   const msg = $('resetMsg');
@@ -1338,6 +1368,7 @@ function boot() {
   bootIconStylePicker();
   bootLaunchFxPicker();
   bootMedialModePicker();
+  bootUnitTotalPicker();
   bootMissionFilters();
   bootVoiceAdmin();
   $('selfTestBtn').addEventListener('click', () => { runPinyinSelfTest(); });

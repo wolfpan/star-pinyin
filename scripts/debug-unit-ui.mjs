@@ -1,7 +1,8 @@
 /**
- * debug-unit-ui.mjs — 单元完成规则 UI 验收：机库单元芯片行 + 选单元状态 + 发射简报。
+ * debug-unit-ui.mjs — 单元完成规则 UI 验收：课文（单元）芯片选题单 + 状态 + 发射简报。
+ * 「单元」= 一课（识字N / 第N课 / 园地 / 拼音）。
  * 自包含：临时 DATA_DIR 副本上起服务（不碰真实玩家数据）+ 无头 Chrome CDP 截图到 .ui-shots/。
- * 运行：node scripts/debug-unit-ui.mjs
+ * 运行：node scripts/debug-unit-ui.mjs（需本机 Chrome；沙箱禁止命名管道时无法运行）
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -84,49 +85,42 @@ await ev(`window.__audio && Object.assign(window.__audio, { speakText(){}, slowS
 await ev(`document.getElementById('enterBtn').click()`);
 await waitFor('#tbGrades .tb-chip'); await sleep(600);
 
-console.log('\n[1] 选一年级上册 → 单元芯片行');
+console.log('\n[1] 选一年级上册 → 课文（单元）芯片');
 await ev(`[...document.querySelectorAll('#tbGrades .tb-chip')].find(b => b.textContent.includes('一年级'))?.click()`);
-await waitFor('#tbUnits .tb-unit'); await sleep(600);
-const unitCount = await ev(`document.querySelectorAll('#tbUnits .tb-unit').length`);
-check(unitCount === 8, `一上渲染 8 个单元芯片（实际 ${unitCount}）`);
-const unitLabels = await ev(`[...document.querySelectorAll('#tbUnits .tb-unit')].map(b => b.textContent).join(',')`);
-check(unitLabels === '1单元,2单元,3单元,4单元,5单元,6单元,7单元,8单元', `单元标签正确（${unitLabels}）`);
-await shot('unit-hangar-row');
+await waitFor('#tbLessons .tb-lesson'); await sleep(600);
+check(await ev(`!document.getElementById('tbUnits')`), '无独立单元芯片行（单元即课文芯片）');
+check(await ev(`document.querySelectorAll('#tbLessons .tb-lesson').length > 0`), '课文芯片渲染');
+await shot('unit-hangar-lessons');
 
-console.log('\n[2] 点第5单元 → 固定题单状态');
-await ev(`document.querySelector('#tbUnits .tb-unit[data-unit="5"]')?.click()`);
+console.log('\n[2] 点识字2 → 固定题单状态');
+await ev(`document.querySelector('#tbLessons .tb-lesson[data-seq="2"]')?.click()`);
 await sleep(700);
 const status = await ev(`document.getElementById('tbStatus').textContent`);
 console.log('  status:', status);
-check(status.includes('第5单元') && status.includes('新字') && status.includes('复习'), '状态行显示单元 + 新字 + 复习');
-const activeUnit = await ev(`document.querySelector('#tbUnits .tb-unit.active')?.dataset.unit`);
-check(activeUnit === '5', `第5单元芯片高亮（实际 ${activeUnit}）`);
-const lessonActive = await ev(`document.querySelectorAll('#tbLessons .tb-lesson.active').length`);
-check(lessonActive === 0, '单元模式下课文芯片不高亮');
+check(status.includes('识字2') && status.includes('新字') && status.includes('复习'), '状态行显示课文 + 新字 + 复习');
+check(await ev(`document.querySelector('#tbLessons .tb-lesson.active')?.dataset.seq`) === '2', '识字2芯片高亮');
 await shot('unit-hangar-selected');
 const nextMeta = await ev(`fetch('/api/missions/next?mode=all').then(r => r.json()).then(m => ({ kind: m.unitSession?.kind, cursor: m.unitSession?.cursor, hanzi: m.hanzi }))`);
 check(nextMeta.kind === 'new' && nextMeta.cursor === 0, `next 沿题单出第1新字（${JSON.stringify(nextMeta)}）`);
 
-console.log('\n[3] 发射 → 简报来源为本单元第一课');
+console.log('\n[3] 发射 → 简报来源为本课');
 await ev(`document.getElementById('launchBtn').click()`);
 await waitFor('.briefing'); await sleep(700);
 const src = await ev(`document.querySelector('.brief-source')?.textContent || '(无来源)'`);
 console.log('  brief-source:', src);
-check(src.includes('秋天'), `简报来源含单元5第一课《秋天》（${src}）`);
+check(src.includes('金木水火土'), `简报来源含识字2《金木水火土》（${src}）`);
 await shot('unit-briefing');
 
-console.log('\n[4] 回机库选具体课文 → 退出单元模式');
-await ev(`document.querySelector('.briefing') && [...document.querySelectorAll('button')].find(b => b.textContent.includes('机库'))?.click()`);
-await sleep(400);
+console.log('\n[4] 回机库选全册 → 退出单元模式');
 await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` }); await sleep(1200);
 await ev(`window.__audio && Object.assign(window.__audio, { speakText(){}, slowSplit(){}, speakPinyin(){} })`);
 await ev(`document.getElementById('enterBtn').click()`); await waitFor('#tbGrades .tb-chip'); await sleep(500);
 await ev(`[...document.querySelectorAll('#tbGrades .tb-chip')].find(b => b.textContent.includes('一年级'))?.click()`);
 await sleep(400);
-await ev(`document.querySelector('#tbLessons .tb-lesson[data-seq="2"]')?.click()`);
+await ev(`const b = document.getElementById('tbLessons'); b.scrollLeft = b.scrollWidth; document.querySelector('#tbLessons .tb-lesson[data-seq="all"]')?.click()`);
 await sleep(600);
 const usAfter = await ev(`fetch('/api/profile').then(r => r.json()).then(p => p.unitSession)`);
-check(usAfter === null, '选课文后单元题单作废（profile.unitSession=null）');
+check(usAfter === null, '选全册后单元题单作废（profile.unitSession=null）');
 
 console.log('\nERRORS:', errors.length ? errors : 'none');
 ws.close(); cleanup();

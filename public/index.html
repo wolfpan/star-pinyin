@@ -105,7 +105,6 @@
         <div class="tb-grades" id="tbGrades" role="group" aria-label="选择年级"></div>
         <div class="tb-detail" id="tbDetail" hidden>
           <div class="tb-terms" id="tbTerms" role="group" aria-label="选择学期"></div>
-          <div class="tb-units" id="tbUnits" role="group" aria-label="选择单元"></div>
           <div class="tb-lessons" id="tbLessons" role="group" aria-label="选择课文学习进度"></div>
         </div>
       </div>
@@ -127,6 +126,9 @@
 
     <!-- 游戏舞台：任务简报 / 组装台 由 ui-renderer 动态绘制 -->
     <section id="game" class="screen game" hidden></section>
+
+    <!-- 单元练习底部完成进度条（选中课文单元题单时显示，跨简报/组装/声调/结算常驻） -->
+    <div id="unitProgress" class="unit-progress" hidden></div>
   </div>
 
   <script type="module" src="/js/main.js"></script>

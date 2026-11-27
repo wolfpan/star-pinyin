@@ -20,7 +20,7 @@
 
     <!-- 分页：学习管理 / 界面 / 发音 / 系统（hash 直达 #study #ui #voice #reset，记住上次停留页） -->
     <nav class="admin-tabs" role="tablist" aria-label="控制面板分页">
-      <button class="admin-tab" id="tab-study" type="button" role="tab" data-page="study" aria-controls="page-study" aria-selected="false" tabindex="-1" title="介母装配 · 紧急载荷 · 薄弱拼音标签">学习管理</button>
+      <button class="admin-tab" id="tab-study" type="button" role="tab" data-page="study" aria-controls="page-study" aria-selected="false" tabindex="-1" title="介母装配 · 单元总字数 · 紧急载荷 · 薄弱拼音标签">学习管理</button>
       <button class="admin-tab" id="tab-ui" type="button" role="tab" data-page="ui" aria-controls="page-ui" aria-selected="true" title="界面风格 · 图标风格 · 发射动画">界面</button>
       <button class="admin-tab" id="tab-voice" type="button" role="tab" data-page="voice" aria-controls="page-voice" aria-selected="false" tabindex="-1" title="发音自检 · 重新生成 · 词库管理">发音</button>
       <button class="admin-tab" id="tab-reset" type="button" role="tab" data-page="reset" aria-controls="page-reset" aria-selected="false" tabindex="-1" title="系统自检 · 一键清除学习记录">系统</button>
@@ -56,6 +56,16 @@
           </button>
         </div>
         <p class="skin-status" id="medialModeStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">单元练习总字数</h2>
+        <p class="panel-desc">点一课练习时的总字数（10~20）。总字数减去本课新字数，剩下的名额抽过往字复习（错题优先）。本课新字多于总字数时，只练全部新字、不另抽复习。</p>
+        <div class="unit-total-row">
+          <input id="unitTotalRange" type="range" min="10" max="20" step="1" value="15" aria-label="单元练习总字数" />
+          <span class="unit-total-readout"><output id="unitTotalValue" for="unitTotalRange">15</output> 字</span>
+        </div>
+        <p class="skin-status" id="unitTotalStatus" aria-live="polite"></p>
       </section>
 
       <section class="panel">

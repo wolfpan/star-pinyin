@@ -326,9 +326,6 @@ html, body {
 .tb-chip.active { color: var(--accent-ink); border-color: var(--accent); background: var(--accent); }
 .tb-terms { display: flex; gap: 8px; margin-bottom: 10px; }
 .tb-terms .tb-chip { flex: 1; }
-/* 单元芯片：一册 8 个单元等宽排满一行（点一个单元 = 本单元新字 + 5 个过往复习字的固定题单） */
-.tb-units { display: flex; gap: 6px; margin-bottom: 10px; }
-.tb-units .tb-chip { flex: 1; min-width: 0; padding: 9px 2px; min-height: 40px; font-size: 0.9rem; letter-spacing: 0; }
 .tb-lessons {
   display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; margin-bottom: 8px;
   -webkit-overflow-scrolling: touch;
@@ -486,6 +483,18 @@ html, body {
   color: var(--ok); font-weight: 800; font-size: 1.05rem; letter-spacing: 0.08em;
   border: 1px solid var(--ok); background: var(--space-1);
 }
+/* 单元练习底部完成进度条：仅条 + 数字，低调不干扰做题（透明底、不拦截触摸） */
+.unit-progress {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px clamp(12px, 4vw, 28px) calc(5px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+.unit-progress-count { color: var(--text-dim); opacity: 0.65; font-size: 0.72rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.unit-progress-bar { flex: 1; height: 4px; overflow: hidden; background: rgba(148, 163, 184, 0.14); border-radius: 999px; }
+.unit-progress-bar i { display: block; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 999px; transition: width 0.4s ease; }
+/* 进度条极细且不拦截触摸，仅预留少量底部空间避免贴住组装台 / 结算按钮 */
+body.unit-progress-on #game { padding-bottom: 22px; }
 
 /* ----------------------------- 声调校准（M3） ----------------------------- */
 .tone-tag { color: var(--accent); letter-spacing: 0.2em; font-size: 0.8rem; text-align: center; }

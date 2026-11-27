@@ -20,6 +20,7 @@ import {
   normalizeSelection, selectionKey, getGrade, getBook, formatSelection, formatBook, formatLessonSource,
   unitKey, GRADE_LABELS, TERM_LABELS,
 } from './textbook.js';
+import { unitFxPlays } from './unit-session.js';
 import AudioEngine from './audio-engine.js';
 import { iconHTML, iconUrl, destIconHTML, destIconUrl, applyIconStyle, ICON_STYLES } from './icons.js';
 
@@ -60,6 +61,7 @@ const State = {
   visitedDestinations: {}, // 目的地到访计数（星球图鉴点亮）
   textbook: { catalog: null, selection: null, poolSize: null }, // 课文同步（年级/学期/课文进度）
   unitSession: null,   // 单元任务进度（选单元后的固定题单：本单元新字 + 5 个过往复习字）
+  missionUnit: null,   // 当前这道题所属单元题单的实时进度（底部进度条用；非单元题为 null）
   medialMode: 'required',  // 介母装配（家长后台「学习管理」）：required 孩子填入 / auto 自动预装
 };
 
@@ -77,6 +79,25 @@ function showScreen(id) {
     const el = document.getElementById(s);
     if (el) el.hidden = s !== id;
   }
+  updateUnitProgress();
+}
+
+/**
+ * 单元练习底部完成进度条：仅当当前题属于单元题单且在游戏画面时显示。
+ * 跨简报 / 组装 / 声调 / 结算常驻（独立固定元素，不被 #game innerHTML 重绘清掉）。
+ */
+function updateUnitProgress() {
+  const el = $('#unitProgress');
+  if (!el) return;
+  const us = State.missionUnit;
+  const inGame = !$('#game')?.hidden;
+  const on = !!(us && us.total && inGame);
+  document.body.classList.toggle('unit-progress-on', on);
+  if (!on) { el.hidden = true; return; }
+  const pct = Math.round(Math.min(1, Math.max(0, us.cursor / us.total)) * 100);
+  el.hidden = false;
+  // 低调：仅数字 + 细条，无文字标签，透明底、不拦截触摸（见 theme.css .unit-progress）
+  el.innerHTML = `<b class="unit-progress-count">${us.cursor}/${us.total}</b><div class="unit-progress-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="单元完成进度"><i style="width:${pct}%"></i></div>`;
 }
 
 /**
@@ -154,7 +175,7 @@ async function loadProfile() {
     applyReward(p);
     State.unitSession = p.unitSession || null;
     syncTextbookSelection(p.textbook);
-    // 目录已加载时重渲染：单元芯片高亮 / 单元进度状态以最新档案为准
+    // 目录已加载时重渲染：课文（单元）芯片高亮 / 单元进度状态以最新档案为准
     // （loadProfile 与 loadTextbook 并发，避免先到的目录渲染漏掉单元状态）。
     if (State.textbook.catalog) renderTextbook();
     renderCurrentRocket();
@@ -547,6 +568,7 @@ async function startMission(opts = {}) {
     if (prof) State.medialMode = prof.medialMode === 'auto' ? 'auto' : 'required';
     if (!res.ok) throw new Error('无可用任务');
     State.mission = await res.json();
+    State.missionUnit = State.mission.unitSession || null; // 底部进度条（非单元题为 null）
   } catch (e) {
     alert(State.textbook.poolSize === 0
       ? '当前课文进度还没有会写字（如《天地人》只认不写）。请在「课文同步」里往后选一课，或切回自由巡航。'
@@ -678,10 +700,16 @@ async function enterLaunch() {
   const destination = State.destination || destinationForLevel(State.reward.level);
   State.launchDestination = destination; // 本局目的地锁定（结算上报用）
 
-  // 家长选项「每单元仅首次」：本单元已发射过 → 跳过动画直接结算（练习更紧凑）。
-  // 没有单元归属的词条（汉语拼音课 / 无教材引用扩展 / 紧急载荷）始终播放完整动画。
+  // 发射动画：
+  //  - 单元题单：仅第一题（cursor 0）与「做完整份题单的最后一题」（cursor total-1）播放完整动画，
+  //    中间各题跳过动画直接结算（节奏紧凑，首尾各一次发射画面）。
+  //  - 非单元题单：按家长选项「每单元仅首次」（unit-first）判定是否跳过；无单元归属的词条始终播放。
+  const us = m.unitSession;
   const uk = unitKey(m.textbook);
-  if (profile?.launchFx === 'unit-first' && uk && (profile.launchedUnits || []).includes(uk)) {
+  const skipFx = us
+    ? !unitFxPlays(us)
+    : (profile?.launchFx === 'unit-first' && uk && (profile.launchedUnits || []).includes(uk));
+  if (skipFx) {
     playSuccess();
     finishMission();
     return;
@@ -725,8 +753,10 @@ async function finishMission() {
     })).json();
   } catch (e) { console.warn('[record]', e); }
   // 同步刚解锁的火箭与奖励档位：本局若补完一课，可能解锁新的星际目的地。
+  if (result.unitSession) State.missionUnit = result.unitSession; // 底部进度条前进一格
   await loadProfile();
   showReward({ ...result, destinationId: result.destinationId || destinationId });
+  updateUnitProgress();
 }
 
 function showReward(result) {
@@ -739,12 +769,12 @@ function showReward(result) {
   const dest = DESTINATIONS[result.destinationId] || State.launchDestination || State.destination || destinationForLevel(1);
   // 单元任务：本题类型标签 + 题单进度 + 错题修正进度 + 完成横幅。
   const us = result.unitSession || null;
-  const kindLabel = us ? ({ new: '本单元新字', review: '过往复习', repeat: '错题重练' }[us.kind] || '') : '';
+  const kindLabel = us ? ({ new: '本单元新字', review: '过往复习' }[us.kind] || '') : '';
   const unitLine = us
     ? `<div class="completion-unit">${us.label} · 已完成 <b>${us.cursor}/${us.total}</b>${kindLabel ? ` <span class="completion-kind">${kindLabel}</span>` : ''}</div>`
     : '';
   const fixLine = us && (us.wrong || us.fixes > 0)
-    ? `<div class="completion-unit">${us.wrong ? `错题修正 <b>${us.fixes}/3</b> · 还会重复出现` : '错题已连续修好 3 次 ✓ 不再优先'}</div>`
+    ? `<div class="completion-unit">${us.wrong ? `错题修正 <b>${us.fixes}/3</b> · 会在后续单元复习中再练` : '错题已连续修好 3 次 ✓ 不再优先'}</div>`
     : '';
   const banner = us && us.done ? '<div class="completion-banner">🎉 本单元完成！</div>' : '';
   const primaryLabel = us && us.done ? '再练一遍 ↻' : '下一题 ▸';
@@ -775,7 +805,7 @@ function showReward(result) {
   $('#backHangar').addEventListener('click', async () => { teardownStage(); showScreen('hangar'); await loadProfile(); });
   $('#nextMission').addEventListener('click', async () => {
     // 单元已完成 → 「再练一遍」重新生成题单（复习重抽）；否则沿题单继续下一题。
-    if (us && us.done) await selectUnit({ grade: us.grade, term: us.term, unit: us.unit });
+    if (us && us.done) await selectUnit({ grade: us.grade, term: us.term, seq: us.seq });
     startMission();
   });
 }
@@ -785,7 +815,8 @@ window.__debugStart = async (id) => {
   const list = (await (await fetch('/api/admin/missions')).json()).missions;
   const m = list.find((x) => x.id === id);
   if (!m) throw new Error('mission not found: ' + id);
-  State.mission = m; State.assemblyErrors = 0; State.toneErrors = 0; State.missionDone = false;
+  State.mission = m; State.missionUnit = m.unitSession || null;
+  State.assemblyErrors = 0; State.toneErrors = 0; State.missionDone = false;
   State.missionStartAt = performance.now();
   teardownStage();
   enterBriefing();

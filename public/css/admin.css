@@ -276,6 +276,12 @@ html[data-skin="nebula"] .admin-body { --src-ai: #6fc3ff; }
 .prev-nebula i:nth-child(3) { background: linear-gradient(180deg, #ff9d6b, #ff7a8a); border-color: rgba(255, 255, 255, .35); }
 .skin-status { margin: 12px 0 0; color: var(--ok); font-size: 0.88rem; font-weight: 600; min-height: 1.4em; }
 
+/* ----------------------------- 单元练习总字数（滑杆 10~20） ----------------------------- */
+.unit-total-row { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
+.unit-total-row input[type="range"] { flex: 1; min-width: 0; height: 28px; accent-color: var(--accent); cursor: pointer; }
+.unit-total-readout { white-space: nowrap; color: var(--text-dim); font-size: 0.95rem; }
+.unit-total-readout output { color: var(--accent); font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
 /* ----------------------------- 图标风格选择器（复用 skin-card 布局） ----------------------------- */
 .icon-prev {
   display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; padding: 8px;

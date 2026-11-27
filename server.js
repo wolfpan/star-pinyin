@@ -28,6 +28,7 @@ import {
 } from './public/js/textbook.js';
 import {
   buildUnitQueue, unitSessionView, updateWrongStat, unitLabel,
+  clampUnitTotal, UNIT_TOTAL_MIN, UNIT_TOTAL_MAX, UNIT_TOTAL_DEFAULT,
 } from './public/js/unit-session.js';
 import {
   collectSyllables, fileKey, renderSyllableWav, ttsFetch,
@@ -499,14 +500,14 @@ function pickNext(missions, progress, mode, catalog = null) {
  * 单元任务模式抽题：沿固定题单（progress.unitSession）逐题发射。
  *  - 题单已完成（cursor 到底）→ 重新生成一份新题单（复习重抽），继续本单元练习；
  *  - 跳过词库里已不存在的词条（家长可能改过词库）；
- *  - 返回的词条附带 unitSession 进度视图与本题 kind（new/review/repeat）。
+ *  - 返回的词条附带 unitSession 进度视图与本题 kind（new/review）。
  * 无单元任务或题单空 → 返回 null，调用方退回常规加权抽题。
  */
 function serveUnitMission(missions, progress, catalog) {
   const s = progress.unitSession;
   if (!s || !Array.isArray(s.queue)) return null;
   if (s.cursor >= s.queue.length) {
-    const built = buildUnitQueue(missions, catalog, s.grade, s.term, s.seq, progress.stats || {});
+    const built = buildUnitQueue(missions, catalog, s.grade, s.term, s.seq, progress.stats || {}, { total: unitTotal(progress) });
     s.queue = built.queue; s.newCount = built.newCount; s.reviewCount = built.reviewCount; s.cursor = 0;
     writeJson('progress', progress);
   }
@@ -551,6 +552,10 @@ const launchFxMode = (progress) => (LAUNCH_FX_MODES.includes(progress.launchFx) 
 // auto = 介母自动预装（j/q/x 后直接显示去点书写形 u），孩子只拼声母 + 韵母，降低三拼难度。
 const MEDIAL_MODES = ['required', 'auto'];
 const medialMode = (progress) => (MEDIAL_MODES.includes(progress.medialMode) ? progress.medialMode : 'required');
+
+/* ----------------------------- 单元练习总字数选项 ----------------------------- */
+// 家长后台「学习管理」可选 10~20（默认 15）：单元题单总字数，复习名额 = 总字数 − 本课新字数。
+const unitTotal = (progress) => clampUnitTotal(progress.unitTotal ?? UNIT_TOTAL_DEFAULT);
 
 /**
  * 已发射过的课文单元键（grade-term-unit）：单元内任一词条练过（attempts>0）即算。
@@ -843,7 +848,7 @@ async function handleApi(req, res, url) {
     const resumable = s && s.grade === grade && s.term === term && s.seq === seq
       && Array.isArray(s.queue) && s.cursor < s.queue.length;
     if (!resumable) {
-      const built = buildUnitQueue(missions, catalog, grade, term, seq, progress.stats || {});
+      const built = buildUnitQueue(missions, catalog, grade, term, seq, progress.stats || {}, { total: unitTotal(progress) });
       s = {
         grade, term, seq, label: unitLabel(catalog, grade, term, seq),
         queue: built.queue, newCount: built.newCount, reviewCount: built.reviewCount,
@@ -889,17 +894,19 @@ async function handleApi(req, res, url) {
       ? Number(clamp((stat.weight || 1) * 0.8, 1, 3).toFixed(3))
       : Number(clamp(1 + 2 * (stat.errors / stat.attempts), 1, 3).toFixed(3));
     // 错题池：有错入池并清零连续计数；错题池中全对累计修正，连续满 3 次毕业。
+    // 修正分散在后续不同单元的复习里（错题优先重抽），不在当前单元重复练。
     updateWrongStat(stat, perfect);
     progress.stats[missionId] = stat;
 
-    // 单元任务推进：本题恰为题单当前项 → 前进一格；仍在错题池 → 重新排到队尾重复出现。
+    // 单元任务推进：本题恰为题单当前项 → 前进一格。
+    // 题单固定（本课新字 + 5 复习），同一个字在本单元只出现一次，答错也不追加；
+    // 错题进入错题池，由后续单元复习「错题优先」再次抽到，连续 3 次全对才毕业。
     let unitSessionMeta = null;
     const us = progress.unitSession;
     if (us && Array.isArray(us.queue) && us.cursor < us.queue.length
       && us.queue[us.cursor].missionId === missionId) {
       const kind = us.queue[us.cursor].kind;
       us.cursor += 1;
-      if (stat.wrong) us.queue.push({ missionId, kind: 'repeat' });
       unitSessionMeta = { ...unitSessionView(us), kind, wrong: stat.wrong, fixes: stat.fixes };
     }
 
@@ -1016,6 +1023,8 @@ async function handleApi(req, res, url) {
       launchedUnits: launchedUnitKeys(missions, progress.stats || {}),
       // 介母装配（家长后台「学习管理」选择）：required 孩子填入 / auto 自动预装
       medialMode: medialMode(progress),
+      // 单元练习总字数（家长后台「学习管理」选择，10~20）：复习名额 = 总字数 − 本课新字数
+      unitTotal: unitTotal(progress),
     });
   }
 
@@ -1075,6 +1084,21 @@ async function handleApi(req, res, url) {
     progress.medialMode = mode;
     writeJson('progress', progress);
     return sendJson(res, 200, { ok: true, medialMode: mode });
+  }
+
+  // 家长端：单元练习总字数 POST /api/unittotal { unitTotal }（10~20 整数，默认 15）
+  // 复习名额 = 总字数 − 本课新字数；写入档案，孩子端下次选题单即生效。
+  if (method === 'POST' && p === '/api/unittotal') {
+    let body;
+    try { body = await readBody(req); } catch { return sendJson(res, 400, { error: '请求体不是合法 JSON' }); }
+    const n = Math.floor(Number(body.unitTotal));
+    if (!Number.isInteger(n) || n < UNIT_TOTAL_MIN || n > UNIT_TOTAL_MAX) {
+      return sendJson(res, 422, { error: `单元总字数需为 ${UNIT_TOTAL_MIN}~${UNIT_TOTAL_MAX} 的整数（收到 ${body.unitTotal}）` });
+    }
+    const progress = loadProgress();
+    progress.unitTotal = n;
+    writeJson('progress', progress);
+    return sendJson(res, 200, { ok: true, unitTotal: n });
   }
 
   // 机库自选座驾：POST /api/rocket/select { rocketId }（rocketId 为 null/'auto' 时改回跟随最新）
@@ -1174,11 +1198,12 @@ async function handleApi(req, res, url) {
       recentMissionIds: [],
       stats: {},
     };
-    // 课文同步选择、发射动画与介母装配选项是家长设置而非学习记录，保留；
+    // 课文同步选择、发射动画、介母装配与单元总字数是家长设置而非学习记录，保留；
     // visitedDestinations / selectedRocketId 随重置清空；launchedUnits 由 stats 推导，随之归零。
     if (progress.textbook) fresh.textbook = progress.textbook;
     if (progress.launchFx) fresh.launchFx = progress.launchFx;
     if (progress.medialMode) fresh.medialMode = progress.medialMode;
+    if (progress.unitTotal != null) fresh.unitTotal = progress.unitTotal;
     writeJson('progress', fresh);
     return sendJson(res, 200, { ok: true, previousLaunches, clearedStats });
   }
