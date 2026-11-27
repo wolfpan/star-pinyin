@@ -130,7 +130,6 @@ body::before {
 /* ---------- 任务简报 ---------- */
 .brief-hanzi { text-shadow: 0 2px 28px rgba(0, 0, 0, .6); }
 .brief-word { letter-spacing: .22em; }
-.brief-source { border-radius: 2px; letter-spacing: .08em; }
 .brief-replay .phys-btn { letter-spacing: .14em; }
 
 /* ---------- 组装台 ---------- */

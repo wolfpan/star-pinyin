@@ -470,14 +470,7 @@ html, body {
 .completion-card:active { transform: scale(0.985); border-color: var(--accent); }
 .completion-note { color: var(--text-dim); font-size: 0.85rem; letter-spacing: 0.08em; }
 .completion-actions { display: flex; gap: 12px; margin-top: 20px; }
-/* 单元任务进度 / 完成横幅 / 本题类型标签 */
-.completion-unit { color: var(--text-dim); font-size: 0.9rem; letter-spacing: 0.04em; }
-.completion-unit b { color: var(--text); font-variant-numeric: tabular-nums; }
-.completion-kind {
-  display: inline-block; margin-top: 6px; padding: 3px 12px; border-radius: 999px;
-  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em;
-  color: var(--accent); border: 1px solid var(--panel-edge); background: var(--space-1);
-}
+/* 单元完成横幅 */
 .completion-banner {
   margin-top: 4px; padding: 10px 20px; border-radius: var(--radius-sm);
   color: var(--ok); font-weight: 800; font-size: 1.05rem; letter-spacing: 0.08em;
@@ -646,11 +639,6 @@ body.unit-progress-on #game { padding-bottom: 22px; }
 .reward-lesson-progress { margin: 6px 0 0; color: var(--text-dim); font-size: 0.82rem; }
 .reward-lesson-progress b { color: var(--accent); }
 
-.brief-source {
-  margin: 0; padding: 4px 12px; border-radius: 999px;
-  background: var(--sf-1); border: 1px solid var(--ed-2);
-  color: var(--text-dim); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
-}
 .reward-dest { margin: 10px 0 2px; color: var(--accent); font-size: 1.15rem; font-weight: 800; }
 .reward-dest .ui-icon { width: 1.35em; height: 1.35em; vertical-align: -0.32em; }
 .badge-card-name .ui-icon { width: 1.2em; height: 1.2em; vertical-align: -0.26em; margin-right: 2px; }

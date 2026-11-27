@@ -121,7 +121,7 @@ await sleep(400);
 await shot('textbook-hangar-all-last');
 console.log('last chip:', await ev(`document.querySelector('#tbLessons .tb-lesson:last-child')?.dataset.seq`));
 
-/* 4. 发射 → 简报带课文来源 */
+/* 4. 发射 → 简报不再显示课文来源 */
 await ev(`document.getElementById('launchBtn').click()`);
 await waitFor('.briefing'); await sleep(700);
 await shot('textbook-briefing');

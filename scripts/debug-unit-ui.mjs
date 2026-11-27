@@ -97,18 +97,18 @@ await ev(`document.querySelector('#tbLessons .tb-lesson[data-seq="2"]')?.click()
 await sleep(700);
 const status = await ev(`document.getElementById('tbStatus').textContent`);
 console.log('  status:', status);
-check(status.includes('识字2') && status.includes('新字') && status.includes('复习'), '状态行显示课文 + 新字 + 复习');
+check(status.includes('新字') && status.includes('复习') && status.includes('进度') && !status.includes('识字2'), '状态行只显示 新字 + 复习 + 进度（无课文标签）');
 check(await ev(`document.querySelector('#tbLessons .tb-lesson.active')?.dataset.seq`) === '2', '识字2芯片高亮');
 await shot('unit-hangar-selected');
 const nextMeta = await ev(`fetch('/api/missions/next?mode=all').then(r => r.json()).then(m => ({ kind: m.unitSession?.kind, cursor: m.unitSession?.cursor, hanzi: m.hanzi }))`);
 check(nextMeta.kind === 'new' && nextMeta.cursor === 0, `next 沿题单出第1新字（${JSON.stringify(nextMeta)}）`);
 
-console.log('\n[3] 发射 → 简报来源为本课');
+console.log('\n[3] 发射 → 简报不再显示课文来源');
 await ev(`document.getElementById('launchBtn').click()`);
 await waitFor('.briefing'); await sleep(700);
 const src = await ev(`document.querySelector('.brief-source')?.textContent || '(无来源)'`);
 console.log('  brief-source:', src);
-check(src.includes('金木水火土'), `简报来源含识字2《金木水火土》（${src}）`);
+check(await ev(`!document.querySelector('.brief-source')`), '载荷确认页不显示课文来源标签');
 await shot('unit-briefing');
 
 console.log('\n[4] 回机库选全册 → 退出单元模式');

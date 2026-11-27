@@ -17,7 +17,7 @@ import { createLaunchFX } from './launch-fx.js';
 import { destinationForLevel, DESTINATIONS } from './destinations.js';
 import { rewardLevelForLessons, nextRewardForLessons } from './rewards.js';
 import {
-  normalizeSelection, selectionKey, getGrade, getBook, formatSelection, formatBook, formatLessonSource,
+  normalizeSelection, selectionKey, getGrade, getBook, formatBook,
   unitKey, GRADE_LABELS, TERM_LABELS,
 } from './textbook.js';
 import { unitFxPlays } from './unit-session.js';
@@ -246,7 +246,7 @@ function renderTextbook() {
   const lessonsBox = $('#tbLessons');
   const status = $('#tbStatus');
   if (!gradesBox || !detail || !termsBox || !lessonsBox || !status) return;
-  const { catalog, selection, poolSize } = State.textbook;
+  const { catalog, selection } = State.textbook;
   const sel = normalizeSelection(catalog, selection);
   const us = State.unitSession; // 单元任务（选中某课时的固定题单进度）
 
@@ -315,14 +315,12 @@ function renderTextbook() {
     if (sel.seq != null) ensureVisible(lessonsBox.querySelector('.tb-lesson.active'), lessonsBox);
   }
 
-  /* 状态行：单元任务进度 或 当前课文进度 + 字池规模 */
+  /* 状态行：只显示 新字 + 复习 + 进度（无单元任务时留空，不附加其他说明文字） */
   if (us) {
     const prog = us.total ? ` · 进度 <b>${us.cursor}/${us.total}</b>` : '';
-    status.innerHTML = `${iconHTML('book')} ${us.label} · 新字 <b>${us.newCount}</b> + 复习 <b>${us.reviewCount}</b>${prog}`;
+    status.innerHTML = `新字 <b>${us.newCount}</b> + 复习 <b>${us.reviewCount}</b>${prog}`;
   } else {
-    const label = formatSelection(catalog, sel);
-    const size = sel ? (poolSize != null ? ` · 已学生字 <b>${poolSize}</b> 个` : '') : '';
-    status.innerHTML = `${iconHTML('book')} ${label}${size}`;
+    status.innerHTML = '';
   }
   updateScrollFade(lessonsBox);
 }
@@ -583,7 +581,8 @@ function enterBriefing() {
   showScreen('game');
   const game = $('#game');
   renderBriefing(game, m, {
-    onReplay: () => { AudioEngine.playRadioStatic(); speak(`载荷确认：${m.word}的${m.hanzi}`, 1); },
+    // 重播：无线电滋滋声 + 重读目标词（不带「载荷确认」前缀，前缀只在首次简报时播）
+    onReplay: () => { AudioEngine.playRadioStatic(); speak(`${m.word}的${m.hanzi}`, 1); },
     onSlowReplay: () => { AudioEngine.playRadioStatic(); AudioEngine.slowSplit(m); },
     onStart: enterAssembly,
   });
@@ -767,17 +766,16 @@ function showReward(result) {
   // 课时奖励（新目的地解锁 / 完成课时 / 课时进度 / 火箭徽章 / 累计发射）一律不在此展示，
   // 奖励进度仍照常上报服务端，可在博物馆 / 机库查看。
   const dest = DESTINATIONS[result.destinationId] || State.launchDestination || State.destination || destinationForLevel(1);
-  // 单元任务：本题类型标签 + 题单进度 + 错题修正进度 + 完成横幅。
+  // 单元任务：仅保留完成横幅；课文来源 / 题单进度 / 本题类型 / 错题修正等文字一律不在结算页展示。
   const us = result.unitSession || null;
-  const kindLabel = us ? ({ new: '本单元新字', review: '过往复习' }[us.kind] || '') : '';
-  const unitLine = us
-    ? `<div class="completion-unit">${us.label} · 已完成 <b>${us.cursor}/${us.total}</b>${kindLabel ? ` <span class="completion-kind">${kindLabel}</span>` : ''}</div>`
-    : '';
-  const fixLine = us && (us.wrong || us.fixes > 0)
-    ? `<div class="completion-unit">${us.wrong ? `错题修正 <b>${us.fixes}/3</b> · 会在后续单元复习中再练` : '错题已连续修好 3 次 ✓ 不再优先'}</div>`
-    : '';
   const banner = us && us.done ? '<div class="completion-banner">🎉 本单元完成！</div>' : '';
-  const primaryLabel = us && us.done ? '再练一遍 ↻' : '下一题 ▸';
+  // 单元已完成 → 默认选项（主按钮）=「返回指挥中心」，「再练一遍」降为次选项；
+  // 未完成 → 保持「下一题」为默认。按钮 id 不变（backHangar / nextMission）。
+  const actions = us && us.done
+    ? `<button class="phys-btn" type="button" id="nextMission">再练一遍 ↻</button>
+      <button class="phys-btn primary" type="button" id="backHangar">返回指挥中心</button>`
+    : `<button class="phys-btn" type="button" id="backHangar">机库</button>
+      <button class="phys-btn primary" type="button" id="nextMission">下一题 ▸</button>`;
   const screen = document.createElement('section');
   screen.className = 'screen completion reward';
   screen.innerHTML = `
@@ -787,13 +785,8 @@ function showReward(result) {
       <div class="completion-pinyin">${m.displayPinyin}</div>
       <div class="completion-note">点卡片 · 再读一遍</div>
     </div>
-    ${unitLine}
-    ${fixLine}
     ${banner}
-    <div class="completion-actions">
-      <button class="phys-btn" type="button" id="backHangar">机库</button>
-      <button class="phys-btn primary" type="button" id="nextMission">${primaryLabel}</button>
-    </div>`;
+    <div class="completion-actions">${actions}</div>`;
   game.append(screen);
   // 卡片显示即直接读整个音节；点卡片（或键盘 Enter/空格）可再读一遍。
   const card = screen.querySelector('.completion-card');

@@ -14,7 +14,6 @@
 import { drawPlanet, drawOrbitEarth } from './planet-fx.js';
 import { destinationList } from './destinations.js';
 import { rewardLadder, nextRewardForLessons, lessonsForRewardLevel } from './rewards.js';
-import { formatLessonSource } from './textbook.js';
 import { iconEl, iconUrl, destIconEl } from './icons.js';
 import { JQX, removeDots } from './pinyin-rules.js';
 
@@ -90,7 +89,6 @@ export function renderBriefing(container, mission, { onReplay, onSlowReplay, onS
   const screen = h('section', { class: 'screen briefing' },
     h('div', { class: 'brief-hanzi', text: mission.hanzi }),
     h('div', { class: 'brief-word', text: mission.word }),
-    mission.textbook ? h('div', { class: 'brief-source' }, iconEl('book'), ` ${formatLessonSource(mission.textbook)}`) : null,
     h('div', { class: 'brief-replay' },
       h('button', { class: 'phys-btn small', type: 'button', onclick: () => onReplay?.() }, iconEl('radio'), ' 重播'),
       h('button', { class: 'phys-btn small', type: 'button', onclick: () => onSlowReplay?.() }, iconEl('turtle'), ' 慢读'),
