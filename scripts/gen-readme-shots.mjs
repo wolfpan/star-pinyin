@@ -2,7 +2,8 @@
  * gen-readme-shots.mjs — README「界面预览」配图生成（只读，不写玩家进度/设置）。
  * 复用 3000 端口真实服务与真实档案（画面更丰满）：
  *  - 三套皮肤机库：fetch 拦截仅改 profile.skin（不落盘），820×1180 竖屏；
- *  - 家长后台四页签：真实数据 + 会话级家长校验预解锁（sessionStorage，与 debug-stat-bars 同），1000×1400。
+ *  - 家长后台四页签：真实数据 + 会话级家长校验预解锁（sessionStorage，与 debug-stat-bars 同），1000×1400；
+ *    发音页隐藏 TTS 配置面板（公开配图不含 API 地址 / 模型 / 音色 / Key 信息）。
  * 产出（进仓库）：docs/screenshots/skin-{hud,daylight,nebula}.png / admin-{study,ui,voice,reset}.png
  * 运行：node scripts/gen-readme-shots.mjs
  */
@@ -94,6 +95,8 @@ for (const page of ['study', 'ui', 'voice', 'reset']) {
     const body = p.querySelector('.page-body'); // 界面页不受校验，无 .page-body 包装
     return !p.hidden && (!body || !body.hidden) && document.getElementById('adminGate').hidden; })()`);
   if (!ok) errors.push('admin ' + page + ': page locked or hidden');
+  // 公开配图不泄露服务信息：发音页隐藏 TTS API / 模型 / 音色配置面板
+  if (page === 'voice') await ev(`document.getElementById('ttsConfigBox')?.remove()`);
   await sleep(400);
   const h = await ev(`Math.min(Math.ceil(document.getElementById('page-${page}').getBoundingClientRect().bottom) + 28, 1400)`);
   await shotClip('admin-' + page, 1000, h);
