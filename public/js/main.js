@@ -59,6 +59,7 @@ const State = {
   missionStartAt: 0,
   visitedDestinations: {}, // 目的地到访计数（星球图鉴点亮）
   textbook: { catalog: null, selection: null, poolSize: null }, // 课文同步（年级/学期/课文进度）
+  unitSession: null,   // 单元任务进度（选单元后的固定题单：本单元新字 + 5 个过往复习字）
   medialMode: 'required',  // 介母装配（家长后台「学习管理」）：required 孩子填入 / auto 自动预装
 };
 
@@ -151,7 +152,11 @@ async function loadProfile() {
     State.visitedDestinations = p.visitedDestinations || {};
     State.medialMode = p.medialMode === 'auto' ? 'auto' : 'required';
     applyReward(p);
+    State.unitSession = p.unitSession || null;
     syncTextbookSelection(p.textbook);
+    // 目录已加载时重渲染：单元芯片高亮 / 单元进度状态以最新档案为准
+    // （loadProfile 与 loadTextbook 并发，避免先到的目录渲染漏掉单元状态）。
+    if (State.textbook.catalog) renderTextbook();
     renderCurrentRocket();
     renderRocketPicker();
     fitHangar();
@@ -212,7 +217,7 @@ function syncTextbookSelection(sel) {
   renderTextbook();
 }
 
-/** 渲染课文同步面板：年级芯片 → 学期芯片 → 课文进度芯片（横向滑动）。 */
+/** 渲染课文同步面板：年级芯片 → 学期芯片 → 课文（单元）芯片（横向滑动）。 */
 function renderTextbook() {
   const gradesBox = $('#tbGrades');
   const detail = $('#tbDetail');
@@ -222,6 +227,7 @@ function renderTextbook() {
   if (!gradesBox || !detail || !termsBox || !lessonsBox || !status) return;
   const { catalog, selection, poolSize } = State.textbook;
   const sel = normalizeSelection(catalog, selection);
+  const us = State.unitSession; // 单元任务（选中某课时的固定题单进度）
 
   /* 年级行：自由巡航 + 一~三年级 */
   gradesBox.innerHTML = '';
@@ -238,7 +244,7 @@ function renderTextbook() {
     gradesBox.append(btn);
   }
 
-  /* 学期 + 课文进度（选了年级才展开） */
+  /* 学期 + 课文（单元）进度（选了年级才展开） */
   detail.hidden = !sel;
   termsBox.innerHTML = '';
   lessonsBox.innerHTML = '';
@@ -254,7 +260,9 @@ function renderTextbook() {
       btn.textContent = TERM_LABELS[b.term] || (b.term === 1 ? '上册' : '下册');
       termsBox.append(btn);
     }
-    const book = getBook(catalog, sel.grade, sel.term ?? 1);
+    const term = sel.term ?? 1;
+    const book = getBook(catalog, sel.grade, term);
+    // 课文芯片即「单元」：点一课 = 本课全部新字 + 抽 5 个过往字（错题优先）的固定题单。
     for (const l of book?.lessons || []) {
       const on = sel.seq === l.seq;
       const btn = document.createElement('button');
@@ -272,13 +280,13 @@ function renderTextbook() {
       btn.append(no, title);
       lessonsBox.append(btn);
     }
-    // 全册（整册生字）放在最后：课序在前、全册垫底，滑到底才是「整册复习」
+    // 全册（整册生字）放在最后：课序在前、全册垫底，滑到底才是「整册复习」（随机抽题）
     const all = document.createElement('button');
     all.type = 'button';
     all.className = 'tb-lesson tb-lesson-all' + (sel.seq == null ? ' active' : '');
     all.dataset.seq = 'all';
     all.setAttribute('aria-pressed', sel.seq == null ? 'true' : 'false');
-    all.title = `${formatBook(sel.grade, sel.term ?? 1)} 整册生字`;
+    all.title = `${formatBook(sel.grade, term)} 整册生字`;
     all.innerHTML = '<span class="tb-lesson-no">全册</span><span class="tb-lesson-title">整册生字</span>';
     lessonsBox.append(all);
     // 选中「某一课」才滚到可见位置（尽量少滚，保留左侧上下文）；
@@ -286,10 +294,15 @@ function renderTextbook() {
     if (sel.seq != null) ensureVisible(lessonsBox.querySelector('.tb-lesson.active'), lessonsBox);
   }
 
-  /* 状态行：当前进度 + 字池规模 */
-  const label = formatSelection(catalog, sel);
-  const size = sel ? (poolSize != null ? ` · 已学生字 <b>${poolSize}</b> 个` : '') : '';
-  status.innerHTML = `${iconHTML('book')} ${label}${size}`;
+  /* 状态行：单元任务进度 或 当前课文进度 + 字池规模 */
+  if (us) {
+    const prog = us.total ? ` · 进度 <b>${us.cursor}/${us.total}</b>` : '';
+    status.innerHTML = `${iconHTML('book')} ${us.label} · 新字 <b>${us.newCount}</b> + 复习 <b>${us.reviewCount}</b>${prog}`;
+  } else {
+    const label = formatSelection(catalog, sel);
+    const size = sel ? (poolSize != null ? ` · 已学生字 <b>${poolSize}</b> 个` : '') : '';
+    status.innerHTML = `${iconHTML('book')} ${label}${size}`;
+  }
   updateScrollFade(lessonsBox);
 }
 
@@ -305,10 +318,30 @@ async function selectTextbook(sel) {
     if (!res.ok) throw new Error(data?.error || ('HTTP ' + res.status));
     State.textbook.selection = data.selection || null;
     State.textbook.poolSize = data.poolSize ?? null;
+    State.unitSession = null; // 选课文/全册/自由巡航即退出单元任务（服务端已作废题单）
     renderTextbook();
     fitHangar();
     if (selectionKey(data.selection) !== prev) playLock();
   } catch (e) { console.warn('[textbook]', e); }
+}
+
+/** 选择单元并持久化：服务端生成/恢复固定题单（本单元新字 + 5 个过往复习字，错题优先）。 */
+async function selectUnit(sel) {
+  try {
+    const res = await fetch('/api/unit/select', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sel),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error || ('HTTP ' + res.status));
+    State.unitSession = data.session || null;
+    if (data.selection) State.textbook.selection = data.selection;
+    if (data.poolSize != null) State.textbook.poolSize = data.poolSize;
+    renderTextbook();
+    fitHangar();
+    playLock();
+    return State.unitSession;
+  } catch (e) { console.warn('[unit]', e); return null; }
 }
 
 /** 「下一枚火箭」解锁进度：进度条 + 还差几次发射（纯收藏奖励，与目的地解耦）。 */
@@ -704,6 +737,17 @@ function showReward(result) {
   // 课时奖励（新目的地解锁 / 完成课时 / 课时进度 / 火箭徽章 / 累计发射）一律不在此展示，
   // 奖励进度仍照常上报服务端，可在博物馆 / 机库查看。
   const dest = DESTINATIONS[result.destinationId] || State.launchDestination || State.destination || destinationForLevel(1);
+  // 单元任务：本题类型标签 + 题单进度 + 错题修正进度 + 完成横幅。
+  const us = result.unitSession || null;
+  const kindLabel = us ? ({ new: '本单元新字', review: '过往复习', repeat: '错题重练' }[us.kind] || '') : '';
+  const unitLine = us
+    ? `<div class="completion-unit">${us.label} · 已完成 <b>${us.cursor}/${us.total}</b>${kindLabel ? ` <span class="completion-kind">${kindLabel}</span>` : ''}</div>`
+    : '';
+  const fixLine = us && (us.wrong || us.fixes > 0)
+    ? `<div class="completion-unit">${us.wrong ? `错题修正 <b>${us.fixes}/3</b> · 还会重复出现` : '错题已连续修好 3 次 ✓ 不再优先'}</div>`
+    : '';
+  const banner = us && us.done ? '<div class="completion-banner">🎉 本单元完成！</div>' : '';
+  const primaryLabel = us && us.done ? '再练一遍 ↻' : '下一题 ▸';
   const screen = document.createElement('section');
   screen.className = 'screen completion reward';
   screen.innerHTML = `
@@ -713,9 +757,12 @@ function showReward(result) {
       <div class="completion-pinyin">${m.displayPinyin}</div>
       <div class="completion-note">点卡片 · 再读一遍</div>
     </div>
+    ${unitLine}
+    ${fixLine}
+    ${banner}
     <div class="completion-actions">
       <button class="phys-btn" type="button" id="backHangar">机库</button>
-      <button class="phys-btn primary" type="button" id="nextMission">下一题 ▸</button>
+      <button class="phys-btn primary" type="button" id="nextMission">${primaryLabel}</button>
     </div>`;
   game.append(screen);
   // 卡片显示即直接读整个音节；点卡片（或键盘 Enter/空格）可再读一遍。
@@ -726,7 +773,11 @@ function showReward(result) {
   card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); read(); } });
   read();
   $('#backHangar').addEventListener('click', async () => { teardownStage(); showScreen('hangar'); await loadProfile(); });
-  $('#nextMission').addEventListener('click', () => startMission());
+  $('#nextMission').addEventListener('click', async () => {
+    // 单元已完成 → 「再练一遍」重新生成题单（复习重抽）；否则沿题单继续下一题。
+    if (us && us.done) await selectUnit({ grade: us.grade, term: us.term, unit: us.unit });
+    startMission();
+  });
 }
 
 /** 调试钩子：按 id 强制开始某题（供控制台/自动化验收使用）。 */
@@ -767,17 +818,24 @@ function boot() {
     const sel = State.textbook.selection;
     if (!btn || !sel) return;
     const term = Number(btn.dataset.term);
-    if (sel.term === term) return;
+    if (!State.unitSession && sel.term === term) return;
     selectTextbook({ grade: sel.grade, term, seq: null });
   });
   $('#tbLessons').addEventListener('click', (e) => {
     const btn = e.target.closest('.tb-lesson');
     const sel = State.textbook.selection;
     if (!btn || !sel) return;
-    const seq = btn.dataset.seq === 'all' ? null : Number(btn.dataset.seq);
     const term = sel.term ?? 1;
-    if ((sel.seq ?? null) === seq && sel.term === term) return;
-    selectTextbook({ grade: sel.grade, term, seq });
+    // 全册 = 整册随机复习（退出单元题单）
+    if (btn.dataset.seq === 'all') {
+      if (!State.unitSession && sel.seq == null && sel.term === term) return;
+      return selectTextbook({ grade: sel.grade, term, seq: null });
+    }
+    // 课文芯片即「单元」：点一课 → 固定题单（本课新字 + 5 个过往复习字，错题优先）
+    const seq = Number(btn.dataset.seq);
+    const us = State.unitSession;
+    if (us && us.grade === sel.grade && us.term === term && us.seq === seq && !us.done) return;
+    selectUnit({ grade: sel.grade, term, seq });
   });
 
   // 视口变化（旋转 / 分屏 / 地址栏收放）时重新自适应

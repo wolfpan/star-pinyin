@@ -27,6 +27,9 @@ import {
   validateSelection, filterMissionsByTextbook, formatSelection, countAllowed, unitKey,
 } from './public/js/textbook.js';
 import {
+  buildUnitQueue, unitSessionView, updateWrongStat, unitLabel,
+} from './public/js/unit-session.js';
+import {
   collectSyllables, fileKey, renderSyllableWav, ttsFetch,
 } from './scripts/syllable-voice-lib.mjs';
 import {
@@ -492,6 +495,31 @@ function pickNext(missions, progress, mode, catalog = null) {
   return weighted[weighted.length - 1].m;
 }
 
+/**
+ * 单元任务模式抽题：沿固定题单（progress.unitSession）逐题发射。
+ *  - 题单已完成（cursor 到底）→ 重新生成一份新题单（复习重抽），继续本单元练习；
+ *  - 跳过词库里已不存在的词条（家长可能改过词库）；
+ *  - 返回的词条附带 unitSession 进度视图与本题 kind（new/review/repeat）。
+ * 无单元任务或题单空 → 返回 null，调用方退回常规加权抽题。
+ */
+function serveUnitMission(missions, progress, catalog) {
+  const s = progress.unitSession;
+  if (!s || !Array.isArray(s.queue)) return null;
+  if (s.cursor >= s.queue.length) {
+    const built = buildUnitQueue(missions, catalog, s.grade, s.term, s.seq, progress.stats || {});
+    s.queue = built.queue; s.newCount = built.newCount; s.reviewCount = built.reviewCount; s.cursor = 0;
+    writeJson('progress', progress);
+  }
+  while (s.cursor < s.queue.length) {
+    const item = s.queue[s.cursor];
+    const m = missions.find((x) => x.id === item.missionId);
+    if (m) return { ...m, unitSession: { ...unitSessionView(s), kind: item.kind } };
+    s.cursor++; // 词条缺失 → 跳过
+  }
+  writeJson('progress', progress);
+  return null;
+}
+
 /** 各拼音标签掌握度统计。 */
 function tagMastery(missions, progress) {
   const agg = {};
@@ -754,6 +782,11 @@ async function handleApi(req, res, url) {
     const missions = loadMissions();
     const progress = loadProgress();
     const catalog = loadTextbook();
+    // 单元任务模式（紧急任务除外）：沿固定题单逐题发射，不走加权随机。
+    if (mode !== 'emergency' && progress.unitSession) {
+      const served = serveUnitMission(missions, progress, catalog);
+      if (served) return sendJson(res, 200, served);
+    }
     const mission = pickNext(missions, progress, mode, catalog);
     if (!mission) return sendJson(res, 404, { error: '当前模式没有可用任务', mode });
     return sendJson(res, 200, mission);
@@ -782,12 +815,51 @@ async function handleApi(req, res, url) {
     const progress = loadProgress();
     if (selection) progress.textbook = selection;
     else delete progress.textbook;
+    // 选择具体课文 / 全册 / 自由巡航即退出单元任务模式（题单作废）。
+    delete progress.unitSession;
     writeJson('progress', progress);
     return sendJson(res, 200, {
       ok: true,
       selection,
       label: formatSelection(catalog, selection),
       poolSize: countAllowed(catalog, selection),
+    });
+  }
+
+  // 单元完成规则：选择课文（单元）→ 生成/恢复固定题单（本课全部新字 + 抽5个过往字，错题优先）。
+  // 同一课未完成 → 恢复进度；已完成或换课 → 重新生成（复习重抽）。
+  if (method === 'POST' && p === '/api/unit/select') {
+    let body;
+    try { body = await readBody(req); } catch { return sendJson(res, 400, { error: '请求体不是合法 JSON' }); }
+    const catalog = loadTextbook();
+    const { ok, selection, error } = validateSelection(catalog, body);
+    if (!ok || !selection || selection.seq == null) {
+      return sendJson(res, 422, { error: error || '单元需为具体一课（grade/term/seq 必填）' });
+    }
+    const { grade, term, seq } = selection;
+    const missions = loadMissions();
+    const progress = loadProgress();
+    let s = progress.unitSession;
+    const resumable = s && s.grade === grade && s.term === term && s.seq === seq
+      && Array.isArray(s.queue) && s.cursor < s.queue.length;
+    if (!resumable) {
+      const built = buildUnitQueue(missions, catalog, grade, term, seq, progress.stats || {});
+      s = {
+        grade, term, seq, label: unitLabel(catalog, grade, term, seq),
+        queue: built.queue, newCount: built.newCount, reviewCount: built.reviewCount,
+        cursor: 0, createdAt: new Date().toISOString(),
+      };
+      progress.unitSession = s;
+    }
+    // 进度选择同步到该课，机库课文芯片保持高亮。
+    progress.textbook = { grade, term, seq };
+    writeJson('progress', progress);
+    return sendJson(res, 200, {
+      ok: true,
+      session: unitSessionView(s),
+      selection: progress.textbook,
+      label: formatSelection(catalog, progress.textbook),
+      poolSize: countAllowed(catalog, progress.textbook),
     });
   }
 
@@ -816,7 +888,20 @@ async function handleApi(req, res, url) {
     stat.weight = perfect
       ? Number(clamp((stat.weight || 1) * 0.8, 1, 3).toFixed(3))
       : Number(clamp(1 + 2 * (stat.errors / stat.attempts), 1, 3).toFixed(3));
+    // 错题池：有错入池并清零连续计数；错题池中全对累计修正，连续满 3 次毕业。
+    updateWrongStat(stat, perfect);
     progress.stats[missionId] = stat;
+
+    // 单元任务推进：本题恰为题单当前项 → 前进一格；仍在错题池 → 重新排到队尾重复出现。
+    let unitSessionMeta = null;
+    const us = progress.unitSession;
+    if (us && Array.isArray(us.queue) && us.cursor < us.queue.length
+      && us.queue[us.cursor].missionId === missionId) {
+      const kind = us.queue[us.cursor].kind;
+      us.cursor += 1;
+      if (stat.wrong) us.queue.push({ missionId, kind: 'repeat' });
+      unitSessionMeta = { ...unitSessionView(us), kind, wrong: stat.wrong, fixes: stat.fixes };
+    }
 
     // 每次完成一关 = 一次入轨发射。
     const prevLaunches = progress.totalLaunches || 0;
@@ -867,6 +952,9 @@ async function handleApi(req, res, url) {
     return sendJson(res, 200, {
       ok: true, perfect, totalLaunches: progress.totalLaunches,
       weight: stat.weight, newlyUnlockedBadges: newlyUnlocked,
+      // 错题池状态 + 单元任务进度（本题推进后的视图；非单元任务为 null）
+      wrongPool: { wrong: stat.wrong, fixes: stat.fixes },
+      unitSession: unitSessionMeta,
       destinationId: destId, firstVisit,
       visitedDestinations: progress.visitedDestinations,
       // 课时奖励进度：本局补完的课时 / 累计完成课时 / 档位 / 新解锁目的地
@@ -916,6 +1004,8 @@ async function handleApi(req, res, url) {
       currentRocket,
       // 课文同步学习进度（null = 自由巡航 · 全部词库）
       textbook: progress.textbook || null,
+      // 单元任务进度（null = 未选单元）：机库单元芯片高亮 / 进度 / 结算用
+      unitSession: unitSessionView(progress.unitSession),
       // 界面皮肤（家长后台选择，全设备同步）：hud / daylight / nebula
       skin: progress.skin || 'hud',
       // 图标风格（家长后台选择，全设备同步）：a 写实 / b 扁平 / c 复古

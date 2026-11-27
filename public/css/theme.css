@@ -326,6 +326,9 @@ html, body {
 .tb-chip.active { color: var(--accent-ink); border-color: var(--accent); background: var(--accent); }
 .tb-terms { display: flex; gap: 8px; margin-bottom: 10px; }
 .tb-terms .tb-chip { flex: 1; }
+/* 单元芯片：一册 8 个单元等宽排满一行（点一个单元 = 本单元新字 + 5 个过往复习字的固定题单） */
+.tb-units { display: flex; gap: 6px; margin-bottom: 10px; }
+.tb-units .tb-chip { flex: 1; min-width: 0; padding: 9px 2px; min-height: 40px; font-size: 0.9rem; letter-spacing: 0; }
 .tb-lessons {
   display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; margin-bottom: 8px;
   -webkit-overflow-scrolling: touch;
@@ -470,6 +473,19 @@ html, body {
 .completion-card:active { transform: scale(0.985); border-color: var(--accent); }
 .completion-note { color: var(--text-dim); font-size: 0.85rem; letter-spacing: 0.08em; }
 .completion-actions { display: flex; gap: 12px; margin-top: 20px; }
+/* 单元任务进度 / 完成横幅 / 本题类型标签 */
+.completion-unit { color: var(--text-dim); font-size: 0.9rem; letter-spacing: 0.04em; }
+.completion-unit b { color: var(--text); font-variant-numeric: tabular-nums; }
+.completion-kind {
+  display: inline-block; margin-top: 6px; padding: 3px 12px; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--accent); border: 1px solid var(--panel-edge); background: var(--space-1);
+}
+.completion-banner {
+  margin-top: 4px; padding: 10px 20px; border-radius: var(--radius-sm);
+  color: var(--ok); font-weight: 800; font-size: 1.05rem; letter-spacing: 0.08em;
+  border: 1px solid var(--ok); background: var(--space-1);
+}
 
 /* ----------------------------- 声调校准（M3） ----------------------------- */
 .tone-tag { color: var(--accent); letter-spacing: 0.2em; font-size: 0.8rem; text-align: center; }
