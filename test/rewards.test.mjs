@@ -131,7 +131,13 @@ test('completedLessonCount 与 lessonProgress 一致', () => {
 
 console.log('\n真实词库自洽（data/missions.json + data/progress.json）');
 const missions = JSON.parse(fs.readFileSync(path.join(DATA, 'missions.json'), 'utf8'));
-const progress = JSON.parse(fs.readFileSync(path.join(DATA, 'progress.json'), 'utf8'));
+// 全新克隆还没有个人存档（data/progress.json 不入库，服务端 loadProgress 有默认值兜底），
+// 此时按「空档案」校验，不因缺存档而失败。
+const progressPath = path.join(DATA, 'progress.json');
+const progress = fs.existsSync(progressPath)
+  ? JSON.parse(fs.readFileSync(progressPath, 'utf8'))
+  : {};
+if (!fs.existsSync(progressPath)) console.log('  （未找到 data/progress.json，按空档案校验）');
 test('课时分组与任务上的 textbook 引用一致', () => {
   const byRef = new Set();
   for (const m of missions) {
