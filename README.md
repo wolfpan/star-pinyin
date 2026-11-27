@@ -48,7 +48,7 @@
 | ![深空座舱 HUD](docs/screenshots/skin-hud.png) | ![天空积木](docs/screenshots/skin-daylight.png) | ![星云乐园](docs/screenshots/skin-nebula.png) |
 | 青蓝辉光、仪表质感，科幻沉浸 | 浅天蓝、糖果分类，明亮护眼 | 紫星云、玩具按钮，低龄友好 |
 
-同一份进度与词库，只换外观：家长后台「界面」页切换后全设备同步；已完成课文芯片在每套皮肤里都会置灰。
+同一份进度与词库，只换外观；家长后台「界面」页切换后全设备同步。
 
 ### 家长后台 · 四个页签
 
@@ -59,9 +59,6 @@
 | **发音** | **系统** |
 | ![发音](docs/screenshots/admin-voice.png) | ![系统](docs/screenshots/admin-reset.png) |
 | 真人 / AI 双读音源、逐音节自检与重新生成、词库管理 | 全库拼音规则自检、一键清除学习记录 |
-
-> 除「界面」外各页签需**家长校验**（繁体数字）解锁，孩子误点不进去。
-> 截图为无头 Chrome 真机渲染，可用 `node scripts/gen-readme-shots.mjs` 重新生成（只读，不改存档）。
 
 ---
 
