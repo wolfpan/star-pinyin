@@ -15,7 +15,7 @@ import { createDragEngine, resolveDrop } from './drag-engine.js';
 import { createToneCalibration } from './tone-canvas.js';
 import { createLaunchFX } from './launch-fx.js';
 import { destinationForLevel, DESTINATIONS } from './destinations.js';
-import { rewardLevelForLessons, nextRewardForLessons } from './rewards.js';
+import { rewardLevelForLessons, nextRewardForLessons, lessonKey } from './rewards.js';
 import {
   normalizeSelection, selectionKey, getGrade, getBook, formatBook,
   unitKey, GRADE_LABELS, TERM_LABELS,
@@ -60,6 +60,7 @@ const State = {
   missionStartAt: 0,
   visitedDestinations: {}, // 目的地到访计数（星球图鉴点亮）
   textbook: { catalog: null, selection: null, poolSize: null }, // 课文同步（年级/学期/课文进度）
+  completedLessons: new Set(), // 已完成课时键（grade-term-seq）：机库单元芯片置灰（与课时奖励同口径）
   unitSession: null,   // 单元任务进度（选单元后的固定题单：本单元新字 + 5 个过往复习字）
   missionUnit: null,   // 当前这道题所属单元题单的实时进度（底部进度条用；非单元题为 null）
   medialMode: 'required',  // 介母装配（家长后台「学习管理」）：required 孩子填入 / auto 自动预装
@@ -174,6 +175,7 @@ async function loadProfile() {
     State.medialMode = p.medialMode === 'auto' ? 'auto' : 'required';
     applyReward(p);
     State.unitSession = p.unitSession || null;
+    State.completedLessons = new Set(p.completedLessons || []);
     syncTextbookSelection(p.textbook);
     // 目录已加载时重渲染：课文（单元）芯片高亮 / 单元进度状态以最新档案为准
     // （loadProfile 与 loadTextbook 并发，避免先到的目录渲染漏掉单元状态）。
@@ -286,12 +288,14 @@ function renderTextbook() {
     // 课文芯片即「单元」：点一课 = 本课全部新字 + 抽 5 个过往字（错题优先）的固定题单。
     for (const l of book?.lessons || []) {
       const on = sel.seq === l.seq;
+      // 已完成单元（本课全部可出题生字都练过）→ 芯片置灰；选中复习时选中态接管置灰
+      const done = State.completedLessons.has(lessonKey({ grade: sel.grade, term, seq: l.seq }));
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'tb-lesson' + (on ? ' active' : '');
+      btn.className = 'tb-lesson' + (done ? ' done' : '') + (on ? ' active' : '');
       btn.dataset.seq = String(l.seq);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      btn.title = l.kind === '语文园地' ? l.title : `${l.kind === '识字' ? '识字' : '第'}${l.no}课《${l.title}》`;
+      btn.title = (l.kind === '语文园地' ? l.title : `${l.kind === '识字' ? '识字' : '第'}${l.no}课《${l.title}》`) + (done ? '（已完成）' : '');
       const no = document.createElement('span');
       no.className = 'tb-lesson-no';
       no.textContent = l.kind === '识字' ? `识字${l.no}` : l.kind === '语文园地' ? '园地' : String(l.no);

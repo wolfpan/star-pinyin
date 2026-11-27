@@ -3,7 +3,8 @@
  * 运行：node test/rewards-api.test.mjs
  *
  * 在隔离的临时 DATA_DIR 副本上启动真实 server.js（不碰真实玩家数据），验证：
- *  - GET /api/profile 返回课时奖励进度（lessonsCompleted / lessonsTotal / rewardLevel / currentDestination / nextReward）；
+ *  - GET /api/profile 返回课时奖励进度（lessonsCompleted / lessonsTotal / rewardLevel / currentDestination / nextReward）
+ *    与已完成课时键 completedLessons（机库单元芯片置灰用）；
  *  - POST /api/progress/record 补完一课时 → lessonCompleted + 跨档解锁新目的地（newlyReachedDestination）；
  *  - 只练了部分生字的课时不算完成（不推进奖励）；
  *  - 难度接口已下线（/api/difficulty/select → 404），旧客户端的 ?difficulty= 被忽略。
@@ -88,6 +89,10 @@ try {
     profile = body;
     eq(body.lessonsCompleted, 1);
     eq(body.lessonsTotal, totalLessons);
+    // 已完成课时键（机库单元芯片置灰用）：只含预先练完的课时 A
+    ok(Array.isArray(body.completedLessons));
+    eq(body.completedLessons.length, 1);
+    eq(body.completedLessons[0], lessonA.key);
     eq(body.rewardLevel, 1);
     eq(body.currentDestination.id, 'earth_low');
     eq(body.nextReward.level, 2);
@@ -144,6 +149,9 @@ try {
     eq(body.nextReward.level, 3);
     eq(body.nextReward.need, 2);
     eq(body.nextReward.destination.id, 'earth_far');
+    // 补完课时 B 后，completedLessons 同步含 A + B（机库两课芯片置灰）
+    eq(body.completedLessons.length, 2);
+    ok(body.completedLessons.includes(lessonA.key) && body.completedLessons.includes(lessonB.key));
   });
   await test('上报进度已落盘（stats / 发射数）', () => {
     const saved = JSON.parse(fs.readFileSync(path.join(tmp, 'progress.json'), 'utf8'));
@@ -159,6 +167,9 @@ try {
     eq(body.lessonCompleted, null);
     eq(body.lessonsCompleted, 2); // 仍是 2 课时
     eq(body.rewardLevel, 2);
+    const { body: p } = await get('/api/profile');
+    ok(!p.completedLessons.includes(lessonBig.key)); // 部分练习的课时不置灰
+    eq(p.completedLessons.length, 2);
   });
 
   console.log('\n[4] 难度接口下线');

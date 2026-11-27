@@ -1004,6 +1004,8 @@ async function handleApi(req, res, url) {
       // 课时奖励系统：已完成课时 / 课时总数 / 当前档位 / 最新目的地 / 下一份奖励
       lessonsCompleted: lessons.completed,
       lessonsTotal: lessons.total,
+      // 已完成课时键（grade-term-seq）：机库课文（单元）芯片置灰用，与课时奖励同口径
+      completedLessons: lessons.lessons.filter((l) => l.completed).map((l) => l.key),
       rewardLevel,
       currentDestination: destinationForLevel(rewardLevel),
       nextReward: nextRewardForLessons(lessons.completed),

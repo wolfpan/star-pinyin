@@ -342,6 +342,11 @@ html, body {
 .tb-lesson.active { border-color: var(--accent); background: var(--sel-tint); }
 .tb-lesson.active .tb-lesson-no, .tb-lesson.active .tb-lesson-title { color: var(--accent); }
 .tb-lesson:active { transform: scale(0.97); }
+/* 已完成单元置灰：本课全部可出题生字都至少练过一次（与课时奖励同口径，档案 completedLessons）。
+ * 灰字 + 凹陷底表示「已练完」；选中复习时选中态完全接管（各皮肤自己的高亮），不再置灰。
+ * 颜色走皮肤变量（--text-mute / --space-1），三套皮肤自动适配。 */
+.tb-lesson.done:not(.active) { color: var(--text-mute); background: var(--space-1); }
+.tb-lesson.done:not(.active) .tb-lesson-no, .tb-lesson.done:not(.active) .tb-lesson-title { color: var(--text-mute); }
 /* 全册垫在课文最后：虚线边框 + 左侧留白，表示「整册复习」而非某一课 */
 .tb-lesson-all { margin-left: 6px; border-style: dashed; }
 .tb-lesson-all.active { border-style: solid; }
