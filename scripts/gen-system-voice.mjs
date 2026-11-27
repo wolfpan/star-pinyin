@@ -1,7 +1,8 @@
 /**
  * gen-system-voice.mjs — 预生成「全局真人语音」缓存（系统提示 + 简报短语 + 倒计时 + 呼读音）。
  * 写入 data/voice-cache/{sha1(voice|text)}.mp3，与服务端 /api/tts 缓存命名一致 → 即时播放。
- * 用法：node scripts/gen-system-voice.mjs [--voice longanhuan_v3.6] [--force]
+ * 用法：node scripts/gen-system-voice.mjs [--voice longanhuan_v3.6] [--force] [--concurrency 5]
+ *   --concurrency N  并行合成的条数（默认 1 = 串行，稳妥）；2297 条全量预热建议 5~8
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +17,8 @@ const args = process.argv.slice(2);
 const vi = args.indexOf('--voice');
 const VOICE = vi >= 0 ? args[vi + 1] : 'longanhuan_v3.6';
 const FORCE = args.includes('--force');
+const ci = args.indexOf('--concurrency');
+const CONCURRENCY = Math.max(1, Math.min(16, parseInt(ci >= 0 ? args[ci + 1] : '1', 10) || 1));
 const MODEL = 'qwen-audio-3.0-tts-plus';
 const URL = 'https://token-plan.cn-beijing.maas.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer';
 const cred = fs.readFileSync(path.join(process.env.DSH_HOME || 'C:\\Users\\panft\\.dsh', '.credentials.yaml'), 'utf8');
@@ -58,16 +61,33 @@ async function synth(text) {
 }
 
 let ok = 0, skip = 0, fail = 0; const failures = [];
-console.log(`音色 ${VOICE} · 待生成 ${texts.length} 条语音缓存`);
-for (const t of texts) {
+console.log(`音色 ${VOICE} · 待生成 ${texts.length} 条语音缓存 · 并发 ${CONCURRENCY}`);
+
+async function handleOne(t) {
   const f = cachePath(t);
-  if (!FORCE && fs.existsSync(f) && fs.statSync(f).size > 1000) { skip++; continue; }
-  let done = false;
-  for (let attempt = 1; attempt <= 2 && !done; attempt++) {
-    try { const buf = await synth(t); if (buf.length < 1000) throw new Error('音频过小'); fs.writeFileSync(f + '.tmp', buf); fs.renameSync(f + '.tmp', f); ok++; done = true; console.log(`✓ ${t}  (${buf.length}b)`); }
-    catch (e) { if (attempt === 2) { fail++; failures.push([t, e.message]); console.log(`✗ ${t}  ${e.message}`); } else await sleep(800); }
+  if (!FORCE && fs.existsSync(f) && fs.statSync(f).size > 1000) { skip++; return; }
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const buf = await synth(t);
+      if (buf.length < 1000) throw new Error('音频过小');
+      fs.writeFileSync(f + '.tmp', buf); fs.renameSync(f + '.tmp', f);
+      ok++; console.log(`✓ ${t}  (${buf.length}b)`);
+      return;
+    } catch (e) {
+      if (attempt === 3) { fail++; failures.push([t, e.message]); console.log(`✗ ${t}  ${e.message}`); }
+      else await sleep(800 * attempt);
+    }
   }
-  await sleep(200);
 }
+
+let cursor = 0;
+const workers = Array.from({ length: CONCURRENCY }, async () => {
+  while (cursor < texts.length) {
+    const t = texts[cursor++];
+    await handleOne(t);
+    if (CONCURRENCY === 1) await sleep(200);
+  }
+});
+await Promise.all(workers);
 console.log(`\n完成：新生成 ${ok} · 跳过 ${skip} · 失败 ${fail} · 共 ${texts.length}`);
 if (failures.length) { console.error('失败：', failures); process.exit(1); }
