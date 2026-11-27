@@ -2,7 +2,7 @@
  * debug-hangar-ui.mjs — 指挥官（机库）界面改版截图验收。
  * 用法：node scripts/debug-hangar-ui.mjs <标签> [early]
  *   标签：输出文件名前缀（before / after）
- *   early：可选，模拟「刚开局」档案（仅初始座驾、2 颗入轨），验证下一枚火箭进度条。
+ *   early：可选，模拟「刚开局」档案（仅初始座驾、0 单元完成），验证下一枚火箭进度条。
  * 输出：.ui-shots/<标签>-hangar.png / <标签>-hangar-bottom.png（early 时另存 -early 版本）。
  */
 import { spawn } from 'node:child_process';
@@ -44,7 +44,7 @@ if (SIZE) { const [w, h] = SIZE.split('x').map(Number); await send('Emulation.se
 await ev(`window.__audio && Object.assign(window.__audio, { speakText(){}, slowSplit(){}, speakPinyin(){} })`);
 
 if (EARLY) {
-  // 拦截 /api/profile：仅保留初始座驾，2 颗入轨，下一枚 = 第一枚解锁火箭
+  // 拦截 /api/profile：仅保留初始座驾，0 单元完成，下一枚 = 第一枚解锁火箭（再完成 3 个单元）
   await ev(`(() => { const orig = window.fetch.bind(window); window.fetch = async (url, opts) => {
     const res = await orig(url, opts);
     if (String(url).startsWith('/api/profile')) {

@@ -27,7 +27,9 @@ const badges = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'badges.json')
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'textbook.json'), 'utf8'));
 const groups = [...groupMissionsByLesson(missions).values()].sort((a, b) => a.missions.length - b.missions.length);
 const lessonA = groups[0];
-if (!lessonA) throw new Error('词库里找不到可构造用例的课时');
+const lessonB = groups[1];
+const lessonC = groups[2];
+if (!lessonA || !lessonB || !lessonC) throw new Error('词库里找不到可构造用例的课时');
 
 // 课文同步选择：取目录里真实存在的一课（家长设置，重置后应保留）
 const firstGrade = catalog.grades[0];
@@ -40,11 +42,12 @@ for (const f of ['missions.json', 'textbook.json', 'badges.json']) {
 }
 const missionsBefore = fs.readFileSync(path.join(tmp, 'missions.json'), 'utf8');
 
-// 预置一份「学过一阵子」的档案：7 次发射 + 已解锁火箭 + 自选座驾 + 到访记录 + 作答统计
+// 预置一份「学过一阵子」的档案：7 次发射 + 3 个完成单元（= 初始座驾 + 长征一号）+ 自选座驾 + 到访记录 + 作答统计
 const seededStats = {};
 for (const m of lessonA.missions) seededStats[m.id] = { attempts: 2, errors: 1, weight: 2 };
-const seededBadges = badges.filter((b) => Number(b.unlockAt) <= 7).map((b) => b.id);
-const chosenRocket = badges.find((b) => !isStarterBadge(b) && Number(b.unlockAt) <= 7)?.id || null;
+for (const m of [...lessonB.missions, ...lessonC.missions]) seededStats[m.id] = { attempts: 1, errors: 0, weight: 1 };
+const seededBadges = badges.filter((b) => Number(b.unlockAt) <= 3).map((b) => b.id);
+const chosenRocket = badges.find((b) => !isStarterBadge(b) && Number(b.unlockAt) <= 3)?.id || null;
 fs.writeFileSync(path.join(tmp, 'progress.json'), JSON.stringify({
   callsign: '测试指挥官',
   totalLaunches: 7,

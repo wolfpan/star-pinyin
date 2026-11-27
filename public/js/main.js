@@ -17,7 +17,7 @@ import { createLaunchFX } from './launch-fx.js';
 import { destinationForLevel, DESTINATIONS } from './destinations.js';
 import { rewardLevelForLessons, nextRewardForLessons, lessonKey } from './rewards.js';
 import {
-  normalizeSelection, selectionKey, getGrade, getBook, formatBook,
+  normalizeSelection, selectionKey, getGrade, getBook, formatBook, flattenLessons,
   unitKey, GRADE_LABELS, TERM_LABELS,
 } from './textbook.js';
 import { unitFxPlays } from './unit-session.js';
@@ -367,7 +367,23 @@ async function selectUnit(sel) {
   } catch (e) { console.warn('[unit]', e); return null; }
 }
 
-/** 「下一枚火箭」解锁进度：进度条 + 还差几次发射（纯收藏奖励，与目的地解耦）。 */
+/**
+ * 单元完成后，指挥中心默认选中下一课（教材顺序，自动跨册 / 跨年级衔接）。
+ * 仅当进度仍停在这门已完成的课时才前进（家长在别处改过进度则尊重其选择）；
+ * 已是目录最后一课 → 保持当前课（仍可复习重抽）。
+ */
+async function selectNextUnit(doneUs) {
+  const catalog = State.textbook.catalog;
+  if (!doneUs || !catalog) return;
+  if (selectionKey(State.textbook.selection) !== `${doneUs.grade}-${doneUs.term}-${doneUs.seq}`) return;
+  const lessons = flattenLessons(catalog);
+  const i = lessons.findIndex((l) => l.grade === doneUs.grade && l.term === doneUs.term && l.seq === doneUs.seq);
+  const next = i >= 0 ? lessons[i + 1] : null;
+  if (!next) return;
+  await selectUnit({ grade: next.grade, term: next.term, seq: next.seq });
+}
+
+/** 「下一枚火箭」解锁进度：进度条 + 还差几个完成单元（每 3 单元一枚，与目的地解耦）。 */
 function renderNextRocket(p) {
   const el = $('#nextBadge');
   if (!el) return;
@@ -376,7 +392,7 @@ function renderNextRocket(p) {
     el.innerHTML = `<div class="next-rocket-done">${iconHTML('party')} 火箭已全部解锁</div>`;
     return;
   }
-  const total = p.totalLaunches || 0;
+  const total = p.lessonsCompleted || 0;
   const unlockAt = Number(next.unlockAt) || 0;
   const need = Math.max(0, unlockAt - total);
   // 上一档门槛 = 已拥有火箭里最高的解锁要求（初始座驾为 0）
@@ -387,7 +403,7 @@ function renderNextRocket(p) {
     <div class="next-rocket-row">
       <span class="next-rocket-label">下一枚火箭</span>
       <b class="next-rocket-name">${next.name}</b>
-      <span class="next-rocket-need">${need > 0 ? `再发射 ${need} 次` : '即将解锁'}</span>
+      <span class="next-rocket-need">${need > 0 ? `再完成 ${need} 个单元` : '即将解锁'}</span>
     </div>
     <div class="next-rocket-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="下一枚火箭解锁进度"><i style="width:${pct}%"></i></div>`;
 }
@@ -799,7 +815,11 @@ function showReward(result) {
   card.addEventListener('click', read);
   card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); read(); } });
   read();
-  $('#backHangar').addEventListener('click', async () => { teardownStage(); showScreen('hangar'); await loadProfile(); });
+  $('#backHangar').addEventListener('click', async () => {
+    teardownStage(); showScreen('hangar'); await loadProfile();
+    // 单元已完成 → 指挥中心默认选中下一课（直接可发射下一单元）。
+    if (us && us.done) await selectNextUnit(us);
+  });
   $('#nextMission').addEventListener('click', async () => {
     // 单元已完成 → 「再练一遍」重新生成题单（复习重抽）；否则沿题单继续下一题。
     if (us && us.done) await selectUnit({ grade: us.grade, term: us.term, seq: us.seq });
@@ -823,13 +843,14 @@ window.__debugStart = async (id) => {
 /* ============================ 引导 ============================ */
 function boot() {
   window.__audio = AudioEngine; // 便于控制台/自动化验收
-  $('#enterBtn').addEventListener('click', () => {
+  $('#enterBtn').addEventListener('click', async () => {
     unlockAudio();        // 在用户手势内触发解锁，但不阻塞界面切换
     showScreen('hangar');
     fitHangar();
-    loadProfile();
-    loadTextbook();
     speak('进入指挥中心');
+    await Promise.all([loadProfile(), loadTextbook()]);
+    // 上次做完单元后直接退出 / 刷新（没点「返回指挥中心」）→ 进来同样默认选中下一课。
+    if (State.unitSession?.done) await selectNextUnit(State.unitSession);
   }, { once: true });
 
   // 课文同步：年级 → 学期 → 课文进度（选择即持久化，抽题按进度过滤）

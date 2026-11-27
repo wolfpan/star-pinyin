@@ -3,7 +3,8 @@
  * ------------------------------------------------------------------
  * 规则：
  *  - 初始座驾（`starter: true` 或 `unlockAt: 0`，即土星五号）默认拥有，不作为解锁奖励。
- *  - 其余火箭按累计发射次数解锁；解锁即进入「机库」，可在指挥官界面里自选出战座驾。
+ *  - 其余火箭按累计完成单元（课时）数解锁，每 3 个单元一枚；解锁即进入「机库」，可在指挥官界面里自选出战座驾。
+ *  - 拥有状态以单元数推导为准（`rocketIdsForUnits`），服务端据此校准档案，旧规则多发的自动收回。
  *  - 火箭收藏与星体目的地解耦：解锁火箭只扩充机库 / 图鉴，不影响课时奖励档位。
  *  - 没自选过时回落到最新获得的一枚（保持旧的「解锁即自动换新」体验）；
  *    一旦自选，就固定用自选的这一枚，之后解锁新火箭也不会抢走座驾。
@@ -19,6 +20,17 @@ export const byUnlockAt = (a, b) => (Number(a?.unlockAt) || 0) - (Number(b?.unlo
 export function ownedRocketIds(progress, badges) {
   const owned = new Set(progress?.unlockedBadges || []);
   for (const b of badges || []) if (isStarterBadge(b)) owned.add(b.id);
+  return owned;
+}
+
+/**
+ * 按完成单元数推导拥有状态：初始座驾 ∪ unlockAt ≤ 单元数（每 3 单元一枚）。
+ * 服务端以此为准校准档案，旧规则（发射次数）多发的火箭自动收回。
+ */
+export function rocketIdsForUnits(badges, units) {
+  const n = Math.max(0, Math.floor(Number(units) || 0));
+  const owned = new Set();
+  for (const b of badges || []) if (isStarterBadge(b) || Number(b.unlockAt) <= n) owned.add(b.id);
   return owned;
 }
 

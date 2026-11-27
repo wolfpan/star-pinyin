@@ -17,7 +17,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { validateMission, categoryOf } from './public/js/pinyin-rules.js';
 import {
-  byUnlockAt, isStarterBadge, ownedRocketIds, ownedRockets, resolveCurrentRocket, canSelectRocket,
+  byUnlockAt, isStarterBadge, ownedRocketIds, ownedRockets, resolveCurrentRocket, canSelectRocket, rocketIdsForUnits,
 } from './public/js/rocket-select.js';
 import { DESTINATIONS, destinationForLevel } from './public/js/destinations.js';
 import {
@@ -925,19 +925,13 @@ async function handleApi(req, res, url) {
     const lessonNow = doneKey != null ? lessonsAfter.lessons.find((l) => l.key === doneKey) : null;
     const lessonCompleted = !lessonDoneBefore && lessonNow?.completed ? lessonNow.ref : null;
 
-    // 每累计 3 颗卫星解锁一枚新火箭（初始座驾不计入「新解锁」）。
+    // 每完成 3 个单元解锁一枚新火箭：拥有状态严格按单元数推导（旧规则多发的自动校准收回）。
     // 火箭收藏与目的地奖励解耦：解锁火箭只扩充机库 / 图鉴，不影响奖励档位。
     const badges = loadBadges();
-    const unlocked = ownedRocketIds(progress, badges);
-    const newlyUnlocked = [];
-    for (const b of badges) {
-      if (isStarterBadge(b) || unlocked.has(b.id)) continue;
-      if (progress.totalLaunches >= b.unlockAt) {
-        unlocked.add(b.id);
-        newlyUnlocked.push(b);
-      }
-    }
-    progress.unlockedBadges = [...unlocked];
+    const ownedBefore = rocketIdsForUnits(badges, lessonsBefore.completed);
+    const ownedAfter = rocketIdsForUnits(badges, lessonsAfter.completed);
+    const newlyUnlocked = badges.filter((b) => ownedAfter.has(b.id) && !ownedBefore.has(b.id));
+    progress.unlockedBadges = [...ownedAfter];
 
     // 目的地到访记录（星球图鉴点亮）+ 奖励档位解锁的新目的地。
     // 兼容旧客户端上报的 'earth'（地球轨道已拆分为低空/高空/远地三层）。
@@ -978,13 +972,21 @@ async function handleApi(req, res, url) {
     const progress = loadProgress();
     const missions = loadMissions();
     const badges = loadBadges();
-    const unlockedSet = ownedRocketIds(progress, badges);
+    // 进度 = 课时完成量：每 2 课时升 1 档目的地奖励；每 3 个完成单元解锁 1 枚新火箭。
+    const lessons = lessonProgress(missions, progress.stats || {});
+    // 火箭拥有状态按单元数校准（收回旧规则多发 / 补上应得），档案与机库 / 图鉴 / 自选保持一致。
+    const unlockedSet = rocketIdsForUnits(badges, lessons.completed);
+    const storedSet = ownedRocketIds(progress, badges); // 空档案隐含初始座驾，视为等价不写盘
+    const calibrated = storedSet.size === unlockedSet.size && [...unlockedSet].every((id) => storedSet.has(id));
+    if (!calibrated) {
+      progress.unlockedBadges = [...unlockedSet];
+      if (progress.selectedRocketId && !unlockedSet.has(progress.selectedRocketId)) delete progress.selectedRocketId;
+      writeJson('progress', progress);
+    }
     const unlockedBadges = badges.filter((b) => unlockedSet.has(b.id));
     const owned = ownedRockets(progress, badges); // 机库可选座驾（按解锁门槛升序）
     // 当前座驾 = 机库里自选的火箭；没自选时用最新获得的一枚（默认初始座驾土星五号）。
     const currentRocket = resolveCurrentRocket(progress, badges);
-    // 进度 = 课时完成量（每 2 课时升 1 档奖励 → 1 个星际目的地）；与卫星数 / 火箭收藏解耦。
-    const lessons = lessonProgress(missions, progress.stats || {});
     const rewardLevel = rewardLevelForLessons(lessons.completed);
     return sendJson(res, 200, {
       callsign: progress.callsign,
@@ -1109,6 +1111,8 @@ async function handleApi(req, res, url) {
     try { body = await readBody(req); } catch { return sendJson(res, 400, { error: '请求体不是合法 JSON' }); }
     const badges = loadBadges();
     const progress = loadProgress();
+    // 拥有状态按单元数校准后再校验自选（旧规则多发的火箭不可再选）。
+    progress.unlockedBadges = [...rocketIdsForUnits(badges, lessonProgress(loadMissions(), progress.stats || {}).completed)];
     const rocketId = typeof body.rocketId === 'string' ? body.rocketId.trim() : '';
     const auto = !rocketId || rocketId === 'auto';
 

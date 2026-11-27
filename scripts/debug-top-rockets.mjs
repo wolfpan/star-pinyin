@@ -88,13 +88,13 @@ const planetCount = await ev(`document.querySelectorAll('.planet-grid .badge-car
 check('星球图鉴共 14 种（含地球三层轨道）', planetCount === 14);
 check('压轴两张 = falcon_21 / starship_9', lockedInfo.last2[0]?.id === 'falcon_21' && lockedInfo.last2[1]?.id === 'starship_9');
 // 真实档案可能已解锁（玩家进度推进）：锁定态显示门槛，解锁态显示座驾按钮，两者皆合法
-const stateOk = lockedInfo.last2.every(c => c.text.includes('未来概念') && (c.locked ? /发射 4[25] 次解锁/.test(c.text) : /设为座驾|当前座驾/.test(c.text)));
+const stateOk = lockedInfo.last2.every(c => c.text.includes('未来概念') && (c.locked ? /完成 4[25] 个单元解锁/.test(c.text) : /设为座驾|当前座驾/.test(c.text)));
 check('概念标签 + 锁定门槛/解锁座驾：' + JSON.stringify(lockedInfo.last2.map(c => c.text)), stateOk);
 await shot('top-museum-locked');
 await ev(`document.querySelector('.museum-overlay .phys-btn')?.click()`); await sleep(300);
 
-/* ---- 场景 3：早期档案（2 颗 / 0 课时）：Lv1 低空轨道 + 火箭收藏进度 ---- */
-console.log('\n[3] 早期档案（2 颗入轨 / 0 课时）');
+/* ---- 场景 3：早期档案（0 单元完成）：Lv1 低空轨道 + 火箭收藏进度 ---- */
+console.log('\n[3] 早期档案（0 单元完成）');
 await fresh(`(() => { const orig = window.fetch.bind(window); window.fetch = async (url, opts) => {
   const res = await orig(url, opts);
   if (String(url).startsWith('/api/profile')) {
@@ -113,13 +113,13 @@ const destEarly = await ev(`document.getElementById('latestDest')?.textContent.r
 const destEarlyTitle = await ev(`document.getElementById('latestDest')?.title || ''`);
 check('最新目的地 = 低空轨道（Lv1）：' + destEarly, destEarly.includes('低空轨道'));
 check('提示下一份奖励还差课时：' + destEarlyTitle, /再完成 2 课时/.test(destEarlyTitle));
-check('下一枚火箭 = 长征一号 · 再发射 1 次：' + nrEarly, nrEarly.includes('长征一号') && nrEarly.includes('再发射 1 次'));
+check('下一枚火箭 = 长征一号 · 再完成 3 个单元：' + nrEarly, nrEarly.includes('长征一号') && nrEarly.includes('再完成 3 个单元'));
 const m3 = await hangarMetrics();
 check('早期机库无溢出 ' + JSON.stringify(m3), m3.visualH <= m3.availH + 1 && m3.visualW <= m3.availW + 1);
 await shot('top-hangar-early');
 
-/* ---- 场景 4：全收藏档案（45 颗 / 26 课时）：概念旗舰已解锁，目的地已到星际空间 ---- */
-console.log('\n[4] 全收藏档案（45 颗入轨 / 26 课时）');
+/* ---- 场景 4：全收藏档案（45 单元完成 / 26 课时）：概念旗舰已解锁，目的地已到星际空间 ---- */
+console.log('\n[4] 全收藏档案（45 单元完成 / 26 课时）');
 await fresh(`(() => { const orig = window.fetch.bind(window); window.fetch = async (url, opts) => {
   const res = await orig(url, opts);
   if (String(url).startsWith('/api/profile')) {
@@ -127,7 +127,7 @@ await fresh(`(() => { const orig = window.fetch.bind(window); window.fetch = asy
     const all = (p.badges || []).slice().sort((a, b) => (Number(a.unlockAt) || 0) - (Number(b.unlockAt) || 0));
     Object.assign(p, { totalLaunches: 45, unlockedBadges: all.map(b => b.id), museum: all, ownedRockets: all,
       currentRocket: all[all.length - 1], rocketAuto: true, selectedRocketId: null, nextBadge: null, emergencyCount: 0,
-      lessonsCompleted: 26, lessonsTotal: 180, rewardLevel: 14 });
+      lessonsCompleted: 45, lessonsTotal: 206, rewardLevel: 14 });
     delete p.nextReward;
     return new Response(JSON.stringify(p), { status: 200, headers: { 'Content-Type': 'application/json' } });
   }

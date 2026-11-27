@@ -566,7 +566,7 @@ export function renderMuseum(profile, { onClose, onSelect } = {}) {
         h('div', { class: yearClass(b), text: yearText(b) }),
         h('div', { class: 'badge-card-name', text: b.name }),
         h('div', { class: 'badge-card-en', text: b.nameEn || '' }),
-        h('div', { class: 'badge-card-sum', text: `发射 ${b.unlockAt} 次解锁` }),
+        h('div', { class: 'badge-card-sum', text: `完成 ${b.unlockAt} 个单元解锁` }),
       ));
     }
   }

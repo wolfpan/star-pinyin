@@ -7,13 +7,13 @@
  *  3. 没自选过 → 自动用最新获得的一枚（旧的「解锁即换新」体验）；
  *  4. 自选过 → 固定用自选的那枚，之后解锁新火箭也不会抢走座驾；
  *  5. 未获得 / 已失效（进度被手改）的自选 id 会被忽略并回落到最新；
- *  6. 顶级概念旗舰猎鹰21号 / 星舰9号（42/45 次发射解锁）压轴收藏，可自选。
+ *  6. 顶级概念旗舰猎鹰21号 / 星舰9号（42/45 个完成单元解锁）压轴收藏，可自选。
  */
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-  isStarterBadge, byUnlockAt, ownedRocketIds, ownedRockets, resolveCurrentRocket, canSelectRocket,
+  isStarterBadge, byUnlockAt, ownedRocketIds, ownedRockets, resolveCurrentRocket, canSelectRocket, rocketIdsForUnits,
 } from '../public/js/rocket-select.js';
 
 let pass = 0, fail = 0;
@@ -77,7 +77,7 @@ test('空词表 / 空徽章不抛错', () => {
 });
 
 console.log('\n顶级概念火箭（猎鹰21号 / 星舰9号）');
-test('两枚未来概念旗舰：42 / 45 次发射解锁', () => {
+test('两枚未来概念旗舰：42 / 45 个完成单元解锁', () => {
   const f21 = badges.find((b) => b.id === 'falcon_21');
   const s9 = badges.find((b) => b.id === 'starship_9');
   eq(f21?.name, '猎鹰21号'); eq(f21?.unlockAt, 42); eq(f21?.concept, true);
@@ -89,6 +89,19 @@ test('全收藏共 16 枚，机库排序概念旗舰压轴', () => {
   eq(list.length, 16);
   eq(list[list.length - 2].id, 'falcon_21');
   eq(list[list.length - 1].id, 'starship_9');
+});
+test('解锁门槛 = 每 3 个完成单元一枚（3/6/9…45）', () => {
+  const unlockable = badges.filter((b) => !isStarterBadge(b)).sort(byUnlockAt);
+  eq(unlockable.length, 15);
+  unlockable.forEach((b, i) => eq(b.unlockAt, (i + 1) * 3));
+});
+test('拥有状态按单元数推导：0/2 单元仅初始座驾，3 单元 +1，45 单元全收藏', () => {
+  eq([...rocketIdsForUnits(badges, 0)].join(','), 'saturn_v');
+  eq(rocketIdsForUnits(badges, 2).size, 1);
+  eq(rocketIdsForUnits(badges, 3).has('long_march_1'), true);
+  eq(rocketIdsForUnits(badges, 3).size, 2);
+  eq(rocketIdsForUnits(badges, 45).size, 16);
+  eq(rocketIdsForUnits(badges, -5).size, 1);
 });
 test('没自选时自动跟随到最新旗舰星舰9号', () => {
   const all = badges.map((b) => b.id);
