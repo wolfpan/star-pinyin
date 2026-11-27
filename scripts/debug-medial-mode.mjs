@@ -5,7 +5,9 @@
  *  2) 孩子端 auto：三拼（船 ch-u-an）介母舱段预装 'u'，托盘无介母行，只拖声母+韵母即可完成；
  *  3) 孩子端 auto：j/q/x+ü 三拼介母预装去点书写形 'u'，不弹摘墨镜；
  *  4) 家长切回 required（孩子页不刷新）→ 下一题立即恢复介母填入（startMission 拉档案同步）；
- *  5) auto 不影响两拼（介母仍为「无需介母」锁定段）。
+ *  5) auto 不影响两拼（无介母舱段）；
+ *  6) 零声母：单仓一体箭体，只拖韵母即可完成；
+ *  7) 整体认读：单仓一体箭体，无中间环缝，拖一次完整音节即完成。
  * 截图输出 .ui-shots/medial-*.png。运行：node scripts/debug-medial-mode.mjs
  */
 import { spawn } from 'node:child_process';
@@ -42,7 +44,9 @@ const byId = (id) => missions.find((m) => m.id === id);
 const THREE = byId('m_011'); // 船 ch-u-an
 const JQX = missions.find((m) => m.type === 'three_part' && m.parts.medial === 'ü');
 const TWO = byId('m_001'); // 组 z-u（两拼）
-if (!THREE || !JQX || !TWO) throw new Error('词库里找不到可构造用例的词条');
+const ZERO = missions.find((m) => m.type === 'zero_initial');
+const WHOLE = byId('m_034'); // 知 zhi（整体认读）
+if (!THREE || !JQX || !TWO || !ZERO || !WHOLE) throw new Error('词库里找不到可构造用例的词条');
 console.log(`用例: 三拼 ${THREE.id}(${THREE.hanzi} ${THREE.displayPinyin}) · jqx+ü ${JQX.id}(${JQX.hanzi} ${JQX.displayPinyin}) · 两拼 ${TWO.id}(${TWO.hanzi})`);
 
 const cleanup = () => {
@@ -177,7 +181,8 @@ async function startForced() {
 async function assemble(m, mode) {
   const groups = m.type === 'three_part' && mode === 'auto' ? ['initial', 'final']
     : m.type === 'three_part' ? ['initial', 'medial', 'final']
-    : m.type === 'two_part' ? ['initial', 'final'] : ['final'];
+    : m.type === 'two_part' ? ['initial', 'final']
+    : m.type === 'whole_syllable' ? ['whole'] : ['final'];
   for (const g of groups) {
     const v = m.parts[g];
     const mc = await modCenter(g, v); const sc = await slotCenter(g);
@@ -238,13 +243,37 @@ check('三件全拖完成组装', await assemble(THREE, 'required'));
 check('进入声调 → 结算', await toneToReward(THREE));
 
 /* ---------- 5. auto 不影响两拼 ---------- */
-console.log('\n[5] auto 不影响两拼（介母仍为「无需介母」锁定段）');
+console.log('\n[5] auto 不影响两拼（无介母舱段）');
 check('POST /api/medialmode auto → 200', await setMedialMode('auto') === 200);
 await forceMission(TWO);
 check('下一题进入组装台', await startForced());
 check('两拼托盘只有声母+韵母', JSON.stringify(await trayGroups()) === JSON.stringify(['initial', 'final']));
 ms = await medialSlot();
-check('介母为锁定段「无需介母」', ms && ms.locked && ms.value === '无需介母');
+check('两拼不显示介母舱段', ms === null);
+await shot('medial-two-assembly');
+check('两拼只拖声母+韵母即完成组装', await assemble(TWO, 'auto'));
+check('进入声调 → 结算', await toneToReward(TWO));
+
+/* ---------- 6. 零声母：单仓一体箭体，只拖韵母 ---------- */
+console.log(`\n[6] 零声母（${ZERO.hanzi} ${ZERO.displayPinyin}）：单仓一体箭体`);
+await forceMission(ZERO);
+check('下一题进入组装台', await startForced());
+check('只有一个「韵母」装载仓', await ev(`document.querySelectorAll('.slot').length === 1 && !!document.querySelector('.slot[data-slot="final"]')`));
+check('托盘只有韵母', JSON.stringify(await trayGroups()) === JSON.stringify(['final']));
+await shot('medial-zero-assembly');
+check('只拖韵母即完成组装', await assemble(ZERO, 'auto'));
+check('进入声调 → 结算', await toneToReward(ZERO));
+
+/* ---------- 7. 整体认读：单仓一体箭体，无中间环缝 ---------- */
+console.log(`\n[7] 整体认读（${WHOLE.hanzi} ${WHOLE.displayPinyin}）：单仓一体箭体`);
+await forceMission(WHOLE);
+check('下一题进入组装台', await startForced());
+check('只有一个「整体」装载仓', await ev(`document.querySelectorAll('.slot').length === 1 && !!document.querySelector('.slot[data-slot="whole"]')`));
+check('一体箭体无中间环缝（仅首尾焊缝）', await ev(`document.querySelectorAll('.rocket-svg rect[x="136"][width="128"][height="6"]').length === 2`));
+check('托盘只有整体行', JSON.stringify(await trayGroups()) === JSON.stringify(['whole']));
+await shot('medial-whole-assembly');
+check('拖一次完整音节即完成组装', await assemble(WHOLE, 'auto'));
+check('进入声调 → 结算', await toneToReward(WHOLE));
 
 console.log('\nERRORS:', errors.length ? errors : 'none');
 console.log(`\n介母装配 UI 验收结果: ${pass} 通过, ${fail} 失败`);

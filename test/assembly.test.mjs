@@ -149,6 +149,24 @@ test('两拼 / 零声母 / 整体认读不受选项影响', () => {
     eq(JSON.stringify(layoutFor(m)), JSON.stringify(layoutFor(m, { medialAuto: true })), m.id);
   }
 });
+test('两拼：不渲染介母舱段，箭体两段连续覆盖', () => {
+  const m = missions.find((x) => x.type === 'two_part');
+  const l = layoutFor(m);
+  const all = [...l.active, ...l.locked, ...l.prefilled];
+  eq(all.some((r) => r.id === 'medial'), false);
+  const ys = [...new Set(all.flatMap((r) => [r.y0, r.y1]))].sort((a, b) => a - b);
+  eq(ys.join(','), '70,260,450');
+});
+test('零声母：单仓一体箭体，仅装配韵母', () => {
+  const m = missions.find((x) => x.type === 'zero_initial');
+  const l = layoutFor(m);
+  eq(l.active.length, 1);
+  eq(l.active[0].id, 'final');
+  eq(l.active[0].y0, 70);
+  eq(l.active[0].y1, 450);
+  eq(l.locked.length, 0);
+  eq(l.prefilled.length, 0);
+});
 test('auto 下剩余活动槽正确零件仍可装配（resolveDrop 不变）', () => {
   const m = byId('m_011');
   const l = layoutFor(m, { medialAuto: true });

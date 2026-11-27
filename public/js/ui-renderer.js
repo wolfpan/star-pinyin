@@ -4,8 +4,8 @@
  * 扁平暗色风 SVG（Retina 无损），支持四种拼音构型动态切换：
  *   three_part     → 三级：一级声母 + 二级介母 + 整流罩韵母
  *                    （家长选项「介母自动预装」时介母预装，孩子只拼声母 + 韵母）
- *   two_part       → 一级声母 + 整流罩韵母；二级“直连锁定/无需介母”
- *   zero_initial   → 一级预装“零声母推进器”；仅装配整流罩韵母
+ *   two_part       → 一级声母 + 整流罩韵母（无介母舱段）
+ *   zero_initial   → 单仓一体箭体（同整体认读），仅装配整流罩韵母
  *   whole_syllable → 一体式单级入轨火箭（SSTO），单个完整箭体
  *
  * 渲染层只负责 DOM/SVG 与视觉状态；拖拽物理在 drag-engine.js，落点判定在 main.js。
@@ -48,7 +48,7 @@ function s(tag, attrs = {}, ...children) {
 
 const GROUP_LABEL = { initial: '声母', medial: '介母', final: '韵母', whole: '整体' };
 
-/** 槽位布局：声母在上、介母居中、韵母在下（符合拼读顺序）。
+/** 槽位布局：声母在上、介母居中、韵母在下（符合拼读顺序）；无介母时两段均分箭体。
  * medialAuto = 家长选项「介母自动预装」：三拼的介母改为预装段，直接显示正确介母的
  * 书写形（j/q/x 后 ü 去点写成 u），托盘不再出介母零件，孩子只拼声母 + 韵母。
  * 纯逻辑（无 DOM），导出供 Node 单元测试。 */
@@ -65,12 +65,12 @@ export function layoutFor(mission, { medialAuto = false } = {}) {
     }
     return { active: [initial, medial, final], locked: [], prefilled: [] };
   }
-  if (type === 'two_part') return { active: [initial, final], locked: [{ ...medial, note: '无需介母' }], prefilled: [] };
-  if (type === 'zero_initial') return {
-    active: [final],
-    locked: [{ ...medial, note: '无需介母' }],
-    prefilled: [{ ...initial, note: '零声母' }],
-  };
+  // 两拼无介母：不渲染介母舱段，声母 / 韵母两段均分箭体
+  const upper = { id: 'initial', group: 'initial', y0: 70, y1: 260 };
+  const lower = { id: 'final', group: 'final', y0: 260, y1: 450 };
+  if (type === 'two_part') return { active: [upper, lower], locked: [], prefilled: [] };
+  // 零声母（只有韵母）：单仓一体箭体，仅装配韵母
+  if (type === 'zero_initial') return { active: [{ id: 'final', group: 'final', y0: 70, y1: 450 }], locked: [], prefilled: [] };
   // whole_syllable：单级 SSTO
   return { active: [{ id: 'whole', group: 'whole', y0: 70, y1: 450 }], locked: [], prefilled: [] };
 }
@@ -232,7 +232,10 @@ export function renderAssembly(container, mission, { medialAuto = false, onRepla
   for (const r of layout.active) drawSegment(r, {});
 
   // 法兰焊缝（舱段交界）+ 鼻锥 ogive + forward 翼 flap（盖在舱段之上）
-  for (const y of [70, 200, 320, 450]) {
+  // 整体认读为一体式箭体，只保留首尾焊缝，无中间环缝
+  const regions = [...layout.locked, ...layout.prefilled, ...layout.active];
+  const seams = [...new Set(regions.flatMap((r) => [r.y0, r.y1]))].sort((a, b) => a - b);
+  for (const y of seams) {
     svg.append(s('rect', { x: '136', y: String(y - 3), width: '128', height: '6', rx: '2', style: 'fill:var(--rk-flange,#39424e);stroke:var(--rk-hull-edge,#0a0d12)', 'stroke-width': '.5' }));
     svg.append(s('rect', { x: '136', y: String(y - 3), width: '128', height: '1.5', fill: 'rgba(255,255,255,0.25)' }));
   }
