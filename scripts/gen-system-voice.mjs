@@ -1,7 +1,9 @@
 /**
  * gen-system-voice.mjs — 预生成「全局真人语音」缓存（系统提示 + 简报短语 + 倒计时 + 呼读音）。
  * 写入 data/voice-cache/{sha1(voice|text)}.mp3，与服务端 /api/tts 缓存命名一致 → 即时播放。
- * 用法：node scripts/gen-system-voice.mjs [--voice longanhuan_v3.6] [--force] [--concurrency 5]
+ * 用法：node scripts/gen-system-voice.mjs [--voice <音色>] [--force] [--concurrency 5]
+ *   音色按服务端 ttsSettings() 的同一口径解析：--voice > data/tts-config.json.voice >
+ *   TTS_VOICE > 默认 longanhuan_v3.6。两边必须一致，否则缓存文件名哈希不同、/api/tts 永远 miss。
  *   --concurrency N  并行合成的条数（默认 1 = 串行，稳妥）；2297 条全量预热建议 5~8
  */
 import fs from 'node:fs';
@@ -15,10 +17,24 @@ const CACHE = path.join(ROOT, 'data', 'voice-cache');
 fs.mkdirSync(CACHE, { recursive: true });
 const args = process.argv.slice(2);
 const vi = args.indexOf('--voice');
-const VOICE = vi >= 0 ? args[vi + 1] : 'longanhuan_v3.6';
 const FORCE = args.includes('--force');
 const ci = args.indexOf('--concurrency');
 const CONCURRENCY = Math.max(1, Math.min(16, parseInt(ci >= 0 ? args[ci + 1] : '1', 10) || 1));
+
+/** 与服务端 ttsSettings() 同口径解析音色：显式参数 > 家长后台配置 > 环境变量 > 默认。 */
+function resolveVoice() {
+  const explicit = vi >= 0 ? (args[vi + 1] || '').trim() : '';
+  if (explicit) return [explicit, '--voice 参数'];
+  try {
+    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'tts-config.json'), 'utf8'));
+    const v = typeof cfg.voice === 'string' ? cfg.voice.trim() : '';
+    if (v) return [v, 'data/tts-config.json'];
+  } catch { /* 没有配置文件就用下一档 */ }
+  const env = (process.env.TTS_VOICE || '').trim();
+  if (env) return [env, 'TTS_VOICE 环境变量'];
+  return ['longanhuan_v3.6', '默认值'];
+}
+const [VOICE, VOICE_FROM] = resolveVoice();
 const MODEL = 'qwen-audio-3.0-tts-plus';
 const URL = 'https://token-plan.cn-beijing.maas.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer';
 const cred = fs.readFileSync(path.join(process.env.DSH_HOME || 'C:\\Users\\panft\\.dsh', '.credentials.yaml'), 'utf8');
@@ -61,7 +77,7 @@ async function synth(text) {
 }
 
 let ok = 0, skip = 0, fail = 0; const failures = [];
-console.log(`音色 ${VOICE} · 待生成 ${texts.length} 条语音缓存 · 并发 ${CONCURRENCY}`);
+console.log(`音色 ${VOICE}（来源：${VOICE_FROM}）· 待生成 ${texts.length} 条语音缓存 · 并发 ${CONCURRENCY}`);
 
 async function handleOne(t) {
   const f = cachePath(t);
